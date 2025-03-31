@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/admin/Sidebar";
 import { clienteService, Cliente } from "../../services/clienteService";
+import { remessaService } from "../../services/remessaService";
+
 import {
   encomendaService,
   Encomenda,
@@ -80,14 +82,17 @@ function Encomendas() {
   const salvarEncomenda = async () => {
     if (!remetenteId || !destinatarioId || pacotes.length === 0) return;
 
-    await encomendaService.adicionar({
+    const nova = await encomendaService.adicionar({
       remetenteId,
       destinatarioId,
       enderecoEntrega: endereco,
       status: "em preparação",
       pacotes,
     });
-
+    
+    // Agrupar em remessa automaticamente
+    await remessaService.adicionarEncomendaOuCriar(nova, endereco.cidade); // ou endereço.estado ou país fixo se tiver
+    
     setRemetenteId(undefined);
     setDestinatarioId(undefined);
     setEndereco({ rua: "", numero: "", bairro: "", cidade: "", estado: "", cep: "" });

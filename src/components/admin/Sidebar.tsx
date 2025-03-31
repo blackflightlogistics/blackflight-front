@@ -21,6 +21,9 @@ const Sidebar = () => {
         <Link to="/admin/encomendas" className={linkClass("/admin/encomendas")}>
           Encomendas
         </Link>
+        <Link to="/admin/remessas" className={linkClass("/admin/remessas")}>
+          Remessas
+        </Link>
       </nav>
     </aside>
   );
