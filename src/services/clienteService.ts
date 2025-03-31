@@ -24,4 +24,10 @@ export const clienteService = {
     clientes = clientes.filter((c) => c.id !== id);
     return Promise.resolve();
   },
+  atualizar: async (id: number, dados: Partial<Cliente>): Promise<Cliente | null> => {
+    const index = clientes.findIndex((c) => c.id === id);
+    if (index === -1) return null;
+    clientes[index] = { ...clientes[index], ...dados };
+    return Promise.resolve(clientes[index]);
+  },
 };

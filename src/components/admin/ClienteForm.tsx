@@ -15,19 +15,20 @@ export type ClienteFormData = {
 type Props = {
   onSubmit: (cliente: ClienteFormData) => void;
   onCancel?: () => void;
+  initialData?: Partial<ClienteFormData>;
 };
 
-const ClienteForm = ({ onSubmit, onCancel }: Props) => {
+const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
   const [form, setForm] = useState<ClienteFormData>({
-    nome: "",
-    telefone: "",
-    email: "",
-    rua: "",
-    numero: "",
-    bairro: "",
-    cidade: "",
-    estado: "",
-    cep: "",
+    nome: initialData?.nome || "",
+    telefone: initialData?.telefone || "",
+    email: initialData?.email || "",
+    rua: initialData?.rua || "",
+    numero: initialData?.numero || "",
+    bairro: initialData?.bairro || "",
+    cidade: initialData?.cidade || "",
+    estado: initialData?.estado || "",
+    cep: initialData?.cep || "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,7 +68,7 @@ const ClienteForm = ({ onSubmit, onCancel }: Props) => {
         <input name="cep" placeholder="CEP" required value={form.cep} onChange={handleChange} className="p-2 border rounded" />
       </div>
       <div className="flex gap-2">
-        <button type="submit" className="px-4 py-2 border rounded">
+        <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:opacity-90">
           Salvar Cliente
         </button>
         {onCancel && (
