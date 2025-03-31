@@ -10,10 +10,26 @@ import {
 import ClienteForm, { ClienteFormData } from "../../components/admin/ClienteForm";
 import ClienteSelect from "../../components/admin/ClienteSelect";
 
-function converterEnderecoParaCampos(endereco: string): Partial<ClienteFormData> {
+function converterEnderecoParaCampos(endereco: string): ClienteFormData {
   const match = endereco.match(/^(.*), (.*) - (.*), (.*) - (.*), (.*)$/);
-  if (!match) return {};
+  if (!match) {
+    return {
+      nome: "",
+      telefone: "",
+      email: "",
+      rua: "",
+      numero: "",
+      bairro: "",
+      cidade: "",
+      estado: "",
+      cep: "",
+    };
+  }
+
   return {
+    nome: "",
+    telefone: "",
+    email: "",
     rua: match[1],
     numero: match[2],
     bairro: match[3],
@@ -22,14 +38,15 @@ function converterEnderecoParaCampos(endereco: string): Partial<ClienteFormData>
     cep: match[6],
   };
 }
-
 function Encomendas() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [encomendas, setEncomendas] = useState<Encomenda[]>([]);
 
   const [remetenteId, setRemetenteId] = useState<number | undefined>(undefined);
   const [destinatarioId, setDestinatarioId] = useState<number | undefined>(undefined);
   const [editandoRemetente, setEditandoRemetente] = useState(false);
+  const [editandoDestinatario, setEditandoDestinatario] = useState(false);
   const [showRemetenteForm, setShowRemetenteForm] = useState(false);
   const [showDestinatarioForm, setShowDestinatarioForm] = useState(false);
 
@@ -98,16 +115,15 @@ function Encomendas() {
   };
 
   const remetenteSelecionado = clientes.find(c => c.id === remetenteId);
+  const destinatarioSelecionado = clientes.find(c => c.id === destinatarioId);
 
   return (
     <div className="flex">
       <Sidebar />
       <main className="flex-1 p-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Encomendas</h1>
-        </div>
+        <h1 className="text-2xl font-bold">Encomendas</h1>
 
-        {/* Cliente Remetente */}
+        {/* Remetente */}
         <div>
           <ClienteSelect
             label="Remetente"
@@ -120,13 +136,10 @@ function Encomendas() {
             }}
           />
           {remetenteId && (
-            <button
-              onClick={() => {
-                setEditandoRemetente(true);
-                setShowRemetenteForm(false);
-              }}
-              className="text-sm text-blue-600 mt-1 hover:underline"
-            >
+            <button onClick={() => {
+              setEditandoRemetente(true);
+              setShowRemetenteForm(false);
+            }} className="text-sm text-blue-600 mt-1 hover:underline">
               Ver endereço
             </button>
           )}
@@ -138,12 +151,12 @@ function Encomendas() {
           )}
           {editandoRemetente && remetenteSelecionado && (
             <ClienteForm
-              initialData={{
-                nome: remetenteSelecionado.nome,
-                telefone: remetenteSelecionado.telefone,
-                email: remetenteSelecionado.email,
-                ...converterEnderecoParaCampos(remetenteSelecionado.endereco),
-              }}
+            initialData={{
+              ...converterEnderecoParaCampos(remetenteSelecionado.endereco),
+              nome: remetenteSelecionado.nome,
+              telefone: remetenteSelecionado.telefone,
+              email: remetenteSelecionado.email,
+            }}
               onSubmit={async (form) => {
                 const endereco = `${form.rua}, ${form.numero} - ${form.bairro}, ${form.cidade} - ${form.estado}, ${form.cep}`;
                 await clienteService.atualizar(remetenteId!, {
@@ -160,34 +173,82 @@ function Encomendas() {
           )}
         </div>
 
-        {/* Cliente Destinatário */}
+        {/* Destinatário */}
         <div>
           <ClienteSelect
             label="Destinatário"
             clientes={clientes}
             selectedId={destinatarioId}
-            onSelect={setDestinatarioId}
+            onSelect={(id) => {
+              setDestinatarioId(id);
+              const selecionado = clientes.find((c) => c.id === id);
+              if (selecionado) {
+                setEndereco(converterEnderecoParaCampos(selecionado.endereco));
+              }
+            }}
             onCadastrarNovo={() => {
               setShowDestinatarioForm(true);
               setShowRemetenteForm(false);
             }}
           />
+          {destinatarioId && (
+            <button onClick={() => {
+              setEditandoDestinatario(true);
+              setShowDestinatarioForm(false);
+            }} className="text-sm text-blue-600 mt-1 hover:underline">
+              Ver endereço
+            </button>
+          )}
           {showDestinatarioForm && (
             <ClienteForm
               onSubmit={(form) => salvarNovoCliente(form, "destinatario")}
               onCancel={() => setShowDestinatarioForm(false)}
             />
           )}
+          {editandoDestinatario && destinatarioSelecionado && (
+            <ClienteForm
+            initialData={{
+              ...converterEnderecoParaCampos(destinatarioSelecionado.endereco),
+              nome: destinatarioSelecionado.nome,
+              telefone: destinatarioSelecionado.telefone,
+              email: destinatarioSelecionado.email,
+            }}
+              onSubmit={async (form) => {
+                const enderecoStr = `${form.rua}, ${form.numero} - ${form.bairro}, ${form.cidade} - ${form.estado}, ${form.cep}`;
+                await clienteService.atualizar(destinatarioId!, {
+                  nome: form.nome,
+                  telefone: form.telefone,
+                  email: form.email,
+                  endereco: enderecoStr,
+                });
+                await clienteService.listar().then(setClientes);
+                setEndereco({
+                  rua: form.rua,
+                  numero: form.numero,
+                  bairro: form.bairro,
+                  cidade: form.cidade,
+                  estado: form.estado,
+                  cep: form.cep,
+                });
+                setEditandoDestinatario(false);
+              }}
+              onCancel={() => setEditandoDestinatario(false)}
+            />
+          )}
         </div>
 
         {/* Endereço de Entrega */}
         <div className="grid md:grid-cols-2 gap-4">
-          <input name="rua" placeholder="Rua" value={endereco.rua} onChange={(e) => setEndereco({ ...endereco, rua: e.target.value })} className="p-2 border rounded" />
-          <input name="numero" placeholder="Número" value={endereco.numero} onChange={(e) => setEndereco({ ...endereco, numero: e.target.value })} className="p-2 border rounded" />
-          <input name="bairro" placeholder="Bairro" value={endereco.bairro} onChange={(e) => setEndereco({ ...endereco, bairro: e.target.value })} className="p-2 border rounded" />
-          <input name="cidade" placeholder="Cidade" value={endereco.cidade} onChange={(e) => setEndereco({ ...endereco, cidade: e.target.value })} className="p-2 border rounded" />
-          <input name="estado" placeholder="Estado" value={endereco.estado} onChange={(e) => setEndereco({ ...endereco, estado: e.target.value })} className="p-2 border rounded" />
-          <input name="cep" placeholder="CEP" value={endereco.cep} onChange={(e) => setEndereco({ ...endereco, cep: e.target.value })} className="p-2 border rounded" />
+          {["rua", "numero", "bairro", "cidade", "estado", "cep"].map((campo) => (
+            <input
+              key={campo}
+              name={campo}
+              placeholder={campo[0].toUpperCase() + campo.slice(1)}
+              value={endereco[campo as keyof typeof endereco]}
+              onChange={(e) => setEndereco({ ...endereco, [campo]: e.target.value })}
+              className="p-2 border rounded"
+            />
+          ))}
         </div>
 
         {/* Pacotes */}
@@ -223,35 +284,6 @@ function Encomendas() {
         <button onClick={salvarEncomenda} className="mt-4 px-4 py-2 bg-black text-white rounded hover:opacity-80">
           Salvar Encomenda
         </button>
-
-        {/* Lista de Encomendas */}
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Lista de Encomendas</h2>
-          {encomendas.length === 0 ? (
-            <p className="text-gray-600">Nenhuma encomenda cadastrada.</p>
-          ) : (
-            <ul className="space-y-4">
-              {encomendas.map((e) => {
-                const remetente = clientes.find((c) => c.id === e.remetenteId)?.nome || "—";
-                const destinatario = clientes.find((c) => c.id === e.destinatarioId)?.nome || "—";
-                return (
-                  <li key={e.id} className="p-4 bg-white rounded shadow">
-                    <p><strong>De:</strong> {remetente} <strong>Para:</strong> {destinatario}</p>
-                    <p><strong>Status:</strong> {e.status}</p>
-                    <p><strong>Endereço:</strong> {e.enderecoEntrega.rua}, {e.enderecoEntrega.numero} - {e.enderecoEntrega.bairro}, {e.enderecoEntrega.cidade} - {e.enderecoEntrega.estado}, {e.enderecoEntrega.cep}</p>
-                    <ul className="mt-2 space-y-1">
-                      {e.pacotes.map((p) => (
-                        <li key={p.id} className="text-sm">
-                          📦 <strong>{p.descricao}</strong> - {p.peso}kg ({p.status})
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
       </main>
     </div>
   );
