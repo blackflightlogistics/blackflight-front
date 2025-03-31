@@ -40,7 +40,6 @@ function converterEnderecoParaCampos(endereco: string): ClienteFormData {
 }
 function Encomendas() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [encomendas, setEncomendas] = useState<Encomenda[]>([]);
 
   const [remetenteId, setRemetenteId] = useState<number | undefined>(undefined);
@@ -284,6 +283,46 @@ function Encomendas() {
         <button onClick={salvarEncomenda} className="mt-4 px-4 py-2 bg-black text-white rounded hover:opacity-80">
           Salvar Encomenda
         </button>
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Lista de Encomendas</h2>
+          {encomendas.length === 0 ? (
+            <p className="text-gray-600">Nenhuma encomenda cadastrada.</p>
+          ) : (
+            <ul className="space-y-4">
+              {encomendas.map((e) => {
+                const remetente =
+                  clientes.find((c) => c.id === e.remetenteId)?.nome || "—";
+                const destinatario =
+                  clientes.find((c) => c.id === e.destinatarioId)?.nome || "—";
+                return (
+                  <li key={e.id} className="p-4 bg-white rounded shadow">
+                    <p>
+                      <strong>De:</strong> {remetente} <strong>Para:</strong>{" "}
+                      {destinatario}
+                    </p>
+                    <p>
+                      <strong>Status:</strong> {e.status}
+                    </p>
+                    <p>
+                      <strong>Endereço:</strong> {e.enderecoEntrega.rua},{" "}
+                      {e.enderecoEntrega.numero} - {e.enderecoEntrega.bairro},{" "}
+                      {e.enderecoEntrega.cidade} - {e.enderecoEntrega.estado},{" "}
+                      {e.enderecoEntrega.cep}
+                    </p>
+                    <ul className="mt-2 space-y-1">
+                      {e.pacotes.map((p) => (
+                        <li key={p.id} className="text-sm">
+                          📦 <strong>{p.descricao}</strong> - {p.peso}kg (
+                          {p.status})
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
       </main>
     </div>
   );
