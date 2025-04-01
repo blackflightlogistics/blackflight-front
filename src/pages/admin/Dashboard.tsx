@@ -14,6 +14,7 @@ function Dashboard() {
   const [encomendas, setEncomendas] = useState<Encomenda[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [remessas, setRemessas] = useState<Remessa[]>([]);
+  const [sidebarAberta, setSidebarAberta] = useState(false);
 
   useEffect(() => {
     const carregar = async () => {
@@ -69,7 +70,15 @@ function Dashboard() {
 
   return (
     <div className="flex h-screen">
-      <Sidebar />
+       <button
+        className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
+        onClick={() => setSidebarAberta(true)}
+      >
+        ☰ Menu
+      </button>
+
+      <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
+
       <main className="flex-1 p-6 space-y-6 overflow-y-auto">
         <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 

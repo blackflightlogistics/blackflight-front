@@ -29,12 +29,21 @@ function Clientes() {
     setFormVisible(false);
     carregarClientes();
   };
+  const [sidebarAberta, setSidebarAberta] = useState(false);
 
   return (
     <div className="h-screen overflow-hidden">
       {/* Sidebar fixa */}
       <div className="fixed top-0 left-0 h-screen w-64 bg-white border-r z-10">
-        <Sidebar />
+      <button
+        className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
+        onClick={() => setSidebarAberta(true)}
+      >
+        ☰ Menu
+      </button>
+
+      <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
+
       </div>
 
       {/* Conteúdo principal com scroll */}

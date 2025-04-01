@@ -9,6 +9,7 @@ const Remessas = () => {
   const [encomendas, setEncomendas] = useState<Encomenda[]>([]);
   const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [buscaPais, setBuscaPais] = useState<string>("");
+  const [sidebarAberta, setSidebarAberta] = useState(false);
 
   useEffect(() => {
     const carregar = async () => {
@@ -56,12 +57,22 @@ const Remessas = () => {
   return (
     <div className="h-screen overflow-hidden">
       {/* Sidebar fixa */}
-      <div className="fixed top-0 left-0 h-screen w-64 bg-white border-r z-10">
-        <Sidebar />
+      <div className="md:fixed md:top-0 md:left-0 md:h-screen md:w-64 bg-white border-r z-10">
+        <button
+          className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
+          onClick={() => setSidebarAberta(true)}
+        >
+          ☰ Menu
+        </button>
+
+        <Sidebar
+          mobileAberta={sidebarAberta}
+          onFechar={() => setSidebarAberta(false)}
+        />
       </div>
 
       {/* Conteúdo principal com scroll */}
-      <main className="ml-64 h-full overflow-y-auto p-6 space-y-6">
+      <main className="md:ml-64 h-full overflow-y-auto p-6 space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Remessas</h1>
           <div className="flex space-x-4">
@@ -86,30 +97,42 @@ const Remessas = () => {
         </div>
 
         {remessasFiltradas.length === 0 ? (
-          <p className="text-gray-600">Nenhuma remessa encontrada com os filtros.</p>
+          <p className="text-gray-600">
+            Nenhuma remessa encontrada com os filtros.
+          </p>
         ) : (
           <ul className="space-y-4">
             {remessasFiltradas.map((r) => {
-              const encomendasDaRemessa = encomendas.filter(e =>
+              const encomendasDaRemessa = encomendas.filter((e) =>
                 r.encomendaIds.includes(e.id)
               );
               return (
                 <li key={r.id} className="p-4 bg-white rounded shadow border">
                   <div className="flex justify-between items-center mb-2">
                     <div>
-                      <Link to={`/admin/remessas/${r.id}`} className="text-lg font-semibold hover:underline">
+                      <Link
+                        to={`/admin/remessas/${r.id}`}
+                        className="text-lg font-semibold hover:underline"
+                      >
                         {renderStatusIcone(r.status)} País: {r.pais}
                       </Link>
                       <p className="text-sm text-gray-600">
                         Status: <strong>{r.status}</strong>
                       </p>
                       <p className="text-sm text-gray-600">
-                        Criada em: {new Date(r.dataCriacao).toLocaleDateString()}
+                        Criada em:{" "}
+                        {new Date(r.dataCriacao).toLocaleDateString()}
                       </p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm">Peso Atual:</p>
-                      <p className={`text-xl font-bold ${r.pesoTotal >= 23 ? "text-green-600" : "text-yellow-600"}`}>
+                      <p
+                        className={`text-xl font-bold ${
+                          r.pesoTotal >= 23
+                            ? "text-green-600"
+                            : "text-yellow-600"
+                        }`}
+                      >
                         {r.pesoTotal.toFixed(2)} kg
                       </p>
                     </div>
@@ -120,9 +143,16 @@ const Remessas = () => {
                       <p className="text-sm font-semibold mb-1">Encomendas:</p>
                       <ul className="space-y-1 text-sm">
                         {encomendasDaRemessa.map((e) => (
-                          <li key={e.id} className="pl-2 border-l-4 border-blue-300">
-                            <span className="font-medium">#{e.id}</span> – {e.pacotes.length} pacote(s),{" "}
-                            {e.pacotes.reduce((soma, p) => soma + p.peso, 0).toFixed(2)} kg
+                          <li
+                            key={e.id}
+                            className="pl-2 border-l-4 border-blue-300"
+                          >
+                            <span className="font-medium">#{e.id}</span> –{" "}
+                            {e.pacotes.length} pacote(s),{" "}
+                            {e.pacotes
+                              .reduce((soma, p) => soma + p.peso, 0)
+                              .toFixed(2)}{" "}
+                            kg
                           </li>
                         ))}
                       </ul>

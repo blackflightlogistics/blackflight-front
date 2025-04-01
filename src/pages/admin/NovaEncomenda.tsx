@@ -47,6 +47,7 @@ function NovaEncomenda() {
   const navigate = useNavigate();
   const [precoPorQuilo, setPrecoPorQuilo] = useState<number>(0);
   const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [sidebarAberta, setSidebarAberta] = useState(false);
 
   const [remetenteId, setRemetenteId] = useState<number | undefined>(undefined);
   const [destinatarioId, setDestinatarioId] = useState<number | undefined>(
@@ -165,7 +166,15 @@ function NovaEncomenda() {
 
   return (
     <div className="flex">
-      <Sidebar />
+      <button
+        className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
+        onClick={() => setSidebarAberta(true)}
+      >
+        ☰ Menu
+      </button>
+
+      <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
+
       <main className="flex-1 p-6 space-y-6">
         <h1 className="text-2xl font-bold">Encomendas</h1>
 

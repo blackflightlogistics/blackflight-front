@@ -14,6 +14,7 @@ function EtiquetaEncomenda() {
   const [remetente, setRemetente] = useState<Cliente | null>(null);
   const [destinatario, setDestinatario] = useState<Cliente | null>(null);
   const dataGeracao = new Date().toLocaleString();
+  const [sidebarAberta, setSidebarAberta] = useState(false);
 
   const encomendaRef = useRef<SVGSVGElement | null>(null);
   const pacoteRefs = useRef<(SVGSVGElement | null)[]>([]);
@@ -65,7 +66,15 @@ function EtiquetaEncomenda() {
 
   return (
     <div className="flex h-screen">
-      <Sidebar />
+      <button
+        className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
+        onClick={() => setSidebarAberta(true)}
+      >
+        ☰ Menu
+      </button>
+
+      <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
+
       <main className="flex-1 overflow-y-auto p-6 space-y-6 print:p-4 print:w-full print:overflow-visible">
         <div className="flex justify-between items-center print:hidden">
           <h1 className="text-2xl font-bold">Etiquetas da Encomenda</h1>

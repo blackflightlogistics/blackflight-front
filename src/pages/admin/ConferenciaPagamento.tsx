@@ -14,6 +14,7 @@ function ConferenciaPagamento() {
   const [formaPagamento, setFormaPagamento] = useState("avista");
   const [mostrarMaisOpcoes, setMostrarMaisOpcoes] = useState(false);
   const [desconto, setDesconto] = useState(0);
+  const [sidebarAberta, setSidebarAberta] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -29,7 +30,15 @@ function ConferenciaPagamento() {
   if (!encomenda || !remetente || !destinatario) {
     return (
       <div className="flex">
-        <Sidebar />
+       <button
+        className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
+        onClick={() => setSidebarAberta(true)}
+      >
+        ☰ Menu
+      </button>
+
+      <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
+
         <main className="flex-1 p-6">Carregando...</main>
       </div>
     );
@@ -40,7 +49,15 @@ function ConferenciaPagamento() {
 
   return (
     <div className="flex h-screen">
-      <Sidebar />
+     <button
+        className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
+        onClick={() => setSidebarAberta(true)}
+      >
+        ☰ Menu
+      </button>
+
+      <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
+
       <main className="flex-1 p-6 space-y-6 overflow-y-auto">
         <h1 className="text-2xl font-bold">Conferência de Pagamento</h1>
 

@@ -10,6 +10,7 @@ const RemessaDetalhes = () => {
   const [remessa, setRemessa] = useState<Remessa | null>(null);
   const [encomendas, setEncomendas] = useState<Encomenda[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [sidebarAberta, setSidebarAberta] = useState(false);
 
   useEffect(() => {
     const carregar = async () => {
@@ -32,7 +33,15 @@ const RemessaDetalhes = () => {
 
   return (
     <div className="flex">
-      <Sidebar />
+      <button
+        className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
+        onClick={() => setSidebarAberta(true)}
+      >
+        ☰ Menu
+      </button>
+
+      <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
+
       <main className="flex-1 p-6 space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Detalhes da Remessa #{remessa.id}</h1>
