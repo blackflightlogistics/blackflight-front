@@ -7,6 +7,7 @@ import Clientes from './pages/admin/Clientes';
 import Encomendas from './pages/admin/Encomendas';
 import Remessas from './pages/admin/Remessas';
 import RemessaDetalhes from './pages/admin/RemessaDetalhes';
+import Configuracoes from './pages/admin/Configuracoes';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/admin/encomendas" element={<Encomendas />} />
         <Route path="/admin/remessas" element={<Remessas />} />
         <Route path="/admin/remessas/:id" element={<RemessaDetalhes />} />
+        <Route path="/admin/configuracoes" element={<Configuracoes />} />
 
       </Routes>
     </Router>

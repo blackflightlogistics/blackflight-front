@@ -7,6 +7,8 @@ export type Pacote = {
   descricao: string;
   peso: number;
   status: PacoteStatus;
+  valorCalculado: number;
+  valorDeclarado?: number;
 };
 
 export type Encomenda = {
@@ -23,6 +25,7 @@ export type Encomenda = {
   };
   status: EncomendaStatus;
   pacotes: Pacote[];
+  valorTotal?: number; // NOVO
 };
 let encomendas: Encomenda[] = [];
 

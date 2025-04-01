@@ -12,10 +12,11 @@
         "cep": "22000-000"
       },
       "status": "em transito",
+      "valorTotal": 157.5,
       "pacotes": [
-        { "id": 1, "descricao": "Celular", "peso": 0.5, "status": "em transito" },
-        { "id": 2, "descricao": "Tablet", "peso": 0.8, "status": "em transito" },
-        { "id": 3, "descricao": "Fone de ouvido", "peso": 0.2, "status": "em transito" }
+        { "id": 1, "descricao": "Celular", "peso": 0.5, "status": "em transito", "valorCalculado": 37.5 },
+        { "id": 2, "descricao": "Tablet", "peso": 0.8, "status": "em transito", "valorCalculado": 60 },
+        { "id": 3, "descricao": "Fone de ouvido", "peso": 0.2, "status": "em transito", "valorCalculado": 15, "valorDeclarado": 45 }
       ]
     },
     {
@@ -31,10 +32,11 @@
         "cep": "04567-000"
       },
       "status": "em preparação",
+      "valorTotal": 202.5,
       "pacotes": [
-        { "id": 4, "descricao": "Livros", "peso": 1.5, "status": "em preparação" },
-        { "id": 5, "descricao": "Canetas", "peso": 0.3, "status": "em preparação" },
-        { "id": 6, "descricao": "Bloco de notas", "peso": 0.4, "status": "em preparação" }
+        { "id": 4, "descricao": "Livros", "peso": 1.5, "status": "em preparação", "valorCalculado": 112.5, "valorDeclarado": 50 },
+        { "id": 5, "descricao": "Canetas", "peso": 0.3, "status": "em preparação", "valorCalculado": 22.5 },
+        { "id": 6, "descricao": "Bloco de notas", "peso": 0.4, "status": "em preparação", "valorCalculado": 30 }
       ]
     },
     {
@@ -50,10 +52,11 @@
         "cep": "80000-000"
       },
       "status": "entregue",
+      "valorTotal": 127.5,
       "pacotes": [
-        { "id": 7, "descricao": "Tênis", "peso": 1.2, "status": "entregue" },
-        { "id": 8, "descricao": "Camiseta", "peso": 0.3, "status": "entregue" },
-        { "id": 9, "descricao": "Boné", "peso": 0.2, "status": "entregue" }
+        { "id": 7, "descricao": "Tênis", "peso": 1.2, "status": "entregue", "valorCalculado": 90 },
+        { "id": 8, "descricao": "Camiseta", "peso": 0.3, "status": "entregue", "valorCalculado": 22.5 },
+        { "id": 9, "descricao": "Boné", "peso": 0.2, "status": "entregue", "valorCalculado": 15 }
       ]
     },
     {
@@ -69,10 +72,11 @@
         "cep": "90560-000"
       },
       "status": "cancelada",
+      "valorTotal": 262.5,
       "pacotes": [
-        { "id": 10, "descricao": "Notebook", "peso": 2.5, "status": "cancelada" },
-        { "id": 11, "descricao": "Mouse", "peso": 0.2, "status": "cancelada" },
-        { "id": 12, "descricao": "Teclado", "peso": 0.7, "status": "cancelada" }
+        { "id": 10, "descricao": "Notebook", "peso": 2.5, "status": "cancelada", "valorCalculado": 187.5, "valorDeclarado": 50 },
+        { "id": 11, "descricao": "Mouse", "peso": 0.2, "status": "cancelada", "valorCalculado": 15 },
+        { "id": 12, "descricao": "Teclado", "peso": 0.7, "status": "cancelada", "valorCalculado": 52.5 }
       ]
     },
     {
@@ -88,10 +92,11 @@
         "cep": "01000-000"
       },
       "status": "aguardando retirada",
+      "valorTotal": 90,
       "pacotes": [
-        { "id": 13, "descricao": "Creme", "peso": 0.4, "status": "aguardando retirada" },
-        { "id": 14, "descricao": "Sabonete", "peso": 0.3, "status": "aguardando retirada" },
-        { "id": 15, "descricao": "Escova", "peso": 0.5, "status": "aguardando retirada" }
+        { "id": 13, "descricao": "Creme", "peso": 0.4, "status": "aguardando retirada", "valorCalculado": 30 },
+        { "id": 14, "descricao": "Sabonete", "peso": 0.3, "status": "aguardando retirada", "valorCalculado": 22.5 },
+        { "id": 15, "descricao": "Escova", "peso": 0.5, "status": "aguardando retirada", "valorCalculado": 37.5 }
       ]
     }
   ]
