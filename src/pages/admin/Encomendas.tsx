@@ -268,7 +268,7 @@ function Encomendas() {
               <option value="entregue">Entregue</option>
               <option value="cancelada">Cancelada</option>
             </select>
-            <button onClick={adicionarPacote} className="px-4 py-2 bg-blue-600 text-white rounded hover:opacity-90">
+            <button onClick={adicionarPacote} className="px-4 py-2 bg-blue-600 text-black rounded hover:opacity-90">
               Adicionar
             </button>
           </div>

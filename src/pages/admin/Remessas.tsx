@@ -128,7 +128,7 @@ const Remessas = () => {
                   {r.status === "aberta" && r.pesoTotal >= 23 && (
                     <button
                       onClick={() => fecharRemessa(r.id)}
-                      className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                      className="mt-4 px-4 py-2 bg-green-600 text-black rounded hover:bg-green-700"
                     >
                       Fechar Remessa
                     </button>
@@ -137,7 +137,7 @@ const Remessas = () => {
                   {r.status === "fechada" && (
                     <button
                       onClick={() => enviarRemessa(r.id)}
-                      className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                      className="mt-4 px-4 py-2 bg-blue-600 text-black rounded hover:bg-blue-700"
                     >
                       Enviar Remessa
                     </button>

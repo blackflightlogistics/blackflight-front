@@ -1,0 +1,45 @@
+[
+    {
+      "id": 1,
+      "nome": "Lucas Silva",
+      "telefone": "11999999999",
+      "email": "lucas@email.com",
+      "endereco": "Rua A, 123 - Centro, São Paulo - SP, 01000-000"
+    },
+    {
+      "id": 2,
+      "nome": "Mariana Souza",
+      "telefone": "21988888888",
+      "email": "mariana@email.com",
+      "endereco": "Rua B, 456 - Copacabana, Rio de Janeiro - RJ, 22000-000"
+    },
+    {
+      "id": 3,
+      "nome": "Carlos Lima",
+      "telefone": "31977777777",
+      "email": "carlos@email.com",
+      "endereco": "Av. das Américas, 1000 - Barra, Rio de Janeiro - RJ, 22775-000"
+    },
+    {
+      "id": 4,
+      "nome": "Fernanda Costa",
+      "telefone": "11966666666",
+      "email": "fernanda@email.com",
+      "endereco": "Rua C, 321 - Moema, São Paulo - SP, 04567-000"
+    },
+    {
+      "id": 5,
+      "nome": "João Pedro",
+      "telefone": "41955555555",
+      "email": "joao@email.com",
+      "endereco": "Rua D, 200 - Centro, Curitiba - PR, 80000-000"
+    },
+    {
+      "id": 6,
+      "nome": "Patrícia Gomes",
+      "telefone": "51944444444",
+      "email": "patricia@email.com",
+      "endereco": "Rua E, 150 - Moinhos, Porto Alegre - RS, 90560-000"
+    }
+  ]
+  

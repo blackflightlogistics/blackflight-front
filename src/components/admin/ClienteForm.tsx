@@ -68,7 +68,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         <input name="cep" placeholder="CEP" required value={form.cep} onChange={handleChange} className="p-2 border rounded" />
       </div>
       <div className="flex gap-2">
-        <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:opacity-90">
+        <button type="submit" className="px-4 py-2 bg-blue-600 text-black rounded hover:opacity-90">
           Salvar Cliente
         </button>
         {onCancel && (

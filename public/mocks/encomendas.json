@@ -1,0 +1,98 @@
+[
+    {
+      "id": 1001,
+      "remetenteId": 1,
+      "destinatarioId": 2,
+      "enderecoEntrega": {
+        "rua": "Rua B",
+        "numero": "456",
+        "bairro": "Copacabana",
+        "cidade": "Rio de Janeiro",
+        "estado": "RJ",
+        "cep": "22000-000"
+      },
+      "status": "em transito",
+      "pacotes": [
+        { "id": 1, "descricao": "Celular", "peso": 0.5, "status": "em transito" },
+        { "id": 2, "descricao": "Tablet", "peso": 0.8, "status": "em transito" },
+        { "id": 3, "descricao": "Fone de ouvido", "peso": 0.2, "status": "em transito" }
+      ]
+    },
+    {
+      "id": 1002,
+      "remetenteId": 3,
+      "destinatarioId": 4,
+      "enderecoEntrega": {
+        "rua": "Rua C",
+        "numero": "321",
+        "bairro": "Moema",
+        "cidade": "São Paulo",
+        "estado": "SP",
+        "cep": "04567-000"
+      },
+      "status": "em preparação",
+      "pacotes": [
+        { "id": 4, "descricao": "Livros", "peso": 1.5, "status": "em preparação" },
+        { "id": 5, "descricao": "Canetas", "peso": 0.3, "status": "em preparação" },
+        { "id": 6, "descricao": "Bloco de notas", "peso": 0.4, "status": "em preparação" }
+      ]
+    },
+    {
+      "id": 1003,
+      "remetenteId": 2,
+      "destinatarioId": 5,
+      "enderecoEntrega": {
+        "rua": "Rua D",
+        "numero": "200",
+        "bairro": "Centro",
+        "cidade": "Curitiba",
+        "estado": "PR",
+        "cep": "80000-000"
+      },
+      "status": "entregue",
+      "pacotes": [
+        { "id": 7, "descricao": "Tênis", "peso": 1.2, "status": "entregue" },
+        { "id": 8, "descricao": "Camiseta", "peso": 0.3, "status": "entregue" },
+        { "id": 9, "descricao": "Boné", "peso": 0.2, "status": "entregue" }
+      ]
+    },
+    {
+      "id": 1004,
+      "remetenteId": 5,
+      "destinatarioId": 6,
+      "enderecoEntrega": {
+        "rua": "Rua E",
+        "numero": "150",
+        "bairro": "Moinhos",
+        "cidade": "Porto Alegre",
+        "estado": "RS",
+        "cep": "90560-000"
+      },
+      "status": "cancelada",
+      "pacotes": [
+        { "id": 10, "descricao": "Notebook", "peso": 2.5, "status": "cancelada" },
+        { "id": 11, "descricao": "Mouse", "peso": 0.2, "status": "cancelada" },
+        { "id": 12, "descricao": "Teclado", "peso": 0.7, "status": "cancelada" }
+      ]
+    },
+    {
+      "id": 1005,
+      "remetenteId": 6,
+      "destinatarioId": 1,
+      "enderecoEntrega": {
+        "rua": "Rua A",
+        "numero": "123",
+        "bairro": "Centro",
+        "cidade": "São Paulo",
+        "estado": "SP",
+        "cep": "01000-000"
+      },
+      "status": "aguardando retirada",
+      "pacotes": [
+        { "id": 13, "descricao": "Creme", "peso": 0.4, "status": "aguardando retirada" },
+        { "id": 14, "descricao": "Sabonete", "peso": 0.3, "status": "aguardando retirada" },
+        { "id": 15, "descricao": "Escova", "peso": 0.5, "status": "aguardando retirada" }
+      ]
+    }
+  ]
+  

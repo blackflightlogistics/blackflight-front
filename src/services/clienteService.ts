@@ -7,26 +7,15 @@ export type Cliente = {
 };
 
 // Dados mockados em memória
-let clientes: Cliente[] = [
-  {
-    id: 1,
-    nome: "Lucas Silva",
-    telefone: "11999999999",
-    email: "lucas@email.com",
-    endereco: "Rua das Flores, 123 - Centro, São Paulo - SP, 01000-000"
-  },
-  {
-    id: 2,
-    nome: "Mariana Souza",
-    telefone: "21988888888",
-    email: "mariana@email.com",
-    endereco: "Avenida Brasil, 456 - Copacabana, Rio de Janeiro - RJ, 22000-000"
-  }
-];
+let clientes: Cliente[] = [];
 
 export const clienteService = {
   listar: async (): Promise<Cliente[]> => {
-    return Promise.resolve(clientes);
+    if (clientes.length === 0) {
+      const response = await fetch("/mocks/clientes.json");
+      clientes = await response.json();
+    }
+    return clientes;
   },
 
   adicionar: async (cliente: Omit<Cliente, "id">): Promise<Cliente> => {

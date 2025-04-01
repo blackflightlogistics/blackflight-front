@@ -13,15 +13,8 @@ export type Remessa = {
   dataEnvio?: Date;
 };
 
-const remessas: Remessa[] = [
-    {
-      id: 1,
-      pais: "Congo",
-      status: "fechada",
-      encomendaIds: [],
-      pesoTotal: 0,
-      dataCriacao: new Date(),
-    }
+let remessas: Remessa[] = [
+    
   ];
 
 const calcularPesoTotal = async (remessa: Remessa): Promise<number> => {
@@ -36,10 +29,13 @@ const calcularPesoTotal = async (remessa: Remessa): Promise<number> => {
 };
 
 export const remessaService = {
-  listar: async (): Promise<Remessa[]> => {
-    return Promise.resolve(remessas);
-  },
-
+    listar: async (): Promise<Remessa[]> => {
+        if (remessas.length === 0) {
+          const response = await fetch("/mocks/remessas.json");
+          remessas = await response.json();
+        }
+        return remessas;
+      },
   adicionar: async (pais: string): Promise<Remessa> => {
     const nova: Remessa = {
       id: Date.now(),
