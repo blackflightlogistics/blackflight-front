@@ -11,6 +11,7 @@ import Configuracoes from "./pages/admin/Configuracoes";
 import NovaEncomenda from "./pages/admin/NovaEncomenda";
 // import ConferenciaPagamento from "./pages/admin/ConferenciaPagamento";
 import EncomendaPagamento from "./pages/admin/EncomendaPagamento";
+import Etiquetas from "./pages/admin/Etiquetas";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/admin/encomendas/nova" element={<NovaEncomenda />} />
         {/* <Route path="/admin/encomendas/:id/pagamento" element={<ConferenciaPagamento />} /> */}
         <Route path="/admin/encomendas/:id/pagamento" element={<EncomendaPagamento />} />
+        <Route path="/admin/encomendas/:id/etiquetas" element={<Etiquetas />} />
 
 
       </Routes>

@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { clienteService, Cliente } from "../../services/clienteService";
-import { encomendaService, Encomenda, FormaPagamento } from "../../services/encomendaService";
+import {
+  encomendaService,
+  Encomenda,
+  FormaPagamento,
+} from "../../services/encomendaService";
 
 function EncomendaPagamento() {
   const { id } = useParams();
@@ -11,7 +15,8 @@ function EncomendaPagamento() {
   const [encomenda, setEncomenda] = useState<Encomenda | null>(null);
   const [remetente, setRemetente] = useState<Cliente | null>(null);
   const [destinatario, setDestinatario] = useState<Cliente | null>(null);
-  const [formaPagamento, setFormaPagamento] = useState<FormaPagamento>("à vista");
+  const [formaPagamento, setFormaPagamento] =
+    useState<FormaPagamento>("à vista");
   const [desconto, setDesconto] = useState("");
   const [mostrarMaisOpcoes, setMostrarMaisOpcoes] = useState(false);
   const [valorPagoInput, setValorPagoInput] = useState("");
@@ -20,12 +25,18 @@ function EncomendaPagamento() {
     if (!id) return;
 
     const carregar = async () => {
-      const encomendaEncontrada = await encomendaService.buscarPorId(Number(id));
+      const encomendaEncontrada = await encomendaService.buscarPorId(
+        Number(id)
+      );
       setEncomenda(encomendaEncontrada);
       setFormaPagamento(encomendaEncontrada.formaPagamento || "à vista");
 
-      const remetente = await clienteService.buscarPorId(encomendaEncontrada.remetenteId);
-      const destinatario = await clienteService.buscarPorId(encomendaEncontrada.destinatarioId);
+      const remetente = await clienteService.buscarPorId(
+        encomendaEncontrada.remetenteId
+      );
+      const destinatario = await clienteService.buscarPorId(
+        encomendaEncontrada.destinatarioId
+      );
 
       setRemetente(remetente);
       setDestinatario(destinatario);
@@ -41,16 +52,10 @@ function EncomendaPagamento() {
   const valorFinal = Math.max(0, valorBase - valorDesconto);
 
   const valorPago =
-    formaPagamento === "à vista"
-      ? valorFinal
-      : parseFloat(valorPagoInput) || 0;
+    formaPagamento === "à vista" ? valorFinal : parseFloat(valorPagoInput) || 0;
 
   const statusPagamento =
-    valorPago >= valorFinal
-      ? "pago"
-      : valorPago > 0
-      ? "parcial"
-      : "pendente";
+    valorPago >= valorFinal ? "pago" : valorPago > 0 ? "parcial" : "pendente";
 
   const salvarPagamento = async () => {
     await encomendaService.atualizar({
@@ -72,13 +77,17 @@ function EncomendaPagamento() {
 
         <section className="space-y-2">
           <h2 className="text-lg font-semibold">Remetente</h2>
-          <p>{remetente.nome} - {remetente.email} - {remetente.telefone}</p>
+          <p>
+            {remetente.nome} - {remetente.email} - {remetente.telefone}
+          </p>
           <p>{remetente.endereco}</p>
         </section>
 
         <section className="space-y-2">
           <h2 className="text-lg font-semibold">Destinatário</h2>
-          <p>{destinatario.nome} - {destinatario.email} - {destinatario.telefone}</p>
+          <p>
+            {destinatario.nome} - {destinatario.email} - {destinatario.telefone}
+          </p>
           <p>{destinatario.endereco}</p>
         </section>
 
@@ -87,9 +96,12 @@ function EncomendaPagamento() {
           <ul className="space-y-1">
             {encomenda.pacotes.map((p) => (
               <li key={p.id}>
-                📦 <strong>{p.descricao}</strong> - {p.peso}kg - 💰 R${p.valorCalculado.toFixed(2)}
+                📦 <strong>{p.descricao}</strong> - {p.peso}kg - 💰 R$
+                {p.valorCalculado.toFixed(2)}
                 {p.valorDeclarado && (
-                  <span className="ml-2 text-sm">🛡️ Seguro: R${p.valorDeclarado.toFixed(2)}</span>
+                  <span className="ml-2 text-sm">
+                    🛡️ Seguro: R${p.valorDeclarado.toFixed(2)}
+                  </span>
                 )}
               </li>
             ))}
@@ -100,7 +112,9 @@ function EncomendaPagamento() {
           <h2 className="text-lg font-semibold">Forma de Pagamento</h2>
           <select
             value={formaPagamento}
-            onChange={(e) => setFormaPagamento(e.target.value as FormaPagamento)}
+            onChange={(e) =>
+              setFormaPagamento(e.target.value as FormaPagamento)
+            }
             className="p-2 border rounded"
           >
             <option value="à vista">À vista</option>
@@ -132,7 +146,9 @@ function EncomendaPagamento() {
 
         {mostrarMaisOpcoes && (
           <div>
-            <label className="block text-sm font-medium mb-1">Desconto (R$)</label>
+            <label className="block text-sm font-medium mb-1">
+              Desconto (R$)
+            </label>
             <input
               type="number"
               className="p-2 border rounded"
@@ -143,7 +159,8 @@ function EncomendaPagamento() {
         )}
 
         <p className="text-lg font-semibold mt-4">
-          Valor final: <span className="text-green-700">R$ {valorFinal.toFixed(2)}</span>
+          Valor final:{" "}
+          <span className="text-green-700">R$ {valorFinal.toFixed(2)}</span>
         </p>
 
         <p className="text-sm text-gray-700">
@@ -157,6 +174,12 @@ function EncomendaPagamento() {
           >
             Confirmar e Salvar
           </button>
+          <Link
+            to={`/admin/encomendas/${encomenda.id}/etiquetas`}
+            className="px-4 py-2 bg-blue-600 text-black rounded hover:bg-blue-700"
+          >
+            Gerar Etiquetas
+          </Link>
           <button
             onClick={() => navigate("/admin/encomendas")}
             className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"

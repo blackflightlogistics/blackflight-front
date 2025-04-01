@@ -5,7 +5,6 @@ import { remessaService } from "../../services/remessaService";
 import { configService } from "../../services/configService";
 import { useNavigate } from "react-router-dom";
 
-
 import {
   encomendaService,
   Pacote,
@@ -291,24 +290,25 @@ function NovaEncomenda() {
             />
           )}
         </div>
-
         {/* Endereço de Entrega */}
-        <div className="grid md:grid-cols-2 gap-4">
-          {["rua", "numero", "bairro", "cidade", "estado", "cep"].map(
-            (campo) => (
-              <input
-                key={campo}
-                name={campo}
-                placeholder={campo[0].toUpperCase() + campo.slice(1)}
-                value={endereco[campo as keyof typeof endereco]}
-                onChange={(e) =>
-                  setEndereco({ ...endereco, [campo]: e.target.value })
-                }
-                className="p-2 border rounded"
-              />
-            )
-          )}
-        </div>
+        {destinatarioId && (
+          <div className="grid md:grid-cols-2 gap-4">
+            {["rua", "numero", "bairro", "cidade", "estado", "cep"].map(
+              (campo) => (
+                <input
+                  key={campo}
+                  name={campo}
+                  placeholder={campo[0].toUpperCase() + campo.slice(1)}
+                  value={endereco[campo as keyof typeof endereco]}
+                  onChange={(e) =>
+                    setEndereco({ ...endereco, [campo]: e.target.value })
+                  }
+                  className="p-2 border rounded"
+                />
+              )
+            )}
+          </div>
+        )}
 
         {/* Pacotes */}
         <div className="space-y-2">
