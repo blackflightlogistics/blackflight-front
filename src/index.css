@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@media print {
+    aside,
+    button,
+    nav {
+      display: none !important;
+    }
+  
+    .print\\:break-before-page {
+      break-before: page;
+    }
+  
+    .print\\:h-auto {
+      height: auto !important;
+    }
+  
+    .print\\:overflow-visible {
+      overflow: visible !important;
+    }
+  }
+  
