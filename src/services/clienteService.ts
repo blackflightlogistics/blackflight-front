@@ -34,4 +34,11 @@ export const clienteService = {
     clientes[index] = { ...clientes[index], ...dados };
     return Promise.resolve(clientes[index]);
   },
+  buscarPorId: async (id: number): Promise<Cliente> => {
+    const clientes = await clienteService.listar();
+    const encontrado = clientes.find((c) => c.id === id);
+    if (!encontrado) throw new Error("Cliente não encontrado");
+    return encontrado;
+  }
+  
 };

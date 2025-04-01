@@ -43,4 +43,10 @@ export const encomendaService = {
     encomendas.push(nova);
     return Promise.resolve(nova);
   },
+  buscarPorId: async (id: number): Promise<Encomenda> => {
+    const encomendas = await encomendaService.listar();
+    const encontrada = encomendas.find((e) => e.id === id);
+    if (!encontrada) throw new Error("Encomenda não encontrada");
+    return encontrada;
+  }
 };
