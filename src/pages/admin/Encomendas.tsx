@@ -37,7 +37,42 @@ function Encomendas() {
               const destinatario =
                 clientes.find((c) => c.id === e.destinatarioId)?.nome || "—";
               return (
-                <li key={e.id} className="p-4 bg-white rounded shadow relative">
+                <li
+                  key={e.id}
+                  className="p-4 bg-white rounded shadow relative border border-gray-200"
+                >
+                  {/* Badges no topo direito */}
+                  <div className="absolute top-2 right-2 flex flex-col items-end space-y-1 text-xs">
+                    {/* Status da encomenda */}
+                    <span
+                      className={`px-2 py-1 rounded font-medium ${
+                        e.status === "entregue"
+                          ? "bg-green-100 text-green-800"
+                          : e.status === "em preparação"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : e.status === "cancelada"
+                          ? "bg-red-100 text-red-800"
+                          : e.status === "aguardando retirada"
+                          ? "bg-orange-100 text-orange-800"
+                          : "bg-blue-100 text-blue-800"
+                      }`}
+                    >
+                      {e.status.toUpperCase()}
+                    </span>
+
+                    {/* Status do pagamento */}
+                    <span
+                      className={`px-2 py-1 rounded font-medium ${
+                        e.statusPagamento === "pago"
+                          ? "bg-green-200 text-green-900"
+                          : e.statusPagamento === "parcial"
+                          ? "bg-yellow-200 text-yellow-900"
+                          : "bg-red-200 text-red-900"
+                      }`}
+                    >
+                      💰 {e.statusPagamento?.toUpperCase() || "NÃO INFORMADO"}
+                    </span>
+                  </div>
                   <p>
                     <strong>De:</strong> {remetente} <strong>Para:</strong>{" "}
                     {destinatario}
@@ -100,13 +135,14 @@ function Encomendas() {
                     ))}
                   </ul>
 
-                  {/* Botão para pagamento */}
-                  <Link
-                    to={`/admin/encomendas/${e.id}/pagamento`}
-                    className="mt-4 inline-block px-4 py-2 bg-blue-600 text-black rounded hover:bg-blue-700 transition"
-                  >
-                    Ir para pagamento
-                  </Link>
+                  {e.statusPagamento !== "pago" && (
+                    <Link
+                      to={`/admin/encomendas/${e.id}/pagamento`}
+                      className="mt-4 inline-block px-4 py-2 bg-blue-600 text-black rounded hover:bg-blue-700 transition"
+                    >
+                      Ir para pagamento
+                    </Link>
+                  )}
                 </li>
               );
             })}
