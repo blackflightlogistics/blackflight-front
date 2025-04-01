@@ -13,6 +13,9 @@
       },
       "status": "em transito",
       "valorTotal": 157.5,
+      "formaPagamento": "à vista",
+      "valorPago": 157.5,
+      "statusPagamento": "pago",
       "pacotes": [
         { "id": 1, "descricao": "Celular", "peso": 0.5, "status": "em transito", "valorCalculado": 37.5 },
         { "id": 2, "descricao": "Tablet", "peso": 0.8, "status": "em transito", "valorCalculado": 60 },
@@ -33,6 +36,9 @@
       },
       "status": "em preparação",
       "valorTotal": 202.5,
+      "formaPagamento": "parcelado",
+      "valorPago": 101.25,
+      "statusPagamento": "parcial",
       "pacotes": [
         { "id": 4, "descricao": "Livros", "peso": 1.5, "status": "em preparação", "valorCalculado": 112.5, "valorDeclarado": 50 },
         { "id": 5, "descricao": "Canetas", "peso": 0.3, "status": "em preparação", "valorCalculado": 22.5 },
@@ -53,6 +59,9 @@
       },
       "status": "entregue",
       "valorTotal": 127.5,
+      "formaPagamento": "na retirada",
+      "valorPago": 0,
+      "statusPagamento": "pendente",
       "pacotes": [
         { "id": 7, "descricao": "Tênis", "peso": 1.2, "status": "entregue", "valorCalculado": 90 },
         { "id": 8, "descricao": "Camiseta", "peso": 0.3, "status": "entregue", "valorCalculado": 22.5 },
@@ -73,6 +82,9 @@
       },
       "status": "cancelada",
       "valorTotal": 262.5,
+      "formaPagamento": "na retirada",
+      "valorPago": 0,
+      "statusPagamento": "pendente",
       "pacotes": [
         { "id": 10, "descricao": "Notebook", "peso": 2.5, "status": "cancelada", "valorCalculado": 187.5, "valorDeclarado": 50 },
         { "id": 11, "descricao": "Mouse", "peso": 0.2, "status": "cancelada", "valorCalculado": 15 },
@@ -93,6 +105,9 @@
       },
       "status": "aguardando retirada",
       "valorTotal": 90,
+      "formaPagamento": "à vista",
+      "valorPago": 90,
+      "statusPagamento": "pago",
       "pacotes": [
         { "id": 13, "descricao": "Creme", "peso": 0.4, "status": "aguardando retirada", "valorCalculado": 30 },
         { "id": 14, "descricao": "Sabonete", "peso": 0.3, "status": "aguardando retirada", "valorCalculado": 22.5 },

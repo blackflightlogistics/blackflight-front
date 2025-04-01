@@ -37,7 +37,7 @@ function Encomendas() {
               const destinatario =
                 clientes.find((c) => c.id === e.destinatarioId)?.nome || "—";
               return (
-                <li key={e.id} className="p-4 bg-white rounded shadow">
+                <li key={e.id} className="p-4 bg-white rounded shadow relative">
                   <p>
                     <strong>De:</strong> {remetente} <strong>Para:</strong>{" "}
                     {destinatario}
@@ -45,6 +45,40 @@ function Encomendas() {
                   <p>
                     <strong>Status:</strong> {e.status}
                   </p>
+                  {e.formaPagamento && (
+                    <p>
+                      <strong>Forma de pagamento:</strong> {e.formaPagamento}
+                    </p>
+                  )}
+                  {e.statusPagamento && (
+                    <>
+                      <p>
+                        <strong>Status de pagamento:</strong>{" "}
+                        <span
+                          className={
+                            e.statusPagamento === "pago"
+                              ? "text-green-600"
+                              : e.statusPagamento === "parcial"
+                              ? "text-yellow-600"
+                              : "text-red-600"
+                          }
+                        >
+                          {e.statusPagamento}
+                        </span>
+                      </p>
+
+                      {e.statusPagamento === "parcial" &&
+                        e.valorPago !== undefined && (
+                          <p>
+                            <strong>Valor já pago:</strong>{" "}
+                            <span className="text-blue-700">
+                              R$ {e.valorPago.toFixed(2)}
+                            </span>
+                          </p>
+                        )}
+                    </>
+                  )}
+
                   <p>
                     <strong>Valor total:</strong>{" "}
                     <span className="text-green-700">
@@ -65,6 +99,14 @@ function Encomendas() {
                       </li>
                     ))}
                   </ul>
+
+                  {/* Botão para pagamento */}
+                  <Link
+                    to={`/admin/encomendas/${e.id}/pagamento`}
+                    className="mt-4 inline-block px-4 py-2 bg-blue-600 text-black rounded hover:bg-blue-700 transition"
+                  >
+                    Ir para pagamento
+                  </Link>
                 </li>
               );
             })}
@@ -76,4 +118,3 @@ function Encomendas() {
 }
 
 export default Encomendas;
-

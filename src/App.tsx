@@ -9,7 +9,8 @@ import Remessas from "./pages/admin/Remessas";
 import RemessaDetalhes from "./pages/admin/RemessaDetalhes";
 import Configuracoes from "./pages/admin/Configuracoes";
 import NovaEncomenda from "./pages/admin/NovaEncomenda";
-import ConferenciaPagamento from "./pages/admin/ConferenciaPagamento";
+// import ConferenciaPagamento from "./pages/admin/ConferenciaPagamento";
+import EncomendaPagamento from "./pages/admin/EncomendaPagamento";
 
 function App() {
   return (
@@ -28,7 +29,9 @@ function App() {
         <Route path="/admin/configuracoes" element={<Configuracoes />} />
         <Route path="/admin/encomendas" element={<Encomendas />} />
         <Route path="/admin/encomendas/nova" element={<NovaEncomenda />} />
-        <Route path="/admin/encomendas/:id/pagamento" element={<ConferenciaPagamento />} />
+        {/* <Route path="/admin/encomendas/:id/pagamento" element={<ConferenciaPagamento />} /> */}
+        <Route path="/admin/encomendas/:id/pagamento" element={<EncomendaPagamento />} />
+
 
       </Routes>
     </Router>
