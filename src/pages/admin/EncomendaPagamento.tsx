@@ -25,18 +25,12 @@ function EncomendaPagamento() {
     if (!id) return;
 
     const carregar = async () => {
-      const encomendaEncontrada = await encomendaService.buscarPorId(
-        Number(id)
-      );
+      const encomendaEncontrada = await encomendaService.buscarPorId(Number(id));
       setEncomenda(encomendaEncontrada);
       setFormaPagamento(encomendaEncontrada.formaPagamento || "à vista");
 
-      const remetente = await clienteService.buscarPorId(
-        encomendaEncontrada.remetenteId
-      );
-      const destinatario = await clienteService.buscarPorId(
-        encomendaEncontrada.destinatarioId
-      );
+      const remetente = await clienteService.buscarPorId(encomendaEncontrada.remetenteId);
+      const destinatario = await clienteService.buscarPorId(encomendaEncontrada.destinatarioId);
 
       setRemetente(remetente);
       setDestinatario(destinatario);
@@ -50,7 +44,6 @@ function EncomendaPagamento() {
   const valorBase = encomenda.valorTotal || 0;
   const valorDesconto = desconto ? parseFloat(desconto) : 0;
   const valorFinal = Math.max(0, valorBase - valorDesconto);
-
   const valorPago =
     formaPagamento === "à vista" ? valorFinal : parseFloat(valorPagoInput) || 0;
 
@@ -70,51 +63,51 @@ function EncomendaPagamento() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 p-6 space-y-6">
+    <div className="h-screen overflow-hidden">
+      {/* Sidebar fixa */}
+      <div className="fixed top-0 left-0 h-screen w-64 bg-white border-r z-10">
+        <Sidebar />
+      </div>
+
+      {/* Conteúdo principal com scroll */}
+      <main className="ml-64 h-full overflow-y-auto p-6 space-y-6">
         <h1 className="text-2xl font-bold">Conferência de Pagamento</h1>
 
-        <section className="space-y-2">
+        {/* Remetente */}
+        <section className="space-y-1">
           <h2 className="text-lg font-semibold">Remetente</h2>
-          <p>
-            {remetente.nome} - {remetente.email} - {remetente.telefone}
-          </p>
-          <p>{remetente.endereco}</p>
+          <p>{remetente.nome} - {remetente.email} - {remetente.telefone}</p>
+          <p className="text-sm text-gray-600">{remetente.endereco}</p>
         </section>
 
-        <section className="space-y-2">
+        {/* Destinatário */}
+        <section className="space-y-1">
           <h2 className="text-lg font-semibold">Destinatário</h2>
-          <p>
-            {destinatario.nome} - {destinatario.email} - {destinatario.telefone}
-          </p>
-          <p>{destinatario.endereco}</p>
+          <p>{destinatario.nome} - {destinatario.email} - {destinatario.telefone}</p>
+          <p className="text-sm text-gray-600">{destinatario.endereco}</p>
         </section>
 
+        {/* Pacotes */}
         <section className="space-y-2">
           <h2 className="text-lg font-semibold">Pacotes</h2>
           <ul className="space-y-1">
             {encomenda.pacotes.map((p) => (
               <li key={p.id}>
-                📦 <strong>{p.descricao}</strong> - {p.peso}kg - 💰 R$
-                {p.valorCalculado.toFixed(2)}
+                📦 <strong>{p.descricao}</strong> - {p.peso}kg - 💰 R${p.valorCalculado.toFixed(2)}
                 {p.valorDeclarado && (
-                  <span className="ml-2 text-sm">
-                    🛡️ Seguro: R${p.valorDeclarado.toFixed(2)}
-                  </span>
+                  <span className="ml-2 text-sm">🛡️ Seguro: R${p.valorDeclarado.toFixed(2)}</span>
                 )}
               </li>
             ))}
           </ul>
         </section>
 
+        {/* Forma de pagamento */}
         <section className="space-y-2">
           <h2 className="text-lg font-semibold">Forma de Pagamento</h2>
           <select
             value={formaPagamento}
-            onChange={(e) =>
-              setFormaPagamento(e.target.value as FormaPagamento)
-            }
+            onChange={(e) => setFormaPagamento(e.target.value as FormaPagamento)}
             className="p-2 border rounded"
           >
             <option value="à vista">À vista</option>
@@ -123,11 +116,10 @@ function EncomendaPagamento() {
           </select>
         </section>
 
+        {/* Valor pago agora */}
         {formaPagamento === "parcelado" && (
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Valor pago agora (R$)
-            </label>
+            <label className="block text-sm font-medium mb-1">Valor pago agora (R$)</label>
             <input
               type="number"
               className="p-2 border rounded"
@@ -137,6 +129,7 @@ function EncomendaPagamento() {
           </div>
         )}
 
+        {/* Desconto */}
         <button
           onClick={() => setMostrarMaisOpcoes(!mostrarMaisOpcoes)}
           className="text-blue-600 hover:underline"
@@ -146,9 +139,7 @@ function EncomendaPagamento() {
 
         {mostrarMaisOpcoes && (
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Desconto (R$)
-            </label>
+            <label className="block text-sm font-medium mb-1">Desconto (R$)</label>
             <input
               type="number"
               className="p-2 border rounded"
@@ -158,15 +149,15 @@ function EncomendaPagamento() {
           </div>
         )}
 
+        {/* Totais */}
         <p className="text-lg font-semibold mt-4">
-          Valor final:{" "}
-          <span className="text-green-700">R$ {valorFinal.toFixed(2)}</span>
+          Valor final: <span className="text-green-700">R$ {valorFinal.toFixed(2)}</span>
         </p>
-
         <p className="text-sm text-gray-700">
           <strong>Status do pagamento:</strong> {statusPagamento}
         </p>
 
+        {/* Ações */}
         <div className="flex gap-4 mt-4">
           <button
             onClick={salvarPagamento}

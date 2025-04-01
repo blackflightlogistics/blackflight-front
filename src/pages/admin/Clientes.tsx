@@ -31,10 +31,15 @@ function Clientes() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 p-6">
-        <div className="flex justify-between items-center mb-6">
+    <div className="h-screen overflow-hidden">
+      {/* Sidebar fixa */}
+      <div className="fixed top-0 left-0 h-screen w-64 bg-white border-r z-10">
+        <Sidebar />
+      </div>
+
+      {/* Conteúdo principal com scroll */}
+      <main className="ml-64 h-full overflow-y-auto p-6 space-y-6">
+        <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Clientes</h1>
           <button
             onClick={() => setFormVisible(!formVisible)}

@@ -9,7 +9,7 @@
     },
     {
       "id": 2002,
-      "pais": "Brasil",
+      "pais": "Congo",
       "status": "fechada",
       "encomendaIds": [1003],
       "pesoTotal": 1.7,
@@ -18,13 +18,30 @@
     },
     {
       "id": 2003,
-      "pais": "Brasil",
+      "pais": "Camarões",
       "status": "enviada",
       "encomendaIds": [1004, 1005],
       "pesoTotal": 4.6,
       "dataCriacao": "2025-03-20T08:00:00.000Z",
       "dataEnvio": "2025-03-28T10:00:00.000Z"
-    }
+    },{
+        "id": 2002,
+        "pais": "França",
+        "status": "fechada",
+        "encomendaIds": [1003],
+        "pesoTotal": 1.7,
+        "dataCriacao": "2025-03-25T09:00:00.000Z",
+        "dataEnvio": null
+      },
+      {
+        "id": 2003,
+        "pais": "Argentina",
+        "status": "enviada",
+        "encomendaIds": [1004, 1005],
+        "pesoTotal": 4.6,
+        "dataCriacao": "2025-03-20T08:00:00.000Z",
+        "dataEnvio": "2025-03-28T10:00:00.000Z"
+      }
   ]
 
   
