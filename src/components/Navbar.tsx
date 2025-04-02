@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FiX } from "react-icons/fi";
-import hamburguerIcon from '../assets/hamburguer-black-button.svg';
-
+import hamburguerIcon from "../assets/hamburguer-black-button.svg";
 
 const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [prevScrollPos, setPrevScrollPos] = useState(window.scrollY);
   const [isOpen, setIsOpen] = useState(false);
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,12 +33,33 @@ const Navbar = () => {
 
         {/* LINKS - DESKTOP */}
         <div className="hidden md:flex items-center gap-4">
-          <Link
-            to="/rastreamento"
-            className="px-4 py-2 border border-gray-500 text-gray-800 rounded hover:bg-gray-100 text-sm font-semibold"
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const codigo = e.currentTarget.codigo.value;
+              const destino = document.getElementById("rastreamento-resultado");
+              if (codigo && destino) {
+                window.scrollTo({
+                  top: destino.offsetTop - 80,
+                  behavior: "smooth",
+                });
+                window.dispatchEvent(
+                  new CustomEvent("buscar-encomenda", { detail: codigo })
+                );
+              }
+            }}
+            className="flex items-center border border-gray-400 rounded"
           >
-            Onde está meu pacote
-          </Link>
+            <input
+              name="codigo"
+              placeholder="Código de rastreio"
+              className="px-3 py-2 text-sm outline-none"
+            />
+            <button type="submit" className="px-3 py-2">
+              🔍
+            </button>
+          </form>
+
           <Link
             to="/admin/login"
             className="px-4 py-2 bg-black text-white rounded hover:opacity-80 text-sm font-semibold"
@@ -54,11 +73,7 @@ const Navbar = () => {
           {isOpen ? (
             <FiX size={28} className="text-black" />
           ) : (
-            <img
-              src={hamburguerIcon}
-              alt="Abrir menu"
-              className="w-7 h-7"
-            />
+            <img src={hamburguerIcon} alt="Abrir menu" className="w-7 h-7" />
           )}
         </button>
       </div>

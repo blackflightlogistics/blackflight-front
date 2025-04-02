@@ -2,27 +2,18 @@
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    colors: {
-      void: "#070D27",
-      voidLight: "#20304C",
-      opulent: "#0250F4",
-      azure: "#0692F2",
-      glitter: "#43BCFF",
-      frost: "#E3E8F4",
-      white: "#ffffff",
-      black: "#000000",
-      transparent: "transparent",
-      'blue': '#1fb6ff',
-      'purple': '#7e5bef',
-      'pink': '#ff49db',
-      'orange': '#ff7849',
-      'green': '#13ce66',
-      'red': '#ff4949',
-      'yellow': '#ffc82c',
-      'gray-dark': '#273444',
-      'gray': '#8492a6',
-      'gray-light': '#d3dce6',
-    },
+    // colors: {
+    //   void: "#070D27",
+    //   voidLight: "#20304C",
+    //   opulent: "#0250F4",
+    //   azure: "#0692F2",
+    //   glitter: "#43BCFF",
+    //   frost: "#E3E8F4",
+    //   white: "#ffffff",
+    //   black: "#000000",
+    //   transparent: "transparent",
+     
+    // },
     fontFamily: {
       primary: ['Syoog', 'sans-serif'], // Ignorar por enquanto
       secondary: ['Exo', 'sans-serif'],
