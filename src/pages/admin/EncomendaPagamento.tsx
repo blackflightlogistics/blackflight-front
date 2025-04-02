@@ -66,7 +66,7 @@ function EncomendaPagamento() {
   return (
     <div className="h-screen overflow-hidden">
       {/* Sidebar fixa */}
-      <div className="fixed top-0 left-0 h-screen w-64 bg-white border-r z-10">
+      <div className="md:fixed md:top-0 md:left-0 md:h-screen md:w-64 md:bg-white border-r z-10">
       <button
         className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
         onClick={() => setSidebarAberta(true)}
@@ -79,7 +79,7 @@ function EncomendaPagamento() {
       </div>
 
       {/* Conteúdo principal com scroll */}
-      <main className="ml-64 h-full overflow-y-auto p-6 space-y-6">
+      <main className="md:ml-64 h-full overflow-y-auto p-6 space-y-6">
         <h1 className="text-2xl font-bold">Conferência de Pagamento</h1>
 
         {/* Remetente */}
