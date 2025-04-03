@@ -39,3 +39,14 @@ export function statusToString(status: EncomendaStatus): string {
       return status;
   }
 }
+
+// src/utils/statusValidators.ts
+
+
+export const isValidEncomendaStatus = (status: string): status is EncomendaStatus => {
+  return ["em preparação", "em transito", "aguardando retirada", "entregue", "cancelada"].includes(status);
+};
+
+export const isValidPacoteStatus = (status: string): status is PacoteStatus => {
+  return ["em preparação", "em transito", "aguardando retirada", "entregue", "cancelada"].includes(status);
+};
