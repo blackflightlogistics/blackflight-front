@@ -5,7 +5,8 @@ import html2canvas from "html2canvas";
 import Sidebar from "../../components/admin/Sidebar";
 import { encomendaService, Encomenda } from "../../services/encomendaService";
 import { clienteService, Cliente } from "../../services/clienteService";
-import { QRCodeSVG } from "qrcode.react";
+import QRCodeComLogo from "../../components/shared/QRCodeComLogo";
+
 
 function EtiquetaEncomenda() {
   const { id } = useParams();
@@ -97,7 +98,7 @@ function EtiquetaEncomenda() {
           <section className="border p-4 rounded bg-white shadow">
             <h2 className="text-lg font-semibold mb-2">Código da Encomenda</h2>
             <div className="flex flex-col items-start gap-2">
-              <QRCodeSVG value={`E-${encomenda.id}`} size={128} />
+              <QRCodeComLogo value={`E-${encomenda.id}`} size={128} />
               <p className="text-sm text-gray-600">ID: E-{encomenda.id}</p>
             </div>
           </section>
@@ -112,7 +113,7 @@ function EtiquetaEncomenda() {
                     key={pacote.id}
                     className="border p-4 rounded bg-gray-50 shadow flex flex-col items-start"
                   >
-                    <QRCodeSVG value={`P-${pacote.id}`} size={128} />
+                    <QRCodeComLogo value={`P-${pacote.id}`} size={128} />
                     <p className="mt-2 text-sm">
                       <strong>{pacote.descricao}</strong> - {pacote.peso}kg
                     </p>
