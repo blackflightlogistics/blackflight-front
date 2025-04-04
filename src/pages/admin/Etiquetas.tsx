@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import JsBarcode from "jsbarcode";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Sidebar from "../../components/admin/Sidebar";
 import { encomendaService, Encomenda } from "../../services/encomendaService";
 import { clienteService, Cliente } from "../../services/clienteService";
+import QRCodeComLogo from "../../components/shared/QRCodeComLogo";
+
 
 function EtiquetaEncomenda() {
   const { id } = useParams();
@@ -15,9 +16,6 @@ function EtiquetaEncomenda() {
   const [destinatario, setDestinatario] = useState<Cliente | null>(null);
   const dataGeracao = new Date().toLocaleString();
   const [sidebarAberta, setSidebarAberta] = useState(false);
-
-  const encomendaRef = useRef<SVGSVGElement | null>(null);
-  const pacoteRefs = useRef<(SVGSVGElement | null)[]>([]);
   const pdfRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -29,35 +27,14 @@ function EtiquetaEncomenda() {
     });
   }, [id]);
 
-  useEffect(() => {
-    if (encomendaRef.current && encomenda) {
-      JsBarcode(encomendaRef.current, `E-${encomenda.id}`, {
-        format: "CODE128",
-        displayValue: true,
-      });
-    }
-
-    encomenda?.pacotes.forEach((pacote, index) => {
-      const el = pacoteRefs.current[index];
-      if (el) {
-        JsBarcode(el, `P-${pacote.id}`, {
-          format: "CODE128",
-          displayValue: true,
-        });
-      }
-    });
-  }, [encomenda]);
-
   const exportarPDF = async () => {
     if (!pdfRef.current) return;
-
     const canvas = await html2canvas(pdfRef.current);
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
     const imgProps = pdf.getImageProperties(imgData);
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save(`etiquetas-encomenda-${id}.pdf`);
   };
@@ -66,6 +43,7 @@ function EtiquetaEncomenda() {
 
   return (
     <div className="flex h-screen">
+      {/* Botão para mobile */}
       <button
         className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
         onClick={() => setSidebarAberta(true)}
@@ -101,6 +79,7 @@ function EtiquetaEncomenda() {
         </div>
 
         <div ref={pdfRef} className="space-y-6">
+          {/* Info do remetente e destinatário */}
           <section className="border p-4 rounded bg-white shadow">
             <h2 className="font-semibold mb-2">Remetente</h2>
             <p>{remetente.nome}</p>
@@ -115,29 +94,26 @@ function EtiquetaEncomenda() {
             </p>
           </section>
 
+          {/* QR da encomenda */}
           <section className="border p-4 rounded bg-white shadow">
             <h2 className="text-lg font-semibold mb-2">Código da Encomenda</h2>
             <div className="flex flex-col items-start gap-2">
-              <svg ref={encomendaRef}></svg>
+              <QRCodeComLogo value={`E-${encomenda.id}`} size={128} />
               <p className="text-sm text-gray-600">ID: E-{encomenda.id}</p>
             </div>
           </section>
 
+          {/* QR dos pacotes */}
           {encomenda.pacotes.length > 0 && (
             <section className="border p-4 rounded bg-white shadow print:break-before-page">
               <h2 className="text-lg font-semibold mb-4">Códigos dos Pacotes</h2>
               <div className="grid md:grid-cols-2 gap-6">
-                {encomenda.pacotes.map((pacote, index) => (
+                {encomenda.pacotes.map((pacote) => (
                   <div
                     key={pacote.id}
-                    className="border p-4 rounded bg-gray-50 shadow"
+                    className="border p-4 rounded bg-gray-50 shadow flex flex-col items-start"
                   >
-                    <svg
-                      ref={(el) => {
-                        pacoteRefs.current[index] = el;
-                      }}
-                    ></svg>
-
+                    <QRCodeComLogo value={`P-${pacote.id}`} size={128} />
                     <p className="mt-2 text-sm">
                       <strong>{pacote.descricao}</strong> - {pacote.peso}kg
                     </p>
