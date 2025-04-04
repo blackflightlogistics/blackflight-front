@@ -1,0 +1,17 @@
+name: Sync with upstream
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"  # Executa diariamente
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: ConcatechOrg/original_repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: upstream
