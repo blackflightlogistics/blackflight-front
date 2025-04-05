@@ -12,6 +12,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          repository: ConcatechOrg/original_repo
-          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ConcatechOrg/black-flight-logistic
+          token: ${{ secrets.GithubAction }}
           path: upstream
