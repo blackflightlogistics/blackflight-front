@@ -13,14 +13,14 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: ConcatechOrg/black-flight-logistic
-          token: "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"
+          token: "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"
           path: upstream
           fetch-depth: 0  
 
       - name: Checkout fork repository
         uses: actions/checkout@v2
         with:
-          token: "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"
+          token: "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"
           path: fork
           fetch-depth: 0 
 
@@ -32,4 +32,4 @@ jobs:
           git merge upstream/main --allow-unrelated-histories
           git push origin main
         env:
-          GITHUB_TOKEN: "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"
+          GITHUB_TOKEN: "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"
