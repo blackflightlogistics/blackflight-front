@@ -16,14 +16,17 @@ function Encomendas() {
 
   return (
     <div className="flex h-screen">
-     <button
+      <button
         className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
         onClick={() => setSidebarAberta(true)}
       >
         ☰ Menu
       </button>
 
-      <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
+      <Sidebar
+        mobileAberta={sidebarAberta}
+        onFechar={() => setSidebarAberta(false)}
+      />
 
       <main className="flex-1 p-6 space-y-6 overflow-y-auto">
         <div className="flex justify-between items-center">
@@ -89,6 +92,17 @@ function Encomendas() {
                   <p>
                     <strong>Status:</strong> {e.status}
                   </p>
+                  {e.expressa && (
+                    <p className="text-red-600 font-medium">
+                      🚀 Encomenda Expressa
+                      {e.dataEnvio && (
+                        <span className="text-sm block text-gray-700">
+                          📅 Enviar até:{" "}
+                          {new Date(e.dataEnvio).toLocaleDateString()}
+                        </span>
+                      )}
+                    </p>
+                  )}
                   {e.formaPagamento && (
                     <p>
                       <strong>Forma de pagamento:</strong> {e.formaPagamento}

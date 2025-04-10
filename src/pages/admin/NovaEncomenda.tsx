@@ -4,6 +4,7 @@ import { clienteService, Cliente } from "../../services/clienteService";
 import { remessaService } from "../../services/remessaService";
 import { configService } from "../../services/configService";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 import {
   encomendaService,
@@ -45,6 +46,10 @@ function converterEnderecoParaCampos(endereco: string): ClienteFormData {
 }
 function NovaEncomenda() {
   const navigate = useNavigate();
+  const [adicionalExpresso, setAdicionalExpresso] = useState<number>(0);
+
+  const [encomendaExpressa, setEncomendaExpressa] = useState(false);
+  const [dataEnvioExpressa, setDataEnvioExpressa] = useState("");
   const [precoPorQuilo, setPrecoPorQuilo] = useState<number>(0);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [sidebarAberta, setSidebarAberta] = useState(false);
@@ -81,6 +86,7 @@ function NovaEncomenda() {
     configService.carregar().then((conf) => {
       setPrecoPorQuilo(conf.precoPorQuilo);
       setTaxaSeguro(conf.taxaPorSeguro);
+      setAdicionalExpresso(conf.adicionalExpresso || 0);
     });
   }, []);
 
@@ -115,10 +121,13 @@ function NovaEncomenda() {
   const salvarEncomenda = async () => {
     if (!remetenteId || !destinatarioId || pacotes.length === 0) return;
 
-    const valorTotal = pacotes.reduce(
+    const valorPacotes = pacotes.reduce(
       (soma, p) => soma + (p.valorTotal || 0),
       0
     );
+    const valorTotal = encomendaExpressa
+      ? valorPacotes + adicionalExpresso
+      : valorPacotes;
 
     const nova = await encomendaService.adicionar({
       remetenteId,
@@ -127,6 +136,8 @@ function NovaEncomenda() {
       status: "em preparação",
       pacotes,
       valorTotal,
+      expressa: encomendaExpressa,
+      dataEnvio: encomendaExpressa ? dataEnvioExpressa : undefined,
     });
 
     // Agrupar em remessa automaticamente
@@ -305,6 +316,32 @@ function NovaEncomenda() {
               }}
               onCancel={() => setEditandoDestinatario(false)}
             />
+          )}
+        </div>
+        {/* Encomenda expressa */}
+        <div className="border rounded p-4 bg-gray-50 space-y-2">
+          <label className="flex items-center gap-2 font-medium">
+            <input
+              type="checkbox"
+              checked={encomendaExpressa}
+              onChange={(e) => setEncomendaExpressa(e.target.checked)}
+            />
+            Encomenda expressa (adicional de R$ {adicionalExpresso.toFixed(2)})
+          </label>
+
+          {encomendaExpressa && (
+            <div className="flex flex-col gap-1">
+              <label className="text-sm text-gray-600">
+                Data de envio desejada:
+              </label>
+              <input
+                type="date"
+                value={dataEnvioExpressa}
+                onChange={(e) => setDataEnvioExpressa(e.target.value)}
+                className="p-2 border rounded w-64"
+                min={dayjs().format("YYYY-MM-DD")}
+              />
+            </div>
           )}
         </div>
         {/* Endereço de Entrega */}

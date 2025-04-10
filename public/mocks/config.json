@@ -1,5 +1,6 @@
 {
-    "precoPorQuilo": 75.0,
-    "taxaPorSeguro" :15.0
-  }
-  
+  "precoPorQuilo": 25.0,
+  "taxaPorSeguro": 3,
+  "adicionalExpresso": 15.0,
+  "valorXAF": 700.0
+}

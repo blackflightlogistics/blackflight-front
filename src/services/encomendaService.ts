@@ -30,6 +30,8 @@ export type Encomenda = {
   formaPagamento?: FormaPagamento;
   valorPago?: number;
   statusPagamento?: "pago" | "parcial" | "pendente";
+  expressa?: boolean;
+  dataEnvio?: string;
 };
 let encomendas: Encomenda[] = [];
 
