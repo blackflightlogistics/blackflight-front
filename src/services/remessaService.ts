@@ -14,8 +14,8 @@ export type Remessa = {
 };
 
 let remessas: Remessa[] = [
-    
-  ];
+
+];
 
 const calcularPesoTotal = async (remessa: Remessa): Promise<number> => {
   const todasEncomendas = await encomendaService.listar();
@@ -29,13 +29,13 @@ const calcularPesoTotal = async (remessa: Remessa): Promise<number> => {
 };
 
 export const remessaService = {
-    listar: async (): Promise<Remessa[]> => {
-        if (remessas.length === 0) {
-          const response = await fetch("/mocks/remessas.json");
-          remessas = await response.json();
-        }
-        return remessas;
-      },
+  listar: async (): Promise<Remessa[]> => {
+    if (remessas.length === 0) {
+      const response = await fetch("/mocks/remessas.json");
+      remessas = await response.json();
+    }
+    return remessas;
+  },
   adicionar: async (pais: string): Promise<Remessa> => {
     const nova: Remessa = {
       id: Date.now(),
@@ -48,7 +48,11 @@ export const remessaService = {
     remessas.push(nova);
     return Promise.resolve(nova);
   },
-
+  adicionarComEncomendas: async (remessa: Remessa): Promise<Remessa> => {
+    remessa.id = Date.now();
+    remessas.push(remessa);
+    return Promise.resolve(remessa);
+  },
   adicionarEncomenda: async (idRemessa: number, idEncomenda: number): Promise<void> => {
     const remessa = remessas.find(r => r.id === idRemessa);
     if (!remessa) return;

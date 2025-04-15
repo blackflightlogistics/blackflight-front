@@ -75,6 +75,12 @@ const Remessas = () => {
       <main className="md:ml-64 h-full overflow-y-auto p-6 space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Remessas</h1>
+          <Link
+            to="/admin/remessas/nova"
+            className="px-4 py-2 bg-black text-white rounded hover:opacity-80"
+          >
+            Nova Remessa
+          </Link>
           <div className="flex space-x-4">
             <select
               className="border p-2 rounded"

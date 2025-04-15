@@ -13,6 +13,7 @@ import NovaEncomenda from "./pages/admin/NovaEncomenda";
 import EncomendaPagamento from "./pages/admin/EncomendaPagamento";
 import Etiquetas from "./pages/admin/Etiquetas";
 import Leitor from "./pages/admin/Leitor";
+import RemessaNova from "./pages/admin/RemessaNova";
 
 function App() {
   return (
@@ -35,6 +36,8 @@ function App() {
         <Route path="/admin/encomendas/:id/pagamento" element={<EncomendaPagamento />} />
         <Route path="/admin/encomendas/:id/etiquetas" element={<Etiquetas />} />
         <Route path="/admin/leitor" element={<Leitor />} />
+        <Route path="/admin/remessas/nova" element={<RemessaNova />} />
+
 
 
       </Routes>
