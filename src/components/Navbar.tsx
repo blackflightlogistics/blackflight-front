@@ -21,19 +21,23 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`pt-4  fixed top-0 left-0 w-full transition-transform duration-300 ${
+      className={`pt-4  pb-4  left-0 w-full transition-transform duration-300 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       } bg-white border-b border-gray-200 z-50`}
     >
       <div className="flex  justify-between items-center max-w-7xl mx-auto px-4 md:px-8">
         {/* LOGO */}
         <Link to="/" className="text-xl font-bold text-black">
-          Black Flight Logistic
+          <img src="image.png" alt="logo" className="w-[3rem] h-[2rem]" />
         </Link>
 
         {/* LINKS - DESKTOP */}
         <div className="hidden md:flex items-center gap-4">
-          <form
+          <p className="font-secondary text-sm font-medium text-orange">Início</p>
+          <p className="font-secondary text-sm font-medium">Rastreio</p>
+          <p className="font-secondary text-sm font-medium">Quem Somos</p>
+          <p className="font-secondary text-sm font-medium">Nossos Serviços</p>
+          {/* <form
             onSubmit={(e) => {
               e.preventDefault();
               const codigo = e.currentTarget.codigo.value;
@@ -58,16 +62,16 @@ const Navbar = () => {
             <button type="submit" className="px-3 py-2">
               🔍
             </button>
-          </form>
+          </form> */}
 
-          <Link
+          
+        </div>
+        <Link
             to="/admin/login"
-            className="px-4 py-2 bg-black text-white rounded hover:opacity-80 text-sm font-semibold"
+            className="px-4 py-2 bg-black text-white text-sm font-normal font-secondary rounded-md hover:opacity-80 "
           >
             Área Administrativa
           </Link>
-        </div>
-
         {/* MENU MOBILE */}
         <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">
           {isOpen ? (

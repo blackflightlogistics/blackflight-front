@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Encomenda } from "../services/encomendaService";
+import Header from "../components/home/Header";
 
 function Home() {
   const [codigo, setCodigo] = useState("");
@@ -33,6 +34,7 @@ function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Header />
       <Navbar />
       <main className="flex-1">
         {/* Hero */}

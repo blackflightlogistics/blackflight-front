@@ -2,51 +2,34 @@
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    // colors: {
-    //   void: "#070D27",
-    //   voidLight: "#20304C",
-    //   opulent: "#0250F4",
-    //   azure: "#0692F2",
-    //   glitter: "#43BCFF",
-    //   frost: "#E3E8F4",
-    //   white: "#ffffff",
-    //   black: "#000000",
-    //   transparent: "transparent",
-     
-    // },
-    fontFamily: {
-      primary: ['Syoog', 'sans-serif'], // Ignorar por enquanto
-      secondary: ['Exo', 'sans-serif'],
-    },
     extend: {
-      spacing: {
-        '8xl': '96rem',
-        '9xl': '128rem',
+      colors: {
+        white: "#ffffff",
+        orange: "#FF8C00",
+        black: "#0B0601",
+        transparent: "transparent",
       },
-      
-      borderRadius: {
-        '4xl': '2rem',
+      fontFamily: {
+        roboto: ['Roboto', 'sans-serif'],
+        montserrat: ['Montserrat', 'sans-serif'],
+        montserratAlt: ['"Montserrat Alternates"', 'sans-serif'],
+
+        // Alias
+        primary: ['"Montserrat Alternates"', 'sans-serif'],
+        secondary: ['Montserrat', 'sans-serif'],
+        base: ['Roboto', 'sans-serif'],
       },
       fontSize: {
-        // Reutilizáveis
-        'text-xs': ['0.875rem', { lineHeight: '1.5', letterSpacing: '0' }], // 14px
-        'text-sm': ['1rem', { lineHeight: '1.5', letterSpacing: '0' }],     // 16px
-        'text-md': ['1.125rem', { lineHeight: '1.5', letterSpacing: '0' }], // 18px
-        'text-lg': ['1.25rem', { lineHeight: '1.5', letterSpacing: '0' }],  // 20px
-        'text-xl': ['1.5rem', { lineHeight: '1.4', letterSpacing: '0' }],   // 24px
-        'text-xl-semibold': ['1.75rem', { lineHeight: '1.2', letterSpacing: '0' }],
-        'text-2xl': ['2rem', { lineHeight: '1.3', letterSpacing: '0' }],    // 32px
-        'text-3xl': ['2.5rem', { lineHeight: '1.2', letterSpacing: '0' }],  // 40px
-        'text-4xl': ['3rem', { lineHeight: '1.2', letterSpacing: '0' }],    // 48px
-        'text-5xl': ['3.5rem', { lineHeight: '1.2', letterSpacing: '0' }],  // 56px
-
-        // Específicos
-        'button-fakecard': ['1.222rem', { lineHeight: '1.5', letterSpacing: '0' }], // 19.55px
-        'button-fakecard-mono': ['1.222rem', { lineHeight: '1.5', letterSpacing: '0' }],
-        'title-name-person': ['2rem', { lineHeight: '1.3', letterSpacing: '0' }],
+        base: ['14px', '20px'],
+        sm: ['16px', '24px'],
+        md: ['18px', '28px'],
+        lg: ['20px', '28px'],
+        xl: ['24px', '32px'],
+        '2xl': ['30px', '36px'],
+        '3xl': ['48px', '48px'],
       },
       fontWeight: {
-        regular: '400',
+        normal: '400',
         medium: '500',
         semibold: '600',
         bold: '700',
