@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiX } from "react-icons/fi";
-import hamburguerIcon from "../assets/hamburguer-black-button.svg";
 
 const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -77,7 +76,7 @@ const Navbar = () => {
           {isOpen ? (
             <FiX size={28} className="text-black" />
           ) : (
-            <img src={hamburguerIcon} alt="Abrir menu" className="w-7 h-7" />
+            <img src="hamburguer-black-button.svg"alt="Abrir menu" className="w-7 h-7" />
           )}
         </button>
       </div>
