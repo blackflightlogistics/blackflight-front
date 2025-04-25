@@ -20,13 +20,13 @@ module.exports = {
         base: ['Roboto', 'sans-serif'],
       },
       fontSize: {
-        base: ['14px', '20px'],
-        sm: ['16px', '24px'],
-        md: ['18px', '28px'],
-        lg: ['20px', '28px'],
-        xl: ['24px', '32px'],
-        '2xl': ['30px', '36px'],
-        '3xl': ['48px', '48px'],
+        base: ['0.875rem', '1.25rem'],    // 14px / 20px
+        sm: ['1rem', '1.5rem'],           // 16px / 24px
+        md: ['1.125rem', '1.75rem'],      // 18px / 28px
+        lg: ['1.25rem', '1.75rem'],       // 20px / 28px
+        xl: ['1.5rem', '2rem'],           // 24px / 32px
+        '2xl': ['1.875rem', '2.25rem'],   // 30px / 36px
+        '3xl': ['3rem', '3rem'],          // 48px / 48px
       },
       fontWeight: {
         normal: '400',

@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Encomenda } from "../services/encomendaService";
 import Header from "../components/home/Header";
+import Hero from "../components/home/Hero";
+import TrackingField from "../components/home/TrackingField";
+import ServicesSection from "../components/home/ServicesSection";
 
 function Home() {
   const [codigo, setCodigo] = useState("");
@@ -36,38 +39,57 @@ function Home() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <Navbar />
+      <div className="relative">
+        <Hero />
+        <div className="absolute w-full top-full -translate-y-1/3">
+          <TrackingField />
+        </div>
+      </div>
+
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-blue-600 text-white py-20 text-center px-6">
-          <h1 className="text-4xl font-bold mb-4">
-            Soluções Inteligentes para Envio de Pacotes
+        <section className="bg-black text-white py-20 text-center px-6 pt-48">
+          <h1 className="font-primary text-2xl font-bold text-center pb-8">
+            Quem somos?
           </h1>
-          <p className="text-lg">
-            A forma mais simples, rápida e segura de enviar e rastrear
-            encomendas.
+          <p className="font-secondary text-lg font-normal text-center max-w-2xl mx-auto">
+            Somos uma empresa especializada em logística e transporte de
+            pacotes, oferecendo soluções personalizadas para facilitar o envio e
+            a gestão de encomendas para pessoas e empresas.
           </p>
         </section>
 
         {/* Sobre nós */}
-        <section className="py-16 px-6 max-w-4xl mx-auto">
-          <h2 className="text-2xl font-semibold mb-4 text-center">Quem Somos</h2>
+        {/* <section className="py-16 px-6 max-w-4xl mx-auto">
+          <h2 className="text-2xl font-semibold mb-4 text-center">
+            Quem Somos
+          </h2>
           <p className="text-gray-700 text-center">
-            Somos uma empresa especializada em logística e transporte de pacotes,
-            oferecendo soluções personalizadas para facilitar o envio e a gestão
-            de encomendas para pessoas e empresas.
+            Somos uma empresa especializada em logística e transporte de
+            pacotes, oferecendo soluções personalizadas para facilitar o envio e
+            a gestão de encomendas para pessoas e empresas.
           </p>
-        </section>
+        </section> */}
 
         {/* Serviços */}
         <section className="bg-gray-100 py-16 px-6">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl font-semibold mb-6 text-center">Nossos Serviços</h2>
-            <div className="grid md:grid-cols-3 gap-6">
+            <h2 className="font-primary text-2xl font-bold text-center pb-4">
+              Nossos Serviços
+            </h2>
+            <p className="font-secondary text-sm font-normal text-center max-w-2xl mx-auto mb-8">
+                  Oferecemos soluções completas em logística para atender às
+                  necessidades específicas do seu negócio, com qualidade e
+                  eficiência.
+                </p>
+                <ServicesSection />
+            {/* <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-white p-6 rounded shadow text-center">
                 <h3 className="text-lg font-bold mb-2">Envio de Pacotes</h3>
-                <p className="text-gray-600">
-                  Envie seus pacotes com agilidade, segurança e rastreamento em
-                  tempo real.
+                <p className="font-secondary text-sm font-normal text-center">
+                  Oferecemos soluções completas em logística para atender às
+                  necessidades específicas do seu negócio, com qualidade e
+                  eficiência.
                 </p>
               </div>
               <div className="bg-white p-6 rounded shadow text-center">
@@ -78,12 +100,14 @@ function Home() {
                 </p>
               </div>
               <div className="bg-white p-6 rounded shadow text-center">
-                <h3 className="text-lg font-bold mb-2">Atendimento Personalizado</h3>
+                <h3 className="text-lg font-bold mb-2">
+                  Atendimento Personalizado
+                </h3>
                 <p className="text-gray-600">
                   Suporte ágil e dedicado para você ou sua empresa.
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
         </section>
 
@@ -95,12 +119,15 @@ function Home() {
         >
           {encomenda ? (
             <div className="bg-white shadow p-4 rounded border">
-              <h3 className="text-lg font-bold mb-2">Resultado do Rastreamento</h3>
+              <h3 className="text-lg font-bold mb-2">
+                Resultado do Rastreamento
+              </h3>
               <p>
                 <strong>Status:</strong> {encomenda.status}
               </p>
               <p>
-                <strong>Valor total:</strong> R$ {encomenda.valorTotal?.toFixed(2)}
+                <strong>Valor total:</strong> R${" "}
+                {encomenda.valorTotal?.toFixed(2)}
               </p>
               <ul className="mt-2 space-y-1 text-sm">
                 {encomenda.pacotes.map((p) => (
@@ -112,14 +139,17 @@ function Home() {
             </div>
           ) : codigo ? (
             <p className="text-gray-500 text-center">
-              Nenhuma encomenda encontrada para o código: <strong>{codigo}</strong>
+              Nenhuma encomenda encontrada para o código:{" "}
+              <strong>{codigo}</strong>
             </p>
           ) : null}
         </section>
 
         {/* Chamada para ação */}
         <section className="py-16 px-6 text-center">
-          <h2 className="text-2xl font-bold mb-4">Fale com a gente agora mesmo!</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            Fale com a gente agora mesmo!
+          </h2>
           <p className="text-gray-700 mb-6">
             Tire dúvidas ou solicite um orçamento personalizado.
           </p>
@@ -136,7 +166,8 @@ function Home() {
 
       {/* Rodapé */}
       <footer className="bg-gray-200 py-4 text-center text-sm text-gray-600">
-        &copy; {new Date().getFullYear()} Sistema de Envio de Pacotes. Todos os direitos reservados.
+        &copy; {new Date().getFullYear()} Sistema de Envio de Pacotes. Todos os
+        direitos reservados.
       </footer>
     </div>
   );
