@@ -6,8 +6,10 @@ module.exports = {
       colors: {
         white: "#ffffff",
         orange: "#FF8C00",
+        orangeBorder: "#FFE8D0",
         black: "#0B0601",
         transparent: "transparent",
+        lightGrey:"#D1D5DB"
       },
       fontFamily: {
         roboto: ['Roboto', 'sans-serif'],

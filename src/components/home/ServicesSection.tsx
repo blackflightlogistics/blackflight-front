@@ -3,7 +3,14 @@ import ServiceCard from "./ServiceCard";
 
 const ServicesSection = () => {
   return (
-    <section className=" py-4 px-6">
+    <section className=" py-16 px-6">
+      <h2 className="font-primary text-2xl font-bold text-center pb-4">
+        Nossos Serviços
+      </h2>
+      <p className="font-secondary text-sm font-normal text-center max-w-2xl mx-auto mb-8">
+        Oferecemos soluções completas em logística para atender às necessidades
+        específicas do seu negócio, com qualidade e eficiência.
+      </p>
       <div className="max-w-6xl mx-auto grid gap-6 md:grid-cols-3">
         <ServiceCard
           icon={<FaTruck />}
