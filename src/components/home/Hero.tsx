@@ -16,10 +16,20 @@ const Hero = () => {
               <p className="font-primary text-3xl font-bold">
                 Soluções inteligentes para envio de pacotes
               </p>
-              <p className="font-secondary text-lg font-normal">
+              <p className="font-secondary text-lg font-normal mb-4">
                 A forma mais simples, rápida e segura de enviar e rastrear
                 encomendas.
               </p>
+              <button
+                type="button"
+                onClick={() => {
+                  window.open("https://wa.me/5511999999999", "_blank");
+                }}
+                    
+                    className="bg-orange font-secondary text-sm text-white font-semibold px-4 py-2 rounded-md hover:opacity-90 transition"
+                  >
+                    Contato via Whatsapp
+                  </button>
             </div>
           </div>
         </div>

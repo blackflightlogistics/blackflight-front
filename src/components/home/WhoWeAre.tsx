@@ -1,7 +1,7 @@
 
 const WhoWeAre = () => {
     return (
-        <section className="bg-black text-white py-20 text-center px-6 pt-48">
+        <section className="bg-black text-white py-20 text-center px-6 pt-24">
         <h1 className="font-primary text-2xl font-bold text-center pb-8">
           Quem somos?
         </h1>
