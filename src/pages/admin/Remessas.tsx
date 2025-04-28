@@ -57,7 +57,7 @@ const Remessas = () => {
   return (
     <div className="h-screen overflow-hidden">
       {/* Sidebar fixa */}
-      <div className="md:fixed md:top-0 md:left-0 md:h-screen md:w-64 bg-white border-r z-10">
+      <div className="md:fixed md:top-0 md:left-0 md:h-screen md:w-64 bg-black text-white z-10">
         <button
           className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
           onClick={() => setSidebarAberta(true)}
@@ -65,25 +65,24 @@ const Remessas = () => {
           ☰ Menu
         </button>
 
-        <Sidebar
-          mobileAberta={sidebarAberta}
-          onFechar={() => setSidebarAberta(false)}
-        />
+        <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
       </div>
 
-      {/* Conteúdo principal com scroll */}
-      <main className="md:ml-64 h-full overflow-y-auto p-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Remessas</h1>
-          <Link
-            to="/admin/remessas/nova"
-            className="px-4 py-2 bg-black text-white rounded hover:opacity-80"
-          >
-            Nova Remessa
-          </Link>
-          <div className="flex space-x-4">
+      {/* Conteúdo principal */}
+      <main className="md:ml-64 h-full overflow-y-auto bg-[#fcf8f5] p-6 space-y-6">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+          <h1 className="text-2xl font-bold font-primary text-black">Remessas</h1>
+
+          <div className="flex flex-wrap gap-4">
+            <Link
+              to="/admin/remessas/nova"
+              className="px-4 py-2 bg-orange text-white font-semibold rounded hover:opacity-90 transition text-sm"
+            >
+              Nova Remessa
+            </Link>
+
             <select
-              className="border p-2 rounded"
+              className="border border-gray-300 bg-white p-2 rounded text-sm"
               value={statusFiltro}
               onChange={(e) => setStatusFiltro(e.target.value)}
             >
@@ -92,10 +91,11 @@ const Remessas = () => {
               <option value="fechada">Fechadas</option>
               <option value="enviada">Enviadas</option>
             </select>
+
             <input
               type="text"
-              placeholder="Buscar por país..."
-              className="border p-2 rounded"
+              placeholder="Buscar país..."
+              className="border border-gray-300 bg-white p-2 rounded text-sm"
               value={buscaPais}
               onChange={(e) => setBuscaPais(e.target.value)}
             />
@@ -103,73 +103,71 @@ const Remessas = () => {
         </div>
 
         {remessasFiltradas.length === 0 ? (
-          <p className="text-gray-600">
-            Nenhuma remessa encontrada com os filtros.
-          </p>
+          <p className="text-gray-600">Nenhuma remessa encontrada com os filtros.</p>
         ) : (
           <ul className="space-y-4">
             {remessasFiltradas.map((r) => {
-              const encomendasDaRemessa = encomendas.filter((e) =>
-                r.encomendaIds.includes(e.id)
-              );
+              const encomendasDaRemessa = encomendas.filter((e) => r.encomendaIds.includes(e.id));
               return (
-                <li key={r.id} className="p-4 bg-white rounded shadow border">
-                  <div className="flex justify-between items-center mb-2">
-                    <div>
-                      <Link
-                        to={`/admin/remessas/${r.id}`}
-                        className="text-lg font-semibold hover:underline"
-                      >
-                        {renderStatusIcone(r.status)} País: {r.pais}
-                      </Link>
-                      <p className="text-sm text-gray-600">
-                        Status: <strong>{r.status}</strong>
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Criada em:{" "}
-                        {new Date(r.dataCriacao).toLocaleDateString()}
+                <li key={r.id} className="bg-white p-6 rounded-xl border border-orange">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      {renderStatusIcone(r.status)}
+                      <p className="text-lg font-semibold text-black">
+                        {r.pais}
                       </p>
                     </div>
+                    <p className="text-sm text-gray-600">
+                      Status: <strong>{r.status}</strong>
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Criada em: {new Date(r.dataCriacao).toLocaleDateString()}
+                    </p>
+                  </div>
+              
+                  <div className="flex flex-col items-end gap-2">
                     <div className="text-right">
-                      <p className="text-sm">Peso Atual:</p>
+                      <p className="text-xs text-gray-500">Peso Atual</p>
                       <p
                         className={`text-xl font-bold ${
-                          r.pesoTotal >= 23
-                            ? "text-green-600"
-                            : "text-yellow-600"
+                          r.pesoTotal >= 23 ? "text-green-600" : "text-yellow-600"
                         }`}
                       >
                         {r.pesoTotal.toFixed(2)} kg
                       </p>
                     </div>
+              
+                    <Link
+                      to={`/admin/remessas/${r.id}`}
+                      className="px-4 py-1 bg-orange text-white font-semibold rounded hover:opacity-90 transition text-sm mt-1"
+                    >
+                      Ver detalhes
+                    </Link>
                   </div>
+                </div>
+              
 
                   {encomendasDaRemessa.length > 0 && (
-                    <div className="mt-3">
-                      <p className="text-sm font-semibold mb-1">Encomendas:</p>
-                      <ul className="space-y-1 text-sm">
-                        {encomendasDaRemessa.map((e) => (
-                          <li
-                            key={e.id}
-                            className="pl-2 border-l-4 border-blue-300"
-                          >
-                            <span className="font-medium">#{e.id}</span> –{" "}
-                            {e.pacotes.length} pacote(s),{" "}
-                            {e.pacotes
-                              .reduce((soma, p) => soma + p.peso, 0)
-                              .toFixed(2)}{" "}
-                            kg
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="mt-3 space-y-2">
+                      {encomendasDaRemessa.map((e) => (
+                        <div
+                          key={e.id}
+                          className="flex items-center justify-between text-sm border border-orange rounded p-2"
+                        >
+                          <div>
+                            <span className="font-bold">#{e.id}</span> – {e.pacotes.length} pacote(s)
+                          </div>
+                          <div className="text-gray-600">{e.pacotes.reduce((s, p) => s + p.peso, 0).toFixed(2)} kg</div>
+                        </div>
+                      ))}
                     </div>
                   )}
 
-                  {/* Botões de ação */}
                   {r.status === "aberta" && r.pesoTotal >= 23 && (
                     <button
                       onClick={() => fecharRemessa(r.id)}
-                      className="mt-4 px-4 py-2 bg-green-600 text-black rounded hover:bg-green-700"
+                      className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition text-sm"
                     >
                       Fechar Remessa
                     </button>
@@ -178,7 +176,7 @@ const Remessas = () => {
                   {r.status === "fechada" && (
                     <button
                       onClick={() => enviarRemessa(r.id)}
-                      className="mt-4 px-4 py-2 bg-blue-600 text-black rounded hover:bg-blue-700"
+                      className="px-4 py-2 bg-orange text-white font-semibold rounded hover:opacity-90 transition text-sm mt-4"
                     >
                       Enviar Remessa
                     </button>
