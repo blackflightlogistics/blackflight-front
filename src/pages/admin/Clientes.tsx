@@ -6,6 +6,7 @@ import ClienteForm, { ClienteFormData } from "../../components/admin/ClienteForm
 function Clientes() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [formVisible, setFormVisible] = useState(false);
+  const [sidebarAberta, setSidebarAberta] = useState(false);
 
   useEffect(() => {
     carregarClientes();
@@ -29,32 +30,22 @@ function Clientes() {
     setFormVisible(false);
     carregarClientes();
   };
-  const [sidebarAberta, setSidebarAberta] = useState(false);
 
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="flex min-h-screen">
       {/* Sidebar fixa */}
-      <div className="fixed top-0 left-0 h-screen md:w-64 bg-white border-r z-10">
-      <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
-        onClick={() => setSidebarAberta(true)}
-      >
-        ☰ Menu
-      </button>
-
       <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
 
-      </div>
+      {/* Conteúdo principal */}
+      <div className="flex-1 flex flex-col h-screen overflow-y-auto bg-[#fcf7f1] p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold font-primary">Clientes</h1>
 
-      {/* Conteúdo principal com scroll */}
-      <main className="md:ml-64 h-full overflow-y-auto p-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className=" text-2xl font-bold">Clientes</h1>
           <button
             onClick={() => setFormVisible(!formVisible)}
-            className="px-4 py-2 bg-black text-white rounded hover:opacity-80"
+            className="bg-orange text-white px-4 py-2 rounded hover:opacity-90 font-secondary text-sm"
           >
-            {formVisible ? "Cancelar" : "Novo Cliente"}
+            {formVisible ? "Cancelar" : "Novo cliente"}
           </button>
         </div>
 
@@ -68,17 +59,20 @@ function Clientes() {
         {clientes.length === 0 ? (
           <p className="text-gray-600">Nenhum cliente cadastrado.</p>
         ) : (
-          <ul className="space-y-2">
+          <ul className="space-y-4">
             {clientes.map((cliente) => (
-              <li key={cliente.id} className="p-4 bg-white rounded shadow">
-                <p><strong>{cliente.nome}</strong></p>
-                <p>{cliente.email} | {cliente.telefone}</p>
-                <p>{cliente.endereco}</p>
+              <li
+                key={cliente.id}
+                className="border border-orange bg-white p-4 rounded-md text-sm font-secondary"
+              >
+                <p><span className="font-bold">Nome:</span> {cliente.nome}  <span className="font-bold ml-4">Contato:</span> {cliente.telefone}</p>
+                <p className="mt-2"><span className="font-bold">E-mail:</span> {cliente.email}</p>
+                <p className="mt-2"><span className="font-bold">Endereço:</span> {cliente.endereco}</p>
               </li>
             ))}
           </ul>
         )}
-      </main>
+      </div>
     </div>
   );
 }
