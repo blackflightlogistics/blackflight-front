@@ -13,6 +13,8 @@ function Leitor() {
   const [modalAberto, setModalAberto] = useState(false);
   const [modalTipo, setModalTipo] = useState<"encomenda" | "pacote" | null>(null);
   const [modalCodigo, setModalCodigo] = useState<string>("");
+  const [sidebarAberta, setSidebarAberta] = useState(false);
+
 
 //   const navigate = useNavigate();
 
@@ -104,8 +106,20 @@ function Leitor() {
 
   return (
     <div className="flex h-screen">
-      <Sidebar />
-      <main className="flex-1 p-6 space-y-6 overflow-y-auto">
+     <div className=" md:top-0 md:left-0 md:h-screen md:w-64 bg-black text-white z-10">
+        <button
+          className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
+          onClick={() => setSidebarAberta(true)}
+        >
+          ☰ Menu
+        </button>
+
+        <Sidebar
+          mobileAberta={sidebarAberta}
+          onFechar={() => setSidebarAberta(false)}
+        />
+      </div>
+      <main className="flex-1 p-4 space-y-6 pt-16  overflow-y-auto">
         <h1 className="text-2xl font-bold">Leitor de Códigos</h1>
 
         {cameraAtiva ? (

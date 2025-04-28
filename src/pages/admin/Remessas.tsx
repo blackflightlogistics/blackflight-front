@@ -73,7 +73,7 @@ const Remessas = () => {
       </div>
 
       {/* Conteúdo principal */}
-      <main className="md:ml-64 h-full overflow-y-auto bg-[#fcf8f5] p-6 space-y-6">
+      <main className="md:ml-64 h-full overflow-y-auto bg-[#fcf8f5] pt-16 p-4 space-y-6">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <h1 className="text-2xl font-bold font-primary text-black">
             Remessas

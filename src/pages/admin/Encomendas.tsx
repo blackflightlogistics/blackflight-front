@@ -31,8 +31,8 @@ function Encomendas() {
       </div>
 
       {/* Conteúdo principal */}
-      <main className="flex-1 ml-0 md:ml-64 overflow-y-auto p-6 space-y-6 bg-[#FAF7F2]">
-        <div className="flex justify-between items-center">
+      <main className="flex-1 ml-0 md:ml-64 overflow-y-auto p-6 pt-16 space-y-6 bg-[#FAF7F2]">
+        <div className="flex flex-col md:flex-row justify-between md:items-center items-start ">
           <h1 className="text-2xl font-bold font-primary">Encomendas</h1>
           <Link
             to="/admin/encomendas/nova"

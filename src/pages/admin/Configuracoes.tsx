@@ -40,7 +40,7 @@ const Configuracoes = () => {
 
       <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
 
-      <main className="flex-1 p-6 space-y-6 max-w-xl">
+      <main className="flex-1 p-4 pt-16  space-y-6 max-w-xl">
         <h1 className="text-2xl font-bold">Configurações do Sistema</h1>
 
         <div className="space-y-2">
