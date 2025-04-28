@@ -12,6 +12,10 @@ function Home() {
   const [codigoDigitado, setCodigoDigitado] = useState("");
   const [resultado, setResultado] = useState(false);
   const resultadoRef = useRef<HTMLDivElement>(null);
+//   const [loading, setLoading] = useState(false);
+// const [error, setError] = useState<string | null>(null);
+const loading = false;
+const error: string | null = null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +45,8 @@ function Home() {
           resultado={resultado}
           limpar={limpar}
           resultadoRef={resultadoRef}
+          loading={loading}
+          error={error}
         />
       </div>
 

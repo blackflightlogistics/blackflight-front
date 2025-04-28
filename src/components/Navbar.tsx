@@ -27,7 +27,7 @@ const Navbar = () => {
       <div className="flex  justify-between items-center max-w-7xl mx-auto px-4 md:px-8">
         {/* LOGO */}
         <Link to="/" className="text-xl font-bold text-black">
-          <img src="image.png" alt="logo" className="w-[3rem] h-[2rem]" />
+          <img src="/image.png" alt="logo" className="w-[3rem] h-[2rem]" />
         </Link>
 
         {/* LINKS - DESKTOP */}

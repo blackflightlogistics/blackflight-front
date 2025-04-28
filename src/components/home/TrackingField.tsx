@@ -8,6 +8,8 @@ interface TrackingFieldProps {
   resultado: boolean;
   limpar: () => void;
   resultadoRef: RefObject<HTMLDivElement | null>;
+  loading: boolean;
+  error: string | null; 
 }
 
 const TrackingField = ({
@@ -17,6 +19,8 @@ const TrackingField = ({
   resultado,
   limpar,
   resultadoRef,
+  loading,
+  error,
 }: TrackingFieldProps) => {
   return (
     <div
@@ -31,14 +35,9 @@ const TrackingField = ({
         <div className="absolute -top-2 left-0 w-full h-4 bg-orange rounded-t-xl z-0" />
 
         <div className="relative bg-white rounded-xl shadow-md p-6 md:p-8 text-center z-10">
-          <h2 className="text-xl font-bold text-black mb-4">
-            Rastreie sua Encomenda
-          </h2>
+          <h2 className="text-xl font-bold text-black mb-4">Rastreie sua Encomenda</h2>
 
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col sm:flex-row items-stretch gap-4 mb-6"
-          >
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch gap-4 mb-6">
             <div className="flex items-center flex-1 border border-gray-300 rounded-md px-4 py-2 bg-gray-50">
               <FiSearch className="text-gray-400 mr-2" />
               <input
@@ -54,9 +53,14 @@ const TrackingField = ({
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="bg-orange text-white font-semibold px-4 py-2 rounded-md hover:opacity-90 transition"
+                className="bg-orange text-white font-semibold px-4 py-2 rounded-md hover:opacity-90 transition flex items-center justify-center"
+                disabled={loading}
               >
-                Rastrear
+                {loading ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  "Rastrear"
+                )}
               </button>
               {resultado && (
                 <button
@@ -70,11 +74,19 @@ const TrackingField = ({
             </div>
           </form>
 
+          {/* Erro */}
+          {error && (
+            <p className="text-sm text-red-600 mb-4">{error}</p>
+          )}
+
+          {/* Resultado */}
           {resultado && (
             <div ref={resultadoRef} className="text-left space-y-4 mt-6">
               <div className="flex items-center justify-between text-sm">
                 <div>
-                  <span className="font-semibold">Código de Rastreamento:</span>{" "}
+                  <span className="font-semibold">
+                    Código de Rastreamento:
+                  </span>{" "}
                   <span className="text-orange font-bold">BR123456789</span>
                   <br />
                   <span className="text-gray-600">
@@ -105,7 +117,9 @@ const TrackingField = ({
                     </div>
 
                     <div className="text-sm">
-                      <p className="font-bold">Em trânsito para o destino</p>
+                      <p className="font-bold">
+                        Em trânsito para o destino
+                      </p>
                       <p className="text-gray-600">São Paulo, SP</p>
                     </div>
                   </div>
