@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate,  } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { clienteService, Cliente } from "../../services/clienteService";
 import {
@@ -22,11 +22,13 @@ function EncomendaPagamento() {
   const [valorPagoInput, setValorPagoInput] = useState("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [pacotesSelecionados, setPacotesSelecionados] = useState<number[]>([]);
+
   const togglePacote = (id: number) => {
     setPacotesSelecionados((prev) =>
       prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     );
   };
+
   const toggleTodos = () => {
     if (!encomenda) return;
 
@@ -43,18 +45,13 @@ function EncomendaPagamento() {
     if (!id) return;
 
     const carregar = async () => {
-      const encomendaEncontrada = await encomendaService.buscarPorId(
-        Number(id)
-      );
+      const encomendaEncontrada = await encomendaService.buscarPorId(Number(id));
       setEncomenda(encomendaEncontrada);
       setFormaPagamento(encomendaEncontrada.formaPagamento || "à vista");
       setPacotesSelecionados(encomendaEncontrada.pacotes.map((p) => p.id));
-      const remetente = await clienteService.buscarPorId(
-        encomendaEncontrada.remetenteId
-      );
-      const destinatario = await clienteService.buscarPorId(
-        encomendaEncontrada.destinatarioId
-      );
+
+      const remetente = await clienteService.buscarPorId(encomendaEncontrada.remetenteId);
+      const destinatario = await clienteService.buscarPorId(encomendaEncontrada.destinatarioId);
 
       setRemetente(remetente);
       setDestinatario(destinatario);
@@ -63,7 +60,9 @@ function EncomendaPagamento() {
     carregar();
   }, [id]);
 
-  if (!encomenda || !remetente || !destinatario) return <p>Carregando...</p>;
+  if (!encomenda || !remetente || !destinatario) {
+    return <p className="p-6">Carregando detalhes...</p>;
+  }
 
   const valorBase = encomenda.valorTotal || 0;
   const valorDesconto = desconto ? parseFloat(desconto) : 0;
@@ -89,23 +88,19 @@ function EncomendaPagamento() {
   return (
     <div className="h-screen overflow-hidden">
       {/* Sidebar fixa */}
-      <div className="md:fixed md:top-0 md:left-0 md:h-screen md:w-64 md:bg-white border-r z-10">
+      <div className="md:fixed md:top-0 md:left-0 md:h-screen md:w-64 bg-black text-white border-r z-10">
         <button
           className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
           onClick={() => setSidebarAberta(true)}
         >
           ☰ Menu
         </button>
-
-        <Sidebar
-          mobileAberta={sidebarAberta}
-          onFechar={() => setSidebarAberta(false)}
-        />
+        <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
       </div>
 
-      {/* Conteúdo principal com scroll */}
-      <main className="md:ml-64 h-full overflow-y-auto p-6 space-y-6">
-        <h1 className="text-2xl font-bold">Conferência de Pagamento</h1>
+      {/* Conteúdo principal */}
+      <main className="md:ml-64 h-full overflow-y-auto bg-[#fcf8f5] p-6 space-y-6">
+        <h1 className="text-2xl font-bold font-primary text-black">Conferência de Pagamento</h1>
 
         {/* Remetente */}
         <section className="space-y-1">
@@ -151,7 +146,7 @@ function EncomendaPagamento() {
                   <div>
                     📦 <strong>{p.descricao}</strong> - {p.peso}kg
                     <br />
-                    💰 R$ {p.valorCalculado?.toFixed(2)}{" "}
+                    💰 R$ {p.valorCalculado?.toFixed(2)}
                     {p.valorDeclarado && (
                       <span className="ml-2 text-sm">
                         🛡️ Seguro: R$ {p.valorDeclarado.toFixed(2)}
@@ -164,15 +159,13 @@ function EncomendaPagamento() {
           </ul>
         </section>
 
-        {/* Forma de pagamento */}
+        {/* Forma de Pagamento */}
         <section className="space-y-2">
           <h2 className="text-lg font-semibold">Forma de Pagamento</h2>
           <select
             value={formaPagamento}
-            onChange={(e) =>
-              setFormaPagamento(e.target.value as FormaPagamento)
-            }
-            className="p-2 border rounded"
+            onChange={(e) => setFormaPagamento(e.target.value as FormaPagamento)}
+            className="p-2 border rounded w-full md:w-1/2"
           >
             <option value="à vista">À vista</option>
             <option value="parcelado">Parcelado</option>
@@ -180,7 +173,6 @@ function EncomendaPagamento() {
           </select>
         </section>
 
-        {/* Valor pago agora */}
         {formaPagamento === "parcelado" && (
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -188,63 +180,68 @@ function EncomendaPagamento() {
             </label>
             <input
               type="number"
-              className="p-2 border rounded"
+              className="p-2 border rounded w-full md:w-1/2"
               value={valorPagoInput}
               onChange={(e) => setValorPagoInput(e.target.value)}
             />
           </div>
         )}
 
-        {/* Desconto */}
-        <button
-          onClick={() => setMostrarMaisOpcoes(!mostrarMaisOpcoes)}
-          className="text-blue-600 hover:underline"
-        >
-          {mostrarMaisOpcoes ? "Ocultar opções" : "Mais opções"}
-        </button>
-
-        {mostrarMaisOpcoes && (
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Desconto (R$)
-            </label>
-            <input
-              type="number"
-              className="p-2 border rounded"
-              value={desconto}
-              onChange={(e) => setDesconto(e.target.value)}
-            />
-          </div>
-        )}
+        {/* Mais opções */}
+        <div>
+          <button
+            onClick={() => setMostrarMaisOpcoes(!mostrarMaisOpcoes)}
+            className="text-blue-600 hover:underline text-sm"
+          >
+            {mostrarMaisOpcoes ? "Ocultar opções" : "Mais opções"}
+          </button>
+          {mostrarMaisOpcoes && (
+            <div className="mt-2">
+              <label className="block text-sm font-medium mb-1">
+                Desconto (R$)
+              </label>
+              <input
+                type="number"
+                className="p-2 border rounded w-full md:w-1/2"
+                value={desconto}
+                onChange={(e) => setDesconto(e.target.value)}
+              />
+            </div>
+          )}
+        </div>
 
         {/* Totais */}
-        <p className="text-lg font-semibold mt-4">
-          Valor final:{" "}
-          <span className="text-green-700">R$ {valorFinal.toFixed(2)}</span>
-        </p>
-        <p className="text-sm text-gray-700">
-          <strong>Status do pagamento:</strong> {statusPagamento}
-        </p>
+        <div className="mt-4 space-y-1">
+          <p className="text-lg font-semibold">
+            Valor final:{" "}
+            <span className="text-green-700">R$ {valorFinal.toFixed(2)}</span>
+          </p>
+          <p className="text-sm text-gray-700">
+            <strong>Status do pagamento:</strong> {statusPagamento}
+          </p>
+        </div>
 
         {/* Ações */}
-        <div className="flex gap-4 mt-4">
+        <div className="flex flex-col md:flex-row gap-4 mt-6">
           <button
             onClick={salvarPagamento}
-            className="px-4 py-2 bg-black text-white rounded hover:opacity-80"
+            className="px-6 py-3 bg-black text-white rounded hover:opacity-80 text-sm font-secondary"
           >
             Confirmar e Salvar
           </button>
           <button
-            onClick={() => navigate(`/admin/encomendas/${encomenda.id}/etiquetas`, {
-              state: { pacotesSelecionados },
-            })}
-            className="px-4 py-2 bg-blue-600 text-black rounded hover:bg-blue-700"
+            onClick={() =>
+              navigate(`/admin/encomendas/${encomenda.id}/etiquetas`, {
+                state: { pacotesSelecionados },
+              })
+            }
+            className="px-6 py-3 bg-orange text-white rounded hover:opacity-90 text-sm font-secondary"
           >
             Gerar Etiquetas
           </button>
           <button
             onClick={() => navigate("/admin/encomendas")}
-            className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
+            className="px-6 py-3 bg-gray-300 text-black rounded hover:opacity-80 text-sm font-secondary"
           >
             Voltar para Encomendas
           </button>
