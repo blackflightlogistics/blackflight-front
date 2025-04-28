@@ -15,27 +15,27 @@ function Encomendas() {
   }, []);
 
   return (
-    <div className="flex h-screen">
-      <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
-        onClick={() => setSidebarAberta(true)}
-      >
-        ☰ Menu
-      </button>
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar fixa */}
+      <div className="fixed top-0 left-0 h-screen md:w-64 bg-black text-white border-r z-10">
+        <button
+          className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
+          onClick={() => setSidebarAberta(true)}
+        >
+          ☰ Menu
+        </button>
+        <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
+      </div>
 
-      <Sidebar
-        mobileAberta={sidebarAberta}
-        onFechar={() => setSidebarAberta(false)}
-      />
-
-      <main className="flex-1 p-6 space-y-6 overflow-y-auto">
+      {/* Conteúdo principal */}
+      <main className="flex-1 ml-0 md:ml-64 overflow-y-auto p-6 space-y-6 bg-[#FAF7F2]">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Encomendas</h1>
+          <h1 className="text-2xl font-bold font-primary">Encomendas</h1>
           <Link
             to="/admin/encomendas/nova"
-            className="px-4 py-2 bg-black text-white rounded hover:opacity-80"
+            className="px-4 py-2 bg-orange text-white rounded-md font-secondary text-sm hover:opacity-90 transition"
           >
-            Nova Encomenda
+            Nova encomenda
           </Link>
         </div>
 
@@ -44,127 +44,49 @@ function Encomendas() {
         ) : (
           <ul className="space-y-4">
             {encomendas.map((e) => {
-              const remetente =
-                clientes.find((c) => c.id === e.remetenteId)?.nome || "—";
-              const destinatario =
-                clientes.find((c) => c.id === e.destinatarioId)?.nome || "—";
+              const remetente = clientes.find((c) => c.id === e.remetenteId)?.nome || "—";
+              const destinatario = clientes.find((c) => c.id === e.destinatarioId)?.nome || "—";
+
               return (
                 <li
                   key={e.id}
-                  className="p-4 bg-white rounded shadow relative border border-gray-200"
+                  className="p-6 bg-[#FDFBF9] rounded-md border border-orange space-y-2 relative"
                 >
-                  {/* Badges no topo direito */}
-                  <div className="absolute top-2 right-2 flex flex-col items-end space-y-1 text-xs">
-                    {/* Status da encomenda */}
-                    <span
-                      className={`px-2 py-1 rounded font-medium ${
-                        e.status === "entregue"
-                          ? "bg-green-100 text-green-800"
-                          : e.status === "em preparação"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : e.status === "cancelada"
-                          ? "bg-red-100 text-red-800"
-                          : e.status === "aguardando retirada"
-                          ? "bg-orange-100 text-orange-800"
-                          : "bg-blue-100 text-blue-800"
-                      }`}
-                    >
-                      {e.status.toUpperCase()}
-                    </span>
+                  <div className="flex flex-col md:flex-row md:justify-between">
+                    <div className="space-y-1 text-sm text-black">
+                      <p><strong>De:</strong> {remetente}</p>
+                      <p><strong>Para:</strong> {destinatario}</p>
+                      <p><strong>Endereço:</strong> {e.enderecoEntrega.rua}, {e.enderecoEntrega.numero} - {e.enderecoEntrega.bairro}, {e.enderecoEntrega.cidade} - {e.enderecoEntrega.estado}, {e.enderecoEntrega.cep}</p>
+                    </div>
 
-                    {/* Status do pagamento */}
-                    <span
-                      className={`px-2 py-1 rounded font-medium ${
-                        e.statusPagamento === "pago"
-                          ? "bg-green-200 text-green-900"
-                          : e.statusPagamento === "parcial"
-                          ? "bg-yellow-200 text-yellow-900"
-                          : "bg-red-200 text-red-900"
-                      }`}
-                    >
-                      💰 {e.statusPagamento?.toUpperCase() || "NÃO INFORMADO"}
-                    </span>
+                    <div className="text-right text-sm mt-4 md:mt-0">
+                      <p><strong>Valor total:</strong> <span className="text-black font-bold">R$ {e.valorTotal?.toFixed(2)}</span></p>
+                      <p><strong>Status de pagamento:</strong> <span className="text-black">{e.statusPagamento}</span></p>
+                      <p><strong>Forma de pagamento:</strong> {e.formaPagamento}</p>
+                    </div>
                   </div>
-                  <p>
-                    <strong>De:</strong> {remetente} <strong>Para:</strong>{" "}
-                    {destinatario}
-                  </p>
-                  <p>
-                    <strong>Status:</strong> {e.status}
-                  </p>
-                  {e.expressa && (
-                    <p className="text-red-600 font-medium">
-                      🚀 Encomenda Expressa
-                      {e.dataEnvio && (
-                        <span className="text-sm block text-gray-700">
-                          📅 Enviar até:{" "}
-                          {new Date(e.dataEnvio).toLocaleDateString()}
-                        </span>
-                      )}
-                    </p>
-                  )}
-                  {e.formaPagamento && (
-                    <p>
-                      <strong>Forma de pagamento:</strong> {e.formaPagamento}
-                    </p>
-                  )}
-                  {e.statusPagamento && (
-                    <>
-                      <p>
-                        <strong>Status de pagamento:</strong>{" "}
-                        <span
-                          className={
-                            e.statusPagamento === "pago"
-                              ? "text-green-600"
-                              : e.statusPagamento === "parcial"
-                              ? "text-yellow-600"
-                              : "text-red-600"
-                          }
-                        >
-                          {e.statusPagamento}
-                        </span>
-                      </p>
 
-                      {e.statusPagamento === "parcial" &&
-                        e.valorPago !== undefined && (
-                          <p>
-                            <strong>Valor já pago:</strong>{" "}
-                            <span className="text-blue-700">
-                              R$ {e.valorPago.toFixed(2)}
-                            </span>
-                          </p>
-                        )}
-                    </>
-                  )}
-
-                  <p>
-                    <strong>Valor total:</strong>{" "}
-                    <span className="text-green-700">
-                      R$ {e.valorTotal?.toFixed(2) || "0,00"}
-                    </span>
-                  </p>
-                  <p>
-                    <strong>Endereço:</strong> {e.enderecoEntrega.rua},{" "}
-                    {e.enderecoEntrega.numero} - {e.enderecoEntrega.bairro},{" "}
-                    {e.enderecoEntrega.cidade} - {e.enderecoEntrega.estado},{" "}
-                    {e.enderecoEntrega.cep}
-                  </p>
-                  <ul className="mt-2 space-y-1">
+                  <div className="mt-4 space-y-2">
                     {e.pacotes.map((p) => (
-                      <li key={p.id} className="text-sm">
-                        📦 <strong>{p.descricao}</strong> - {p.peso}kg (
-                        {p.status})
-                      </li>
+                      <div key={p.id} className="flex items-center gap-2 text-sm">
+                        <div className="w-3 h-3 bg-orange rounded-full" />
+                        <p className="font-bold">{p.descricao} - {p.peso}kg</p>
+                        <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">
+                          {p.status}
+                        </span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
 
                   {e.statusPagamento !== "pago" && (
-                    <Link
-                      to={`/admin/encomendas/${e.id}/pagamento`}
-                      className="mt-4 inline-block px-4 py-2 bg-blue-600 text-black rounded hover:bg-blue-700 transition"
-                    >
-                      Ir para pagamento
-                    </Link>
+                    <div className="mt-4">
+                      <Link
+                        to={`/admin/encomendas/${e.id}/pagamento`}
+                        className="inline-block bg-orange text-white font-secondary text-sm px-4 py-2 rounded-md hover:opacity-90 transition"
+                      >
+                        Ir para pagamento
+                      </Link>
+                    </div>
                   )}
                 </li>
               );
