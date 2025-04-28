@@ -24,7 +24,10 @@ function Encomendas() {
         >
           ☰ Menu
         </button>
-        <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
+        <Sidebar
+          mobileAberta={sidebarAberta}
+          onFechar={() => setSidebarAberta(false)}
+        />
       </div>
 
       {/* Conteúdo principal */}
@@ -44,8 +47,10 @@ function Encomendas() {
         ) : (
           <ul className="space-y-4">
             {encomendas.map((e) => {
-              const remetente = clientes.find((c) => c.id === e.remetenteId)?.nome || "—";
-              const destinatario = clientes.find((c) => c.id === e.destinatarioId)?.nome || "—";
+              const remetente =
+                clientes.find((c) => c.id === e.remetenteId)?.nome || "—";
+              const destinatario =
+                clientes.find((c) => c.id === e.destinatarioId)?.nome || "—";
 
               return (
                 <li
@@ -54,24 +59,50 @@ function Encomendas() {
                 >
                   <div className="flex flex-col md:flex-row md:justify-between">
                     <div className="space-y-1 text-sm text-black">
-                      <p><strong>De:</strong> {remetente}</p>
-                      <p><strong>Para:</strong> {destinatario}</p>
-                      <p><strong>Endereço:</strong> {e.enderecoEntrega.rua}, {e.enderecoEntrega.numero} - {e.enderecoEntrega.bairro}, {e.enderecoEntrega.cidade} - {e.enderecoEntrega.estado}, {e.enderecoEntrega.cep}</p>
+                      <p>
+                        <strong>De:</strong> {remetente}
+                      </p>
+                      <p>
+                        <strong>Para:</strong> {destinatario}
+                      </p>
+                      <p>
+                        <strong>Endereço:</strong> {e.enderecoEntrega.rua},{" "}
+                        {e.enderecoEntrega.numero} - {e.enderecoEntrega.bairro},{" "}
+                        {e.enderecoEntrega.cidade} - {e.enderecoEntrega.estado},{" "}
+                        {e.enderecoEntrega.cep}
+                      </p>
                     </div>
 
                     <div className="text-right text-sm mt-4 md:mt-0">
-                      <p><strong>Valor total:</strong> <span className="text-black font-bold">R$ {e.valorTotal?.toFixed(2)}</span></p>
-                      <p><strong>Status de pagamento:</strong> <span className="text-black">{e.statusPagamento}</span></p>
-                      <p><strong>Forma de pagamento:</strong> {e.formaPagamento}</p>
+                      <p>
+                        <strong>Valor total:</strong>{" "}
+                        <span className="text-black font-bold">
+                          R$ {e.valorTotal?.toFixed(2)}
+                        </span>
+                      </p>
+                      <p>
+                        <strong>Status de pagamento:</strong>{" "}
+                        <span className="text-black">{e.statusPagamento}</span>
+                      </p>
+                      <p>
+                        <strong>Forma de pagamento:</strong> {e.formaPagamento}
+                      </p>
                     </div>
                   </div>
 
                   <div className="mt-4 space-y-2">
                     {e.pacotes.map((p) => (
-                      <div key={p.id} className="flex items-center gap-2 text-sm">
-                        <div className="w-3 h-3 bg-orange rounded-full" />
-                        <p className="font-bold">{p.descricao} - {p.peso}kg</p>
-                        <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">
+                      <div
+                        key={p.id}
+                        className="flex items-center justify-between gap-4 text-sm max-w-sm"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-orange rounded-full" />
+                          <p className="font-bold">
+                            {p.descricao} - {p.peso}kg
+                          </p>
+                        </div>
+                        <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full whitespace-nowrap">
                           {p.status}
                         </span>
                       </div>
