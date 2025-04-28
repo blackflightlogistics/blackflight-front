@@ -9,38 +9,117 @@ import Remessas from "./pages/admin/Remessas";
 import RemessaDetalhes from "./pages/admin/RemessaDetalhes";
 import Configuracoes from "./pages/admin/Configuracoes";
 import NovaEncomenda from "./pages/admin/NovaEncomenda";
-// import ConferenciaPagamento from "./pages/admin/ConferenciaPagamento";
 import EncomendaPagamento from "./pages/admin/EncomendaPagamento";
 import Etiquetas from "./pages/admin/Etiquetas";
 import Leitor from "./pages/admin/Leitor";
 import RemessaNova from "./pages/admin/RemessaNova";
 
+import { AuthProvider } from "./context/AuthContext";
+import PrivateRoute from "./components/PrivateRoute";
+
 function App() {
   return (
     <Router>
-      <Routes>
-        {/* Site público */}
-        <Route path="/" element={<Home />} />
-        <Route path="/rastreamento" element={<Rastreamento />} />
+      <AuthProvider>
+        <Routes>
+          {/* Site público */}
+          <Route path="/" element={<Home />} />
+          <Route path="/rastreamento" element={<Rastreamento />} />
 
-        {/* Admin */}
-        <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin" element={<Dashboard />} />
-        <Route path="/admin/clientes" element={<Clientes />} />
-        <Route path="/admin/remessas" element={<Remessas />} />
-        <Route path="/admin/remessas/:id" element={<RemessaDetalhes />} />
-        <Route path="/admin/configuracoes" element={<Configuracoes />} />
-        <Route path="/admin/encomendas" element={<Encomendas />} />
-        <Route path="/admin/encomendas/nova" element={<NovaEncomenda />} />
-        {/* <Route path="/admin/encomendas/:id/pagamento" element={<ConferenciaPagamento />} /> */}
-        <Route path="/admin/encomendas/:id/pagamento" element={<EncomendaPagamento />} />
-        <Route path="/admin/encomendas/:id/etiquetas" element={<Etiquetas />} />
-        <Route path="/admin/leitor" element={<Leitor />} />
-        <Route path="/admin/remessas/nova" element={<RemessaNova />} />
+          {/* Login público */}
+          <Route path="/admin/login" element={<Login />} />
 
-
-
-      </Routes>
+          {/* Área privada /admin */}
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/clientes"
+            element={
+              <PrivateRoute>
+                <Clientes />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/remessas"
+            element={
+              <PrivateRoute>
+                <Remessas />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/remessas/:id"
+            element={
+              <PrivateRoute>
+                <RemessaDetalhes />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/remessas/nova"
+            element={
+              <PrivateRoute>
+                <RemessaNova />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/configuracoes"
+            element={
+              <PrivateRoute>
+                <Configuracoes />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/encomendas"
+            element={
+              <PrivateRoute>
+                <Encomendas />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/encomendas/nova"
+            element={
+              <PrivateRoute>
+                <NovaEncomenda />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/encomendas/:id/pagamento"
+            element={
+              <PrivateRoute>
+                <EncomendaPagamento />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/encomendas/:id/etiquetas"
+            element={
+              <PrivateRoute>
+                <Etiquetas />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/leitor"
+            element={
+              <PrivateRoute>
+                <Leitor />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </AuthProvider>
     </Router>
   );
 }
