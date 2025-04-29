@@ -2,33 +2,33 @@
 import { createContext, useState, useEffect, useContext, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Definições de tipos
 interface AuthContextData {
   token: string | null;
   isAuthenticated: boolean;
+  loading: boolean;
   login: (token: string) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-// Provider do contexto
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
-
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const tokenSalvo = localStorage.getItem("token");
     if (tokenSalvo) {
       setToken(tokenSalvo);
     }
+    setLoading(false); // Agora no mesmo useEffect
   }, []);
 
   const login = (token: string) => {
     localStorage.setItem("token", token);
     setToken(token);
-    navigate("/admin"); // Redireciona para o painel após login
+    navigate("/admin"); 
   };
 
   const logout = () => {
@@ -38,20 +38,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        token,
-        isAuthenticated: !!token,
-        login,
-        logout,
-      }}
-    >
+    <AuthContext.Provider value={{ token, isAuthenticated: !!token, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Hook para usar o contexto facilmente
 export const useAuth = () => {
   return useContext(AuthContext);
 };
