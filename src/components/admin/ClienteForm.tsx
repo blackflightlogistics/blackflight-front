@@ -1,15 +1,16 @@
 import { useState } from "react";
 
 export type ClienteFormData = {
-  nome: string;
-  telefone: string;
+  name: string;
+  phoneNumber: string;
   email: string;
-  rua: string;
-  numero: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  cep: string;
+  street: string;
+  number: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
 };
 
 type Props = {
@@ -20,15 +21,16 @@ type Props = {
 
 const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
   const [form, setForm] = useState<ClienteFormData>({
-    nome: initialData?.nome || "",
-    telefone: initialData?.telefone || "",
+    name: initialData?.name || "",
+    phoneNumber: initialData?.phoneNumber || "",
     email: initialData?.email || "",
-    rua: initialData?.rua || "",
-    numero: initialData?.numero || "",
-    bairro: initialData?.bairro || "",
-    cidade: initialData?.cidade || "",
-    estado: initialData?.estado || "",
-    cep: initialData?.cep || "",
+    street: initialData?.street || "",
+    number: initialData?.number || "",
+    neighborhood: initialData?.neighborhood || "",
+    city: initialData?.city || "",
+    state: initialData?.state || "",
+    zipCode: initialData?.zipCode || "",
+    country: initialData?.country || "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,39 +41,37 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
     e.preventDefault();
     onSubmit(form);
     setForm({
-      nome: "",
-      telefone: "",
+      name: "",
+      phoneNumber: "",
       email: "",
-      rua: "",
-      numero: "",
-      bairro: "",
-      cidade: "",
-      estado: "",
-      cep: "",
+      street: "",
+      number: "",
+      neighborhood: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      country: "Brazil",
     });
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-6 rounded-xl shadow space-y-6 mb-8"
-    >
+    <form onSubmit={handleSubmit} className="bg-gray-100 p-4 rounded space-y-4 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input
-          name="nome"
+          name="name"
           placeholder="Nome"
           required
-          value={form.nome}
+          value={form.name}
           onChange={handleChange}
-          className="p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange bg-gray-50"
+          className="p-2 border rounded"
         />
         <input
-          name="telefone"
+          name="phoneNumber"
           placeholder="Telefone"
           required
-          value={form.telefone}
+          value={form.phoneNumber}
           onChange={handleChange}
-          className="p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange bg-gray-50"
+          className="p-2 border rounded"
         />
         <input
           name="email"
@@ -80,74 +80,81 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
           type="email"
           value={form.email}
           onChange={handleChange}
-          className="p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange bg-gray-50"
+          className="p-2 border rounded"
         />
         <input
-          name="rua"
+          name="street"
           placeholder="Rua"
           required
-          value={form.rua}
+          value={form.street}
           onChange={handleChange}
-          className="p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange bg-gray-50"
+          className="p-2 border rounded"
         />
         <input
-          name="numero"
+          name="number"
           placeholder="Número"
           required
-          value={form.numero}
+          value={form.number}
           onChange={handleChange}
-          className="p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange bg-gray-50"
+          className="p-2 border rounded"
         />
         <input
-          name="bairro"
+          name="neighborhood"
           placeholder="Bairro"
           required
-          value={form.bairro}
+          value={form.neighborhood}
           onChange={handleChange}
-          className="p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange bg-gray-50"
+          className="p-2 border rounded"
         />
         <input
-          name="cidade"
+          name="city"
           placeholder="Cidade"
           required
-          value={form.cidade}
+          value={form.city}
           onChange={handleChange}
-          className="p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange bg-gray-50"
+          className="p-2 border rounded"
         />
         <input
-          name="estado"
+          name="state"
           placeholder="Estado"
           required
-          value={form.estado}
+          value={form.state}
           onChange={handleChange}
-          className="p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange bg-gray-50"
+          className="p-2 border rounded"
         />
         <input
-          name="cep"
+          name="zipCode"
           placeholder="CEP"
           required
-          value={form.cep}
+          value={form.zipCode}
           onChange={handleChange}
-          className="p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange bg-gray-50"
+          className="p-2 border rounded"
+        />
+        <input
+          name="country"
+          placeholder="País"
+          required
+          value={form.country}
+          onChange={handleChange}
+          className="p-2 border rounded"
         />
       </div>
-
-      <div className="flex gap-4 justify-end">
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          className="bg-orange text-white px-4 py-2 rounded hover:opacity-90 font-secondary text-sm"
+        >
+          Salvar Cliente
+        </button>
         {onCancel && (
           <button
             type="button"
             onClick={onCancel}
-            className="px-5 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-100 transition"
+            className="px-4 py-2 border rounded text-sm"
           >
             Cancelar
           </button>
         )}
-        <button
-          type="submit"
-          className="bg-orange text-white px-6 py-2 rounded-md font-semibold text-sm hover:opacity-90 transition"
-        >
-          Salvar
-        </button>
       </div>
     </form>
   );

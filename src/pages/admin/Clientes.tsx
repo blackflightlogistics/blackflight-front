@@ -18,13 +18,21 @@ function Clientes() {
   };
 
   const handleSalvarCliente = async (form: ClienteFormData) => {
-    const endereco = `${form.rua}, ${form.numero} - ${form.bairro}, ${form.cidade} - ${form.estado}, ${form.cep}`;
+    const endereco = {
+      street: form.street,
+      number: form.number,
+      neighborhood: form.neighborhood,
+      city: form.city,
+      state: form.state,
+      zipCode: form.zipCode,
+      country: form.country, // ou ajustar conforme for
+    };
 
     await clienteService.adicionar({
-      nome: form.nome,
-      telefone: form.telefone,
+      name: form.name,
+      phoneNumber: form.phoneNumber,
       email: form.email,
-      endereco,
+      address: endereco,
     });
 
     setFormVisible(false);
@@ -33,21 +41,18 @@ function Clientes() {
 
   return (
     <div className="flex min-h-screen">
-      <div className=" md:top-0 md:left-0 md:h-screen md:w-64 bg-black text-white border-r z-10">
+      <div className="md:top-0 md:left-0 md:h-screen md:w-64 bg-black text-white border-r z-10">
         <button
           className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
           onClick={() => setSidebarAberta(true)}
         >
           ☰ Menu
         </button>
-        <Sidebar
-          mobileAberta={sidebarAberta}
-          onFechar={() => setSidebarAberta(false)}
-        />
+        <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
       </div>
 
       {/* Conteúdo principal */}
-      <div className="flex-1 flex flex-col h-screen overflow-y-auto bg-[#fcf7f1] pt-16  p-6">
+      <div className="flex-1 flex flex-col h-screen overflow-y-auto bg-[#fcf7f1] pt-16 p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold font-primary">Clientes</h1>
 
@@ -75,9 +80,16 @@ function Clientes() {
                 key={cliente.id}
                 className="border border-orange bg-white p-4 rounded-md text-sm font-secondary"
               >
-                <p><span className="font-bold">Nome:</span> {cliente.nome}  <span className="font-bold ml-4">Contato:</span> {cliente.telefone}</p>
-                <p className="mt-2"><span className="font-bold">E-mail:</span> {cliente.email}</p>
-                <p className="mt-2"><span className="font-bold">Endereço:</span> {cliente.endereco}</p>
+                <p>
+                  <span className="font-bold">Nome:</span> {cliente.name}
+                  <span className="font-bold ml-4">Contato:</span> {cliente.phoneNumber}
+                </p>
+                <p className="mt-2">
+                  <span className="font-bold">E-mail:</span> {cliente.email}
+                </p>
+                <p className="mt-2">
+                  <span className="font-bold">Endereço:</span> {cliente.address.street}, {cliente.address.number} - {cliente.address.neighborhood}, {cliente.address.city} - {cliente.address.state}, {cliente.address.zipCode}
+                </p>
               </li>
             ))}
           </ul>
