@@ -76,7 +76,7 @@ const Navbar = () => {
           {isOpen ? (
             <FiX size={28} className="text-black" />
           ) : (
-            <img src="hamburguer-black-button.svg"alt="Abrir menu" className="w-7 h-7" />
+            <img src="/hamburguer-black-button.svg"alt="Abrir menu" className="w-7 h-7" />
           )}
         </button>
       </div>

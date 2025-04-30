@@ -1,100 +1,68 @@
+// src/services/remessaService.ts
 
-import { Encomenda, encomendaService } from "./encomendaService";
+import api from "../api/api";
 
-export type RemessaStatus = "aberta" | "fechada" | "enviada";
 
-export type Remessa = {
-  id: number;
-  pais: string;
-  status: RemessaStatus;
-  encomendaIds: number[];
-  pesoTotal: number;
-  dataCriacao: Date;
-  dataEnvio?: Date;
-};
+export interface Shipment {
+  id: string;
+  country: string;
+  inserted_at: string;
+  updated_at: string;
+  status: string | null;
+  orders: ShipmentOrder[];
+}
 
-let remessas: Remessa[] = [
+export interface ShipmentOrder {
+  id: string;
+  from_account_id: string;
+  to_account_id: string;
+  inserted_at: string;
+  updated_at: string;
+  shipment_id: string;
+  is_express: boolean;
+  status: string;
+  scheduled_date: string | null;
+  packages: Package[];
+  from_account: Partial<Account>;
+  to_account: Partial<Account>;
+}
 
-];
+export interface Package {
+  id?: string;
+  description?: string;
+  declared_value?: string;
+  weight?: string;
+  status?: string;
+  inserted_at?: string;
+  updated_at?: string;
+}
 
-const calcularPesoTotal = async (remessa: Remessa): Promise<number> => {
-  const todasEncomendas = await encomendaService.listar();
-  const encomendasDaRemessa = todasEncomendas.filter(e =>
-    remessa.encomendaIds.includes(e.id)
-  );
-  return encomendasDaRemessa.reduce((total, encomenda) => {
-    const peso = encomenda.pacotes.reduce((soma, pacote) => soma + pacote.peso, 0);
-    return total + peso;
-  }, 0);
-};
+export interface Account {
+  id: string;
+  name: string;
+  email: string;
+  phone_number: string;
+  country: string;
+  inserted_at: string;
+}
+
+export interface NovaRemessaPayload {
+  country: string;
+  orders: string[]; // IDs das encomendas
+}
 
 export const remessaService = {
-  listar: async (): Promise<Remessa[]> => {
-    if (remessas.length === 0) {
-      const response = await fetch("/mocks/remessas.json");
-      remessas = await response.json();
-    }
-    return remessas;
-  },
-  adicionar: async (pais: string): Promise<Remessa> => {
-    const nova: Remessa = {
-      id: Date.now(),
-      pais,
-      status: "aberta",
-      encomendaIds: [],
-      pesoTotal: 0,
-      dataCriacao: new Date(),
-    };
-    remessas.push(nova);
-    return Promise.resolve(nova);
-  },
-  adicionarComEncomendas: async (remessa: Remessa): Promise<Remessa> => {
-    remessa.id = Date.now();
-    remessas.push(remessa);
-    return Promise.resolve(remessa);
-  },
-  adicionarEncomenda: async (idRemessa: number, idEncomenda: number): Promise<void> => {
-    const remessa = remessas.find(r => r.id === idRemessa);
-    if (!remessa) return;
-
-    if (!remessa.encomendaIds.includes(idEncomenda)) {
-      remessa.encomendaIds.push(idEncomenda);
-      remessa.pesoTotal = await calcularPesoTotal(remessa);
-    }
+  listar: async (): Promise<Shipment[]> => {
+    const response = await api.get<{ data: Shipment[] }>("/shipments");
+    return response.data.data;
   },
 
-  atualizarStatus: async (idRemessa: number, status: RemessaStatus): Promise<void> => {
-    const remessa = remessas.find(r => r.id === idRemessa);
-    if (!remessa) return;
-
-    remessa.status = status;
-    if (status === "enviada") {
-      remessa.dataEnvio = new Date();
-    }
+  adicionar: async (dados: NovaRemessaPayload): Promise<Shipment> => {
+    const response = await api.post<Shipment>("/shipments", dados);
+    return response.data;
   },
-
-  buscarPorId: async (id: number): Promise<Remessa | undefined> => {
-    return Promise.resolve(remessas.find(r => r.id === id));
+  buscarPorId: async (id: string): Promise<Shipment> => {
+    const response = await api.get<Shipment>(`/shipments/${id}`);
+    return response.data;
   },
-
-  adicionarEncomendaOuCriar: async (encomenda: Encomenda, pais: string): Promise<void> => {
-    let remessa = remessas.find(r => r.status === "aberta" && r.pais.toLowerCase() === pais.toLowerCase());
-
-    if (!remessa) {
-      remessa = {
-        id: Date.now(),
-        pais,
-        status: "aberta",
-        encomendaIds: [],
-        pesoTotal: 0,
-        dataCriacao: new Date(),
-      };
-      remessas.push(remessa);
-    }
-
-    if (!remessa.encomendaIds.includes(encomenda.id)) {
-      remessa.encomendaIds.push(encomenda.id);
-      remessa.pesoTotal = await calcularPesoTotal(remessa);
-    }
-  }
 };

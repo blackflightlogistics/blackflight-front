@@ -1,3 +1,4 @@
+// src/components/admin/ClienteSelect.tsx
 import { useRef, Fragment, useMemo, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { Cliente } from "../../services/clienteService";
@@ -5,8 +6,8 @@ import { Cliente } from "../../services/clienteService";
 type Props = {
   label: string;
   clientes: Cliente[];
-  selectedId: number | undefined;
-  onSelect: (clienteId: number) => void;
+  selectedId: string | undefined;
+  onSelect: (clienteId: string) => void;
   onCadastrarNovo: () => void;
 };
 
@@ -25,12 +26,13 @@ const ClienteSelect = ({
     const q = query.toLowerCase();
     return clientes.filter(
       (c) =>
-        c.nome.toLowerCase().includes(q) ||
+        c.name.toLowerCase().includes(q) ||
         c.email.toLowerCase().includes(q) ||
-        c.telefone.toLowerCase().includes(q)
+        c.phoneNumber.toLowerCase().includes(q)
     );
   }, [query, clientes]);
   const [comboboxAberto, setComboboxAberto] = useState(true);
+
   return (
     <div>
       <Combobox value={selectedId} onChange={onSelect}>
@@ -41,8 +43,8 @@ const ClienteSelect = ({
           <Combobox.Input
             ref={inputRef}
             className="w-full border border-gray-300 rounded p-2"
-            displayValue={(id: number | "") =>
-              clientes.find((c) => c.id === id)?.nome || ""
+            displayValue={(id: string | "") =>
+              clientes.find((c) => c.id === id)?.name || ""
             }
             onChange={(event) => {
               setQuery(event.target.value);
@@ -81,9 +83,9 @@ const ClienteSelect = ({
                         }`
                       }
                     >
-                      <div className="font-semibold">{cliente.nome}</div>
+                      <div className="font-semibold">{cliente.name}</div>
                       <div className="text-xs text-gray-500">
-                        {cliente.email} | {cliente.telefone}
+                        {cliente.email} | {cliente.phoneNumber}
                       </div>
                     </Combobox.Option>
                   ))
