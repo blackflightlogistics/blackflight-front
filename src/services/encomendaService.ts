@@ -3,6 +3,8 @@
 import api from "../api/api";
 
 export type FormaPagamento = "à vista" | "parcelado" | "na retirada";
+export type PacoteStatus = "em preparação" | "em transito" | "aguardando retirada" | "entregue" | "cancelada";
+export type EncomendaStatus = "em preparação" | "em transito" | "aguardando retirada" | "entregue" | "cancelada";
 
 
 /** Interfaces refletindo o que o backend retorna */

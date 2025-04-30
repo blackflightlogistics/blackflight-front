@@ -24,7 +24,6 @@ const Remessas = () => {
     carregar();
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const fecharRemessa = async (id: string) => {
     // await remessaService.atualizarStatus(id, "fechada");
     // const atualizadas = await remessaService.listar();
@@ -37,6 +36,8 @@ const Remessas = () => {
     // const atualizadas = await remessaService.listar();
     // setRemessas(atualizadas);
     console.log("Remessa enviada:", id);
+    // aqui falta o envio da remessa para o sistema de envio
+    fecharRemessa(id);
     
   };
 

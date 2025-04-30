@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { clienteService, Cliente } from "../../services/clienteService";
-// import { encomendaService } from "../../services/encomendaService";
 import { configService } from "../../services/configService";
-// import ClienteForm, { ClienteFormData } from "../../components/admin/ClienteForm";
 import ClienteSelect from "../../components/admin/ClienteSelect";
 import dayjs from "dayjs";
 import { orderService } from "../../services/encomendaService";
@@ -14,8 +12,7 @@ function NovaEncomenda() {
   const navigate = useNavigate();
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [sidebarAberta, setSidebarAberta] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [endereco, setEndereco] = useState({
+  const [, setEndereco] = useState({
     rua: "",
     numero: "",
     bairro: "",
