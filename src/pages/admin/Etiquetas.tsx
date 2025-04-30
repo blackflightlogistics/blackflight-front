@@ -16,7 +16,7 @@ function EtiquetaEncomenda() {
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const pdfRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
-  const dataGeracao = new Date().toLocaleString();
+  const [dataGeracao, setDataGeracao] = useState<string>("");
 
   const pacotesSelecionados: string[] =
     location.state?.pacotesSelecionados ?? [];
@@ -30,6 +30,7 @@ function EtiquetaEncomenda() {
       setEncomenda(dados);
       clienteService.buscarPorId(dados.from_account_id).then(setRemetente);
       clienteService.buscarPorId(dados.to_account_id).then(setDestinatario);
+      setDataGeracao(dados.inserted_at.split("T")[0]);
     });
   }, [id]);
 
@@ -120,7 +121,7 @@ function EtiquetaEncomenda() {
 
           {/* QRCode dos pacotes */}
           {(pacotesParaImprimir ?? []).length > 0 && (
-            <section className="border p-4 rounded bg-white shadow print:break-before-page">
+            <section className="border p-4 rounded bg-white  shadow print:break-before-page">
               <h2 className="text-lg font-semibold mb-4">
                 Códigos dos Pacotes
               </h2>
