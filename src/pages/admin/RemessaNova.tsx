@@ -2,21 +2,21 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
-import { encomendaService, Encomenda } from "../../services/encomendaService";
+import { orderService, Order } from "../../services/encomendaService";
 import { remessaService } from "../../services/remessaService";
 
 const RemessaNova = () => {
-  const [encomendas, setEncomendas] = useState<Encomenda[]>([]);
-  const [selecionadas, setSelecionadas] = useState<number[]>([]);
+  const [encomendas, setEncomendas] = useState<Order[]>([]);
+  const [selecionadas, setSelecionadas] = useState<string[]>([]);
   const [pais, setPais] = useState("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    encomendaService.listar().then(setEncomendas);
+    orderService.listar().then(setEncomendas);
   }, []);
 
-  const toggleEncomenda = (id: number) => {
+  const toggleEncomenda = (id: string) => {
     setSelecionadas((atual) =>
       atual.includes(id) ? atual.filter((e) => e !== id) : [...atual, id]
     );
@@ -31,21 +31,18 @@ const RemessaNova = () => {
   };
 
   const salvar = async () => {
-    const encomendasSelecionadas = encomendas.filter((e) =>
-      selecionadas.includes(e.id)
-    );
-    const pesoTotal = encomendasSelecionadas.reduce(
-      (soma, e) => soma + e.pacotes.reduce((s, p) => s + p.peso, 0),
-      0
-    );
+    // const encomendasSelecionadas = encomendas.filter((e) =>
+    //   selecionadas.includes(e.id)
+    // );
+    // const pesoTotal = encomendasSelecionadas.reduce(
+    //   (soma, e) => soma + e.packages.reduce((s, p) => s + Number(p.weight), 0),
+    //   0
+    // );
 
-    await remessaService.adicionarComEncomendas({
-      pais,
-      status: "aberta",
-      encomendaIds: [...selecionadas],
-      pesoTotal,
-      dataCriacao: new Date(),
-      id: 0, // será sobrescrito no método
+    await remessaService.adicionar({
+      country: pais,
+      orders:[...selecionadas],
+      
     });
 
     navigate("/admin/remessas");
@@ -88,11 +85,11 @@ const RemessaNova = () => {
                   />
                   <div>
                     <p>
-                      <strong>#{e.id}</strong> – {e.status} – {e.pacotes.length} pacote(s)
+                      <strong>#{e.id}</strong> – {e.status} – {e.packages.length} pacote(s)
                     </p>
                     <p className="text-sm text-gray-600">
                       Peso:{" "}
-                      {e.pacotes.reduce((s, p) => s + p.peso, 0).toFixed(2)} kg
+                      {e.packages.reduce((s, p) => s + Number(p.weight), 0).toFixed(2)} kg
                     </p>
                   </div>
                 </label>

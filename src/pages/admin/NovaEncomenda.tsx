@@ -1,56 +1,20 @@
-// src/pages/admin/NovaEncomenda.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { clienteService, Cliente } from "../../services/clienteService";
-import { remessaService } from "../../services/remessaService";
+// import { encomendaService } from "../../services/encomendaService";
 import { configService } from "../../services/configService";
-import {
-  encomendaService,
-  Pacote,
-  PacoteStatus,
-} from "../../services/encomendaService";
-import ClienteForm, {
-  ClienteFormData,
-} from "../../components/admin/ClienteForm";
+// import ClienteForm, { ClienteFormData } from "../../components/admin/ClienteForm";
 import ClienteSelect from "../../components/admin/ClienteSelect";
 import dayjs from "dayjs";
-
-function converterEnderecoParaCampos(endereco: string): ClienteFormData {
-  const match = endereco.match(/^(.*), (.*) - (.*), (.*) - (.*), (.*)$/);
-  if (!match) {
-    return {
-      nome: "",
-      telefone: "",
-      email: "",
-      rua: "",
-      numero: "",
-      bairro: "",
-      cidade: "",
-      estado: "",
-      cep: "",
-    };
-  }
-  return {
-    nome: "",
-    telefone: "",
-    email: "",
-    rua: match[1],
-    numero: match[2],
-    bairro: match[3],
-    cidade: match[4],
-    estado: match[5],
-    cep: match[6],
-  };
-}
+import { orderService } from "../../services/encomendaService";
+import ClienteForm from "../../components/admin/ClienteForm";
 
 function NovaEncomenda() {
   const navigate = useNavigate();
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [sidebarAberta, setSidebarAberta] = useState(false);
-
-  const [remetenteId, setRemetenteId] = useState<number>();
-  const [destinatarioId, setDestinatarioId] = useState<number>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [endereco, setEndereco] = useState({
     rua: "",
     numero: "",
@@ -59,79 +23,117 @@ function NovaEncomenda() {
     estado: "",
     cep: "",
   });
-
-  const [pacotes, setPacotes] = useState<Pacote[]>([]);
-  const [descricaoPacote, setDescricaoPacote] = useState("");
-  const [pesoPacote, setPesoPacote] = useState("");
-  const [valorDeclaradoPacote, setValorDeclaradoPacote] = useState("");
+  type PacoteStatus =
+    | "em preparação"
+    | "em transito"
+    | "aguardando retirada"
+    | "entregue"
+    | "cancelada";
+  const [loadingTela, setLoadingTela] = useState(true);
   const [statusPacote, setStatusPacote] =
     useState<PacoteStatus>("em preparação");
 
+  const [remetenteId, setRemetenteId] = useState<string>("");
+  const [destinatarioId, setDestinatarioId] = useState<string>("");
+
+  const [descricaoPacote, setDescricaoPacote] = useState("");
+  const [pesoPacote, setPesoPacote] = useState("");
+  const [valorDeclaradoPacote, setValorDeclaradoPacote] = useState("");
+  const [pacotes, setPacotes] = useState<
+    {
+      description: string;
+      weight: string;
+      status: string;
+      declared_value: string;
+    }[]
+  >([]);
+
   const [encomendaExpressa, setEncomendaExpressa] = useState(false);
   const [dataEnvioExpressa, setDataEnvioExpressa] = useState("");
-  const [precoPorQuilo, setPrecoPorQuilo] = useState<number>(0);
-  const [taxaSeguro, setTaxaSeguro] = useState<number>(0);
   const [adicionalExpresso, setAdicionalExpresso] = useState<number>(0);
 
   const [showRemetenteForm, setShowRemetenteForm] = useState(false);
   const [showDestinatarioForm, setShowDestinatarioForm] = useState(false);
 
+  const [loadingSalvar, setLoadingSalvar] = useState(false);
+  const [loadingPagamento, setLoadingPagamento] = useState(false);
+
   useEffect(() => {
-    clienteService.listar().then(setClientes);
-    configService.carregar().then((conf) => {
-      setPrecoPorQuilo(conf.precoPorQuilo);
-      setTaxaSeguro(conf.taxaPorSeguro);
-      setAdicionalExpresso(conf.adicionalExpresso || 0);
-    });
+    async function carregarDados() {
+      setLoadingTela(true);
+      await clienteService.listar().then(setClientes);
+      await configService.carregar().then((conf) => {
+        setAdicionalExpresso(conf.adicionalExpresso || 0);
+      });
+      setLoadingTela(false);
+    }
+    carregarDados();
   }, []);
 
   const adicionarPacote = () => {
     if (!descricaoPacote || !pesoPacote) return;
-    const peso = parseFloat(pesoPacote);
-    const declarado = valorDeclaradoPacote
-      ? parseFloat(valorDeclaradoPacote)
-      : 0;
-    const valorCalculado = peso * precoPorQuilo;
-    const valorSeguro = declarado * (taxaSeguro / 100);
-    const valorTotal = valorCalculado + valorSeguro;
 
-    const novo: Pacote = {
-      id: Date.now(),
-      descricao: descricaoPacote,
-      peso,
-      status: statusPacote,
-      valorCalculado,
-      valorDeclarado: declarado,
-      valorTotal,
+    const novoPacote = {
+      description: descricaoPacote,
+      weight: pesoPacote,
+      status: "waiting",
+      declared_value: valorDeclaradoPacote || "0",
     };
-    setPacotes([...pacotes, novo]);
+
+    setPacotes([...pacotes, novoPacote]);
     setDescricaoPacote("");
     setPesoPacote("");
     setValorDeclaradoPacote("");
-    setStatusPacote("em preparação");
   };
 
-  const salvarEncomenda = async () => {
+  const salvarEncomenda = async (irParaPagamento = false) => {
     if (!remetenteId || !destinatarioId || pacotes.length === 0) return;
-    const valorPacotes = pacotes.reduce((s, p) => s + (p.valorTotal || 0), 0);
-    const valorTotal = encomendaExpressa
-      ? valorPacotes + adicionalExpresso
-      : valorPacotes;
 
-    const nova = await encomendaService.adicionar({
-      remetenteId,
-      destinatarioId,
-      enderecoEntrega: endereco,
-      status: "em preparação",
-      pacotes,
-      valorTotal,
-      expressa: encomendaExpressa,
-      dataEnvio: encomendaExpressa ? dataEnvioExpressa : undefined,
-    });
+    try {
+      if (irParaPagamento) setLoadingPagamento(true);
+      else setLoadingSalvar(true);
 
-    await remessaService.adicionarEncomendaOuCriar(nova, endereco.cidade);
-    navigate("/admin/encomendas");
+      const novaEncomenda = await orderService.adicionar({
+        from_account_id: remetenteId,
+        to_account_id: destinatarioId,
+        is_express: encomendaExpressa,
+        scheduled_date: encomendaExpressa ? dataEnvioExpressa : undefined,
+        packages: pacotes,
+      });
+
+      navigate(
+        irParaPagamento
+          ? `/admin/encomendas/${novaEncomenda.id}/pagamento`
+          : "/admin/encomendas"
+      );
+    } finally {
+      setLoadingSalvar(false);
+      setLoadingPagamento(false);
+    }
   };
+
+  if (loadingTela) {
+    return (
+      <div>
+        <div className="h-screen flex overflow-hidden">
+          <button
+            className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
+            onClick={() => setSidebarAberta(true)}
+          >
+            ☰ Menu
+          </button>
+
+          <Sidebar
+            mobileAberta={sidebarAberta}
+            onFechar={() => setSidebarAberta(false)}
+          />
+          <div className="flex items-center justify-center h-screen">
+            <div className="w-12 h-12 border-4 border-orange border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex overflow-hidden">
@@ -158,20 +160,26 @@ function NovaEncomenda() {
             label="Remetente"
             clientes={clientes}
             selectedId={remetenteId}
-            onSelect={setRemetenteId}
-            onCadastrarNovo={() => {
-              setShowRemetenteForm(true);
-            }}
+            onSelect={(id) => setRemetenteId(id)}
+            onCadastrarNovo={() => setShowRemetenteForm(true)}
           />
           {showRemetenteForm && (
             <ClienteForm
               onSubmit={async (form) => {
-                const enderecoStr = `${form.rua}, ${form.numero} - ${form.bairro}, ${form.cidade} - ${form.estado}, ${form.cep}`;
+                const endereco = {
+                  street: form.street,
+                  number: form.number,
+                  neighborhood: form.neighborhood,
+                  city: form.city,
+                  state: form.state,
+                  zipCode: form.zipCode,
+                  country: form.country,
+                };
                 const novo = await clienteService.adicionar({
-                  nome: form.nome,
-                  telefone: form.telefone,
+                  name: form.name,
                   email: form.email,
-                  endereco: enderecoStr,
+                  phoneNumber: form.phoneNumber,
+                  address: endereco,
                 });
                 setClientes(await clienteService.listar());
                 setRemetenteId(novo.id);
@@ -192,22 +200,35 @@ function NovaEncomenda() {
               setDestinatarioId(id);
               const cliente = clientes.find((c) => c.id === id);
               if (cliente) {
-                setEndereco(converterEnderecoParaCampos(cliente.endereco));
+                setEndereco({
+                  rua: cliente.address.street,
+                  numero: cliente.address.number,
+                  bairro: cliente.address.neighborhood,
+                  cidade: cliente.address.city,
+                  estado: cliente.address.state,
+                  cep: cliente.address.zipCode,
+                });
               }
             }}
-            onCadastrarNovo={() => {
-              setShowDestinatarioForm(true);
-            }}
+            onCadastrarNovo={() => setShowDestinatarioForm(true)}
           />
           {showDestinatarioForm && (
             <ClienteForm
               onSubmit={async (form) => {
-                const enderecoStr = `${form.rua}, ${form.numero} - ${form.bairro}, ${form.cidade} - ${form.estado}, ${form.cep}`;
+                const endereco = {
+                  street: form.street,
+                  number: form.number,
+                  neighborhood: form.neighborhood,
+                  city: form.city,
+                  state: form.state,
+                  zipCode: form.zipCode,
+                  country: form.country,
+                };
                 const novo = await clienteService.adicionar({
-                  nome: form.nome,
-                  telefone: form.telefone,
+                  name: form.name,
                   email: form.email,
-                  endereco: enderecoStr,
+                  phoneNumber: form.phoneNumber,
+                  address: endereco,
                 });
                 setClientes(await clienteService.listar());
                 setDestinatarioId(novo.id);
@@ -251,7 +272,7 @@ function NovaEncomenda() {
               onChange={(e) => setDescricaoPacote(e.target.value)}
             />
             <input
-              placeholder="Peso (kg)"
+              placeholder="Peso (g)"
               type="number"
               className="p-2 border rounded"
               value={pesoPacote}
@@ -285,48 +306,35 @@ function NovaEncomenda() {
 
           <ul className="space-y-2">
             {pacotes.map((p) => (
-              <li key={p.id} className="p-2 bg-white border rounded">
-                📦 {p.descricao} — {p.peso}kg ({p.status})
+              <li key={p.description} className="p-2 bg-white border rounded">
+                📦 {p.description} — {p.weight}kg ({p.status})
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="flex flex-col md:flex-row md:justify-start gap-4 mt-6">
+        {/* Botões */}
+        <div className="flex flex-col md:flex-row gap-4 mt-6">
           <button
-            onClick={salvarEncomenda}
+            onClick={() => salvarEncomenda(false)}
             className="px-6 py-3 bg-black text-white rounded hover:opacity-80 font-secondary text-sm"
+            disabled={loadingSalvar}
           >
-            Salvar Encomenda
+            {loadingSalvar ? "Salvando..." : "Salvar Encomenda"}
           </button>
 
           <button
-            onClick={async () => {
-              if (!remetenteId || !destinatarioId || pacotes.length === 0)
-                return;
-
-              const valorTotal = pacotes.reduce(
-                (soma, p) => soma + (p.valorTotal || 0),
-                0
-              );
-
-              const nova = await encomendaService.adicionar({
-                remetenteId,
-                destinatarioId,
-                enderecoEntrega: endereco,
-                status: "em preparação",
-                pacotes,
-                valorTotal,
-                expressa: encomendaExpressa,
-                dataEnvio: encomendaExpressa ? dataEnvioExpressa : undefined,
-              });
-
-              await remessaService.adicionarEncomendaOuCriar(
-                nova,
-                endereco.cidade
-              );
-              navigate(`/admin/encomendas/${nova.id}/pagamento`);
-            }}
+            onClick={() => salvarEncomenda(true)}
+            className="px-6 py-3 bg-orange text-white rounded hover:opacity-90 font-secondary text-sm"
+            disabled={loadingPagamento}
+          >
+            {loadingPagamento ? "Redirecionando..." : "Ir para Pagamento"}
+          </button>
+          <button
+            onClick={
+              () => salvarEncomenda(true)
+              // navigate(`/admin/encomendas/${novaEncomenda.id}/pagamento`);
+            }
             className="px-6 py-3 bg-orange text-white rounded hover:opacity-80 font-secondary text-sm"
           >
             Ir para Pagamento

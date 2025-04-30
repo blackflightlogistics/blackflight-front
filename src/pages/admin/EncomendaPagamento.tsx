@@ -3,8 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { clienteService, Cliente } from "../../services/clienteService";
 import {
-  encomendaService,
-  Encomenda,
+  orderService,
+  Order,
   FormaPagamento,
 } from "../../services/encomendaService";
 
@@ -12,7 +12,7 @@ function EncomendaPagamento() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [encomenda, setEncomenda] = useState<Encomenda | null>(null);
+  const [encomenda, setEncomenda] = useState<Order | null>(null);
   const [remetente, setRemetente] = useState<Cliente | null>(null);
   const [destinatario, setDestinatario] = useState<Cliente | null>(null);
   const [formaPagamento, setFormaPagamento] =
@@ -21,9 +21,9 @@ function EncomendaPagamento() {
   const [mostrarMaisOpcoes, setMostrarMaisOpcoes] = useState(false);
   const [valorPagoInput, setValorPagoInput] = useState("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
-  const [pacotesSelecionados, setPacotesSelecionados] = useState<number[]>([]);
+  const [pacotesSelecionados, setPacotesSelecionados] = useState<string[]>([]);
 
-  const togglePacote = (id: number) => {
+  const togglePacote = (id: string) => {
     setPacotesSelecionados((prev) =>
       prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     );
@@ -32,26 +32,28 @@ function EncomendaPagamento() {
   const toggleTodos = () => {
     if (!encomenda) return;
 
-    if (pacotesSelecionados.length === encomenda.pacotes.length) {
+    if (pacotesSelecionados.length === encomenda.packages.length) {
       setPacotesSelecionados([]);
     } else {
-      setPacotesSelecionados(encomenda.pacotes.map((p) => p.id));
+      setPacotesSelecionados(encomenda.packages.map((p) => p.id));
     }
   };
 
-  const estaSelecionado = (id: number) => pacotesSelecionados.includes(id);
+  const estaSelecionado = (id: string) => pacotesSelecionados.includes(id);
 
   useEffect(() => {
     if (!id) return;
 
     const carregar = async () => {
-      const encomendaEncontrada = await encomendaService.buscarPorId(Number(id));
+      const encomendaEncontrada = await orderService.buscarPorId(id);
+      console.log("Encomenda encontrada:", encomendaEncontrada);
       setEncomenda(encomendaEncontrada);
-      setFormaPagamento(encomendaEncontrada.formaPagamento || "à vista");
-      setPacotesSelecionados(encomendaEncontrada.pacotes.map((p) => p.id));
+      // setFormaPagamento(encomendaEncontrada.formaPagamento || "à vista");
+      setFormaPagamento( "à vista");
+      setPacotesSelecionados(encomendaEncontrada.packages.map((p) => p.id));
 
-      const remetente = await clienteService.buscarPorId(encomendaEncontrada.remetenteId);
-      const destinatario = await clienteService.buscarPorId(encomendaEncontrada.destinatarioId);
+      const remetente = await clienteService.buscarPorId(encomendaEncontrada.from_account_id);
+      const destinatario = await clienteService.buscarPorId(encomendaEncontrada.to_account_id);
 
       setRemetente(remetente);
       setDestinatario(destinatario);
@@ -64,7 +66,8 @@ function EncomendaPagamento() {
     return <p className="p-6">Carregando detalhes...</p>;
   }
 
-  const valorBase = encomenda.valorTotal || 0;
+  // const valorBase = encomenda.valorTotal || 0;
+  const valorBase = 0;
   const valorDesconto = desconto ? parseFloat(desconto) : 0;
   const valorFinal = Math.max(0, valorBase - valorDesconto);
   const valorPago =
@@ -74,13 +77,13 @@ function EncomendaPagamento() {
     valorPago >= valorFinal ? "pago" : valorPago > 0 ? "parcial" : "pendente";
 
   const salvarPagamento = async () => {
-    await encomendaService.atualizar({
-      ...encomenda,
-      formaPagamento,
-      valorPago,
-      statusPagamento,
-      valorTotal: valorFinal,
-    });
+    // await orderService.atualizar({
+    //   ...encomenda,
+    //   formaPagamento,
+    //   valorPago,
+    //   statusPagamento,
+    //   valorTotal: valorFinal,
+    // });
 
     navigate("/admin/encomendas");
   };
@@ -106,18 +109,18 @@ function EncomendaPagamento() {
         <section className="space-y-1">
           <h2 className="text-lg font-semibold">Remetente</h2>
           <p>
-            {remetente.nome} - {remetente.email} - {remetente.telefone}
+            {remetente.name} - {remetente.email} - {remetente.phoneNumber}
           </p>
-          <p className="text-sm text-gray-600">{remetente.endereco}</p>
+          <p className="text-sm text-gray-600">{remetente.address.city} - {remetente.address.state} - {remetente.address.zipCode}</p>
         </section>
 
         {/* Destinatário */}
         <section className="space-y-1">
           <h2 className="text-lg font-semibold">Destinatário</h2>
           <p>
-            {destinatario.nome} - {destinatario.email} - {destinatario.telefone}
+            {destinatario.name} - {destinatario.email} - {destinatario.phoneNumber}
           </p>
-          <p className="text-sm text-gray-600">{destinatario.endereco}</p>
+          <p className="text-sm text-gray-600">{destinatario.address.city} - {destinatario.address.state} - {destinatario.address.zipCode}</p>
         </section>
 
         {/* Pacotes */}
@@ -128,13 +131,13 @@ function EncomendaPagamento() {
               onClick={toggleTodos}
               className="text-sm text-blue-600 hover:underline"
             >
-              {pacotesSelecionados.length === encomenda.pacotes.length
+              {pacotesSelecionados.length === encomenda.packages.length
                 ? "Desmarcar todos"
                 : "Selecionar todos"}
             </button>
           </div>
           <ul className="space-y-2">
-            {encomenda.pacotes.map((p) => (
+            {encomenda.packages.map((p) => (
               <li key={p.id} className="p-2 border rounded bg-white">
                 <label className="flex items-start gap-2">
                   <input
@@ -144,14 +147,16 @@ function EncomendaPagamento() {
                     className="mt-1"
                   />
                   <div>
-                    📦 <strong>{p.descricao}</strong> - {p.peso}kg
+                    📦 <strong>{p.description}</strong> - {p.weight}kg
+                    aqui temos problemas 
                     <br />
-                    💰 R$ {p.valorCalculado?.toFixed(2)}
-                    {p.valorDeclarado && (
+                    {/* 💰 R$ {p.valorCalculado?.toFixed(2)} */}
+                    
+                    {/* {p.valorDeclarado && (
                       <span className="ml-2 text-sm">
                         🛡️ Seguro: R$ {p.valorDeclarado.toFixed(2)}
                       </span>
-                    )}
+                    )} */}
                   </div>
                 </label>
               </li>
@@ -214,10 +219,10 @@ function EncomendaPagamento() {
         <div className="mt-4 space-y-1">
           <p className="text-lg font-semibold">
             Valor final:{" "}
-            <span className="text-green-700">R$ {valorFinal.toFixed(2)}</span>
+            <span className="text-green-700">R$ {valorFinal.toFixed(2)} falta essa info</span>
           </p>
           <p className="text-sm text-gray-700">
-            <strong>Status do pagamento:</strong> {statusPagamento}
+            <strong>Status do pagamento:</strong> {statusPagamento} falta essa info
           </p>
         </div>
 

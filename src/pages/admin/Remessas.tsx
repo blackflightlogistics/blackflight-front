@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/admin/Sidebar";
-import { remessaService, Remessa } from "../../services/remessaService";
-import { encomendaService, Encomenda } from "../../services/encomendaService";
+import { remessaService, Shipment } from "../../services/remessaService";
+import { orderService, Order } from "../../services/encomendaService";
 import { Link } from "react-router-dom";
 
 const Remessas = () => {
-  const [remessas, setRemessas] = useState<Remessa[]>([]);
-  const [encomendas, setEncomendas] = useState<Encomenda[]>([]);
+  const [remessas, setRemessas] = useState<Shipment[]>([]);
+  const [encomendas, setEncomendas] = useState<Order[]>([]);
   const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [buscaPais, setBuscaPais] = useState<string>("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
-  const [acoesAbertas, setAcoesAbertas] = useState<number | null>(null);
+  const [acoesAbertas, setAcoesAbertas] = useState<string | null>(null);
 
   useEffect(() => {
     const carregar = async () => {
       const [remessasData, encomendasData] = await Promise.all([
         remessaService.listar(),
-        encomendaService.listar(),
+        orderService.listar(),
       ]);
       setRemessas(remessasData);
       setEncomendas(encomendasData);
@@ -24,21 +24,25 @@ const Remessas = () => {
     carregar();
   }, []);
 
-  const fecharRemessa = async (id: number) => {
-    await remessaService.atualizarStatus(id, "fechada");
-    const atualizadas = await remessaService.listar();
-    setRemessas(atualizadas);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const fecharRemessa = async (id: string) => {
+    // await remessaService.atualizarStatus(id, "fechada");
+    // const atualizadas = await remessaService.listar();
+    // setRemessas(atualizadas);
+    console.log("Remessa fechada:", id);
   };
 
-  const enviarRemessa = async (id: number) => {
-    await remessaService.atualizarStatus(id, "enviada");
-    const atualizadas = await remessaService.listar();
-    setRemessas(atualizadas);
+  const enviarRemessa = async (id: string) => {
+    // await remessaService.atualizarStatus(id, "enviada");
+    // const atualizadas = await remessaService.listar();
+    // setRemessas(atualizadas);
+    console.log("Remessa enviada:", id);
+    
   };
 
   const remessasFiltradas = remessas.filter((r) => {
     const statusOk = statusFiltro === "todos" || r.status === statusFiltro;
-    const paisOk = r.pais.toLowerCase().includes(buscaPais.toLowerCase());
+    const paisOk = r.country.toLowerCase().includes(buscaPais.toLowerCase());
     return statusOk && paisOk;
   });
 
@@ -116,7 +120,7 @@ const Remessas = () => {
           <ul className="space-y-4">
             {remessasFiltradas.map((r) => {
               const encomendasDaRemessa = encomendas.filter((e) =>
-                r.encomendaIds.includes(e.id)
+                r.orders.map((o) => o.id).includes(e.id)
               );
               return (
                 <li
@@ -126,9 +130,9 @@ const Remessas = () => {
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        {renderStatusIcone(r.status)}
+                        {renderStatusIcone(r.status ?? "aberta default")}
                         <p className="text-lg font-semibold text-black">
-                          {r.pais}
+                          {r.country}
                         </p>
                       </div>
                       <p className="text-sm text-gray-600">
@@ -136,14 +140,14 @@ const Remessas = () => {
                       </p>
                       <p className="text-sm text-gray-600">
                         Criada em:{" "}
-                        {new Date(r.dataCriacao).toLocaleDateString()}
+                        {new Date(r.inserted_at).toLocaleDateString()}
                       </p>
                     </div>
 
                     <div className="flex flex-col items-end gap-2">
                       <div className="text-right">
                         <p className="text-xs text-gray-500">Peso Atual</p>
-                        <p
+                        {/* <p
                           className={`text-xl font-bold ${
                             r.pesoTotal >= 23
                               ? "text-green-600"
@@ -151,7 +155,8 @@ const Remessas = () => {
                           }`}
                         >
                           {r.pesoTotal.toFixed(2)} kg
-                        </p>
+                        </p> */}
+                        aqui falta o peso apra mostrar se esta perto dos 23kg
                       </div>
 
                       <Link
@@ -172,11 +177,11 @@ const Remessas = () => {
                         >
                           <div>
                             <span className="font-bold">#{e.id}</span> –{" "}
-                            {e.pacotes.length} pacote(s)
+                            {e.packages.length} pacote(s)
                           </div>
                           <div className="text-gray-600">
-                            {e.pacotes
-                              .reduce((s, p) => s + p.peso, 0)
+                            {e.packages
+                              .reduce((s, p) => s + Number(p.weight), 0)
                               .toFixed(2)}{" "}
                             kg
                           </div>
@@ -198,7 +203,7 @@ const Remessas = () => {
                     {acoesAbertas === r.id && (
                       <div className="absolute right-0 mt-11 w-48 bg-white border border-gray-300 rounded shadow-md z-20">
                         <ul className="flex flex-col text-sm">
-                          {r.status === "aberta" && r.pesoTotal >= 23 && (
+                          {/* {r.status === "aberta" && r.pesoTotal >= 23 && (
                             <li>
                               <button
                                 onClick={() => {
@@ -210,7 +215,8 @@ const Remessas = () => {
                                 Fechar Remessa
                               </button>
                             </li>
-                          )}
+                          )} */}
+                          aqui falta o peso para mostrar o botão de fechar remessa
                           {r.status === "fechada" && (
                             <li>
                               <button

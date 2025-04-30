@@ -3,14 +3,14 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Sidebar from "../../components/admin/Sidebar";
-import { encomendaService, Encomenda } from "../../services/encomendaService";
+import { orderService, Order } from "../../services/encomendaService";
 import { clienteService, Cliente } from "../../services/clienteService";
 import QRCodeComLogo from "../../components/shared/QRCodeComLogo";
 
 function EtiquetaEncomenda() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [encomenda, setEncomenda] = useState<Encomenda | null>(null);
+  const [encomenda, setEncomenda] = useState<Order | null>(null);
   const [remetente, setRemetente] = useState<Cliente | null>(null);
   const [destinatario, setDestinatario] = useState<Cliente | null>(null);
   const [sidebarAberta, setSidebarAberta] = useState(false);
@@ -18,18 +18,18 @@ function EtiquetaEncomenda() {
   const location = useLocation();
   const dataGeracao = new Date().toLocaleString();
 
-  const pacotesSelecionados: number[] =
+  const pacotesSelecionados: string[] =
     location.state?.pacotesSelecionados ?? [];
-  const pacotesParaImprimir = encomenda?.pacotes.filter((p) =>
+  const pacotesParaImprimir = encomenda?.packages.filter((p) =>
     pacotesSelecionados.includes(p.id)
   );
 
   useEffect(() => {
     if (!id) return;
-    encomendaService.buscarPorId(Number(id)).then((dados) => {
+    orderService.buscarPorId(id).then((dados) => {
       setEncomenda(dados);
-      clienteService.buscarPorId(dados.remetenteId).then(setRemetente);
-      clienteService.buscarPorId(dados.destinatarioId).then(setDestinatario);
+      clienteService.buscarPorId(dados.from_account_id).then(setRemetente);
+      clienteService.buscarPorId(dados.to_account_id).then(setDestinatario);
     });
   }, [id]);
 
@@ -99,12 +99,12 @@ function EtiquetaEncomenda() {
           {/* Info geral */}
           <section className="border p-4 rounded bg-white shadow">
             <h2 className="text-lg font-semibold mb-2">Remetente</h2>
-            <p>{remetente.nome}</p>
-            <p className="text-sm text-gray-600">{remetente.endereco}</p>
+            <p>{remetente.name}</p>
+            <p className="text-sm text-gray-600">{remetente.address.city} - {remetente.address.state} - {remetente.address.country}</p>
 
             <h2 className="text-lg font-semibold mt-4 mb-2">Destinatário</h2>
-            <p>{destinatario.nome}</p>
-            <p className="text-sm text-gray-600">{destinatario.endereco}</p>
+            <p>{destinatario.name}</p>
+            <p className="text-sm text-gray-600">{destinatario.address.city} - {destinatario.address.state} - {destinatario.address.country}</p>
 
             <p className="text-sm text-gray-500 mt-2">
               Data de geração: {dataGeracao}
@@ -132,7 +132,7 @@ function EtiquetaEncomenda() {
                   >
                     <QRCodeComLogo value={`P-${pacote.id}`} size={128} />
                     <p className="mt-2 text-sm font-medium text-center">
-                      {pacote.descricao} - {pacote.peso}kg
+                      {pacote.description} - {pacote.weight}kg
                     </p>
                   </div>
                 ))}

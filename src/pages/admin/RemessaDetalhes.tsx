@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
-import { remessaService, Remessa } from "../../services/remessaService";
-import { encomendaService, Encomenda } from "../../services/encomendaService";
+import { remessaService, Shipment } from "../../services/remessaService";
+import { orderService, Order } from "../../services/encomendaService";
 import { clienteService, Cliente } from "../../services/clienteService";
 
 const RemessaDetalhes = () => {
   const { id } = useParams<{ id: string }>();
-  const [remessa, setRemessa] = useState<Remessa | null>(null);
-  const [encomendas, setEncomendas] = useState<Encomenda[]>([]);
+  const [remessa, setRemessa] = useState<Shipment | null>(null);
+  const [encomendas, setEncomendas] = useState<Order[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [sidebarAberta, setSidebarAberta] = useState(false);
 
   useEffect(() => {
     const carregar = async () => {
-      const r = await remessaService.buscarPorId(Number(id));
-      const todasEncomendas = await encomendaService.listar();
+      const r = await remessaService.buscarPorId(id ??"aqui ta indo default");
+      const todasEncomendas = await orderService.listar();
       const todasClientes = await clienteService.listar();
       if (r) {
-        const relacionadas = todasEncomendas.filter((e) => r.encomendaIds.includes(e.id));
+        const relacionadas = todasEncomendas.filter((e) => r.orders.map((o) => o.id).includes(e.id));
         setRemessa(r);
         setEncomendas(relacionadas);
         setClientes(todasClientes);
@@ -56,13 +56,15 @@ const RemessaDetalhes = () => {
         </div>
 
         <div className="bg-white border border-orange rounded-xl p-6 space-y-2 shadow-sm">
-          <p><strong>País:</strong> {remessa.pais}</p>
+          <p><strong>País:</strong> {remessa.country}</p>
           <p><strong>Status:</strong> {remessa.status}</p>
-          <p><strong>Peso total:</strong> {remessa.pesoTotal.toFixed(2)} kg</p>
-          <p><strong>Criada em:</strong> {new Date(remessa.dataCriacao).toLocaleDateString()}</p>
-          {remessa.status === "enviada" && remessa.dataEnvio && (
-            <p><strong>Enviada em:</strong> {new Date(remessa.dataEnvio).toLocaleDateString()}</p>
-          )}
+          {/* <p><strong>Peso total:</strong> {remessa.pesoTotal.toFixed(2)} kg</p> */}
+          <p><strong>Peso total:</strong> aqui falta o peso total kg</p>
+          <p><strong>Criada em:</strong> {new Date(remessa.inserted_at).toLocaleDateString()}</p>
+          {/* {remessa.status === "enviada" && remessa.dataEnvio && ( */}
+         
+            <p><strong>Enviada em:</strong> aqui falta a data de envio</p>
+          
         </div>
 
         <div>
@@ -72,8 +74,8 @@ const RemessaDetalhes = () => {
           ) : (
             <ul className="space-y-4">
               {encomendas.map((e) => {
-                const remetente = clientes.find(c => c.id === e.remetenteId)?.nome || "Remetente não encontrado";
-                const destinatario = clientes.find(c => c.id === e.destinatarioId)?.nome || "Destinatário não encontrado";
+                const remetente = clientes.find(c => c.id === e.id)?.name || "Remetente não encontrado";
+                const destinatario = clientes.find(c => c.id === e.id)?.name || "Destinatário não encontrado";
 
                 return (
                   <li key={e.id} className="bg-white border border-orange rounded-xl p-6 shadow-sm">
@@ -82,16 +84,17 @@ const RemessaDetalhes = () => {
                         <p className="font-semibold">Encomenda #{e.id}</p>
                         <p className="text-sm"><strong>De:</strong> {remetente}</p>
                         <p className="text-sm"><strong>Para:</strong> {destinatario}</p>
-                        <p className="text-sm"><strong>Endereço de entrega:</strong> {`${e.enderecoEntrega.rua}, ${e.enderecoEntrega.numero} - ${e.enderecoEntrega.bairro}, ${e.enderecoEntrega.cidade} - ${e.enderecoEntrega.estado}, ${e.enderecoEntrega.cep}`}</p>
+                        {/* <p className="text-sm"><strong>Endereço de entrega:</strong> {`${e.enderecoEntrega.rua}, ${e.enderecoEntrega.numero} - ${e.enderecoEntrega.bairro}, ${e.enderecoEntrega.cidade} - ${e.enderecoEntrega.estado}, ${e.enderecoEntrega.cep}`}</p> */}
+                        <p className="text-sm"><strong>Endereço de entrega:</strong> temos problema nessa linha revisar contrato</p>
                       </div>
                     </div>
 
                     <div className="mt-4 space-y-2">
-                      {e.pacotes.map((p) => (
+                      {e.packages.map((p) => (
                         <div key={p.id} className="flex justify-between items-center">
                           <div className="flex items-center gap-2">
                             <div className="w-3 h-3 bg-orange rounded-full" />
-                            <p className="font-bold text-sm">{p.descricao} - {p.peso}kg</p>
+                            <p className="font-bold text-sm">{p.description} - {p.weight}kg</p>
                           </div>
                           <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">
                             {p.status}

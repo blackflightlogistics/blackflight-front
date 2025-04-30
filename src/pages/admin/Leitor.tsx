@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import QrScanner from "qr-scanner";
-import { encomendaService, } from "../../services/encomendaService";
+import { orderService, } from "../../services/encomendaService";
 import ConfirmacaoCheckinModal from "../../components/admin/ConfirmacaoCheckinModal";
 import { isEncomendaStatus, isPacoteStatus } from "../../utils/utils";
 
@@ -60,39 +60,39 @@ function Leitor() {
 
   const atualizarStatus = async (status: string) => {
     if (modalTipo === "encomenda" && isEncomendaStatus(status)) {
-      const id = Number(modalCodigo.replace("E-", ""));
-      const encomenda = await encomendaService.buscarPorId(id);
+      const id = modalCodigo.replace("E-", "");
+      const encomenda = await orderService.buscarPorId(id);
 
       // Atualizar status da encomenda e pacotes se necessário
       encomenda.status = status;
       if (status === "em preparação" || status === "em transito") {
-        encomenda.pacotes = encomenda.pacotes.map((p) => ({
+        encomenda.packages = encomenda.packages.map((p) => ({
           ...p,
           status,
         }));
       } else if (status === "cancelada") {
-        encomenda.pacotes = encomenda.pacotes.map((p) =>
+        encomenda.packages = encomenda.packages.map((p) =>
           p.status !== "entregue" ? { ...p, status: "cancelada" } : p
         );
       }
-
-      await encomendaService.atualizar(encomenda);
+//todo: corrigir o cancelamento de encomenda
+      // await orderService.atualizar(encomenda);
       alert("Status da encomenda atualizado com sucesso.");
     }
 
     if (modalTipo === "pacote" && isPacoteStatus(status)) {
-      const pacoteId = Number(modalCodigo.replace("P-", ""));
-      const todas = await encomendaService.listar();
+      const pacoteId = modalCodigo.replace("P-", "");
+      const todas = await orderService.listar();
       const encomenda = todas.find((e) =>
-        e.pacotes.some((p) => p.id === pacoteId)
+        e.packages.some((p) => p.id === pacoteId)
       );
       if (!encomenda) return;
 
-      encomenda.pacotes = encomenda.pacotes.map((p) =>
+      encomenda.packages = encomenda.packages.map((p) =>
         p.id === pacoteId ? { ...p, status } : p
       );
-
-      await encomendaService.atualizar(encomenda);
+//todo: corrigir o cancelamento de pacote
+      // await orderService.atualizar(encomenda);
       alert("Status do pacote atualizado com sucesso.");
     }
 
