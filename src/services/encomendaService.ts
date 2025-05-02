@@ -1,26 +1,37 @@
 // src/services/encomendaService.ts
-
 import api from "../api/api";
 
-export type FormaPagamento = "à vista" | "parcelado" | "na retirada";
-export type PacoteStatus = "em preparação" | "em transito" | "aguardando retirada" | "entregue" | "cancelada";
-export type EncomendaStatus = "em preparação" | "em transito" | "aguardando retirada" | "entregue" | "cancelada";
+export type FormaPagamento = "a_vista" | "parcelado" | "na_retirada";
+export type PacoteStatus =
+  |"em_preparacao"
+  | "em_transito"
+  | "aguardando_retirada"
+  | "entregue"
+  | "cancelada";
+export type EncomendaStatus =
+  |  "em_preparacao"
+  | "em_transito"
+  | "aguardando_retirada"
+  | "entregue"
+  | "cancelada";
 
-
-/** Interfaces refletindo o que o backend retorna */
 export interface Account {
   id: string;
   name: string;
   email: string;
   phone_number: string;
-  country: string;
   inserted_at: string;
+  country: string;
+  cep: string;
+  city: string;
+  state: string;
+  number: string;
 }
 
 export interface Package {
   id: string;
   description: string;
-  weight: string; // conforme vem do back
+  weight: string;
   declared_value: string;
   status: string;
   inserted_at: string;
@@ -33,16 +44,21 @@ export interface Order {
   to_account_id: string;
   from_account: Account;
   to_account: Account;
-  status: string;
+  status: string | null;
   is_express: boolean;
   scheduled_date: string | null;
   shipment_id: string | null;
   inserted_at: string;
   updated_at: string;
   packages: Package[];
+
+  // Novos campos
+  total_value: string | null;
+  descount: string | null;
+  paid_now: string | null;
+  payment_type: string | null;
 }
 
-/** Interface para criação de uma nova encomenda */
 export interface CreateOrderPayload {
   from_account_id: string;
   to_account_id: string;
@@ -51,27 +67,23 @@ export interface CreateOrderPayload {
   scheduled_date?: string;
   packages: {
     description: string;
-    weight: string; // ou number (vamos enviar como string para compatibilidade)
+    weight: string;
     status: string;
-    declared_value: string; // ou number (vamos enviar como string)
+    declared_value: string;
   }[];
 }
 
-/** Service */
 export const orderService = {
-  /** Listar todas as encomendas */
   listar: async (): Promise<Order[]> => {
     const response = await api.get<{ data: Order[] }>("/orders");
     return response.data.data;
   },
 
-  /** Buscar uma encomenda pelo ID */
   buscarPorId: async (id: string): Promise<Order> => {
     const response = await api.get<Order>(`/orders/${id}`);
     return response.data;
   },
 
-  /** Adicionar (criar) uma nova encomenda */
   adicionar: async (orderData: CreateOrderPayload): Promise<Order> => {
     const response = await api.post<Order>("/orders", orderData);
     return response.data;

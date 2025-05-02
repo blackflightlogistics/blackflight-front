@@ -16,7 +16,7 @@ function EncomendaPagamento() {
   const [remetente, setRemetente] = useState<Cliente | null>(null);
   const [destinatario, setDestinatario] = useState<Cliente | null>(null);
   const [formaPagamento, setFormaPagamento] =
-    useState<FormaPagamento>("à vista");
+    useState<FormaPagamento>("a_vista");
   const [desconto, setDesconto] = useState("");
   const [mostrarMaisOpcoes, setMostrarMaisOpcoes] = useState(false);
   const [valorPagoInput, setValorPagoInput] = useState("");
@@ -49,7 +49,7 @@ function EncomendaPagamento() {
       console.log("Encomenda encontrada:", encomendaEncontrada);
       setEncomenda(encomendaEncontrada);
       // setFormaPagamento(encomendaEncontrada.formaPagamento || "à vista");
-      setFormaPagamento( "à vista");
+      setFormaPagamento( "a_vista");
       setPacotesSelecionados(encomendaEncontrada.packages.map((p) => p.id));
 
       const remetente = await clienteService.buscarPorId(encomendaEncontrada.from_account_id);
@@ -71,7 +71,7 @@ function EncomendaPagamento() {
   const valorDesconto = desconto ? parseFloat(desconto) : 0;
   const valorFinal = Math.max(0, valorBase - valorDesconto);
   const valorPago =
-    formaPagamento === "à vista" ? valorFinal : parseFloat(valorPagoInput) || 0;
+    formaPagamento === "a_vista" ? valorFinal : parseFloat(valorPagoInput) || 0;
 
   const statusPagamento =
     valorPago >= valorFinal ? "pago" : valorPago > 0 ? "parcial" : "pendente";

@@ -65,7 +65,7 @@ function Leitor() {
 
       // Atualizar status da encomenda e pacotes se necessário
       encomenda.status = status;
-      if (status === "em preparação" || status === "em transito") {
+      if (status === "em_preparacao" || status === "em_transito") {
         encomenda.packages = encomenda.packages.map((p) => ({
           ...p,
           status,

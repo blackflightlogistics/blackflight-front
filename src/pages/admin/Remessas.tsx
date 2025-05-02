@@ -11,16 +11,20 @@ const Remessas = () => {
   const [buscaPais, setBuscaPais] = useState<string>("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [acoesAbertas, setAcoesAbertas] = useState<string | null>(null);
+  const [carregando, setCarregando] = useState(true); // ⬅️ novo estado de loading
 
   useEffect(() => {
     const carregar = async () => {
+      setCarregando(true);
       const [remessasData, encomendasData] = await Promise.all([
         remessaService.listar(),
         orderService.listar(),
       ]);
       setRemessas(remessasData);
       setEncomendas(encomendasData);
+      setCarregando(false);
     };
+
     carregar();
   }, []);
 
@@ -38,7 +42,6 @@ const Remessas = () => {
     console.log("Remessa enviada:", id);
     // aqui falta o envio da remessa para o sistema de envio
     fecharRemessa(id);
-    
   };
 
   const remessasFiltradas = remessas.filter((r) => {
@@ -112,8 +115,11 @@ const Remessas = () => {
             />
           </div>
         </div>
-
-        {remessasFiltradas.length === 0 ? (
+        {carregando ? (
+          <div className="flex justify-center items-center h-[300px]">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange border-t-transparent"></div>
+          </div>
+        ) : remessasFiltradas.length === 0 ? (
           <p className="text-gray-600">
             Nenhuma remessa encontrada com os filtros.
           </p>
@@ -217,7 +223,8 @@ const Remessas = () => {
                               </button>
                             </li>
                           )} */}
-                          aqui falta o peso para mostrar o botão de fechar remessa
+                          aqui falta o peso para mostrar o botão de fechar
+                          remessa
                           {r.status === "fechada" && (
                             <li>
                               <button

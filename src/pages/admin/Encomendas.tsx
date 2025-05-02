@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { Order, orderService } from "../../services/encomendaService";
 import { Cliente, clienteService } from "../../services/clienteService";
+import { paymentTypeToString, statusToString } from "../../utils/utils";
 
 function Encomendas() {
   const [encomendas, setEncomendas] = useState<Order[]>([]);
@@ -86,12 +87,9 @@ function Encomendas() {
                           </p>
                           <p>
                             <strong>Endereço: </strong>
-                            aqui falta vir o endereço
-                            {/* {e.enderecoEntrega.rua},{" "}
-                            {e.enderecoEntrega.numero} -{" "}
-                            {e.enderecoEntrega.bairro},{" "}
-                            {e.enderecoEntrega.cidade} -{" "}
-                            {e.enderecoEntrega.estado}, {e.enderecoEntrega.cep} */}
+                            {e.to_account.city} - {e.to_account.state} -{" "}
+                            {e.to_account.country} <br/>- aqui deveria vir o cep nao
+                            ?
                           </p>
                         </div>
 
@@ -99,8 +97,8 @@ function Encomendas() {
                           <p>
                             <strong>Valor total:</strong>{" "}
                             <span className="text-black font-bold">
-                              {/* R$ {e.valorTotal?.toFixed(2)} */}
-                              falta valor total da encomenda
+                             $ {e.total_value}
+                           
                             </span>
                           </p>
                           <p>
@@ -108,13 +106,17 @@ function Encomendas() {
                             <span className="text-black">
                               {e.status == null
                                 ? "enviado sem status precisamos bloquear"
-                                : e.status}{" "}
+                                : statusToString(e.status)}{" "}
                             </span>
                           </p>
                           <p>
                             {/* <strong>Forma de pagamento:</strong> {e.formaPagamento} */}
-                            <strong>Forma de pagamento:</strong> falata a forma
-                            de pagamento escolhida
+                            <strong>Forma de pagamento: </strong>
+                            <span className="text-black">
+                              {e.payment_type == null
+                                ? "enviado sem status precisamos bloquear"
+                                : paymentTypeToString(e.payment_type)}
+                            </span>
                           </p>
                         </div>
                       </div>
@@ -141,8 +143,7 @@ function Encomendas() {
                           ))}
                         </div>
                         <Link
-                          
-                          to={ `/admin/encomendas/${e.id}/pagamento`}
+                          to={`/admin/encomendas/${e.id}/pagamento`}
                           className="text-center mt-4 md:mt-0 md:absolute top-30 right-4 px-4 py-2 bg-orange text-white rounded-md font-secondary text-sm hover:opacity-90 transition"
                         >
                           Detalhes

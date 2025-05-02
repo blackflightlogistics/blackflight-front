@@ -1,20 +1,25 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/admin/Sidebar";
 import { clienteService, Cliente } from "../../services/clienteService";
-import ClienteForm, { ClienteFormData } from "../../components/admin/ClienteForm";
+import ClienteForm, {
+  ClienteFormData,
+} from "../../components/admin/ClienteForm";
 
 function Clientes() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [formVisible, setFormVisible] = useState(false);
   const [sidebarAberta, setSidebarAberta] = useState(false);
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     carregarClientes();
   }, []);
 
   const carregarClientes = async () => {
+    setCarregando(true);
     const dados = await clienteService.listar();
     setClientes(dados);
+    setCarregando(false);
   };
 
   const handleSalvarCliente = async (form: ClienteFormData) => {
@@ -48,7 +53,10 @@ function Clientes() {
         >
           ☰ Menu
         </button>
-        <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
+        <Sidebar
+          mobileAberta={sidebarAberta}
+          onFechar={() => setSidebarAberta(false)}
+        />
       </div>
 
       {/* Conteúdo principal */}
@@ -71,7 +79,11 @@ function Clientes() {
           />
         )}
 
-        {clientes.length === 0 ? (
+        {carregando ? (
+          <div className="flex justify-center items-center h-[300px]">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange border-t-transparent"></div>
+          </div>
+        ) : clientes.length === 0 ? (
           <p className="text-gray-600">Nenhum cliente cadastrado.</p>
         ) : (
           <ul className="space-y-4">
@@ -82,13 +94,17 @@ function Clientes() {
               >
                 <p>
                   <span className="font-bold">Nome:</span> {cliente.name}
-                  <span className="font-bold ml-4">Contato:</span> {cliente.phoneNumber}
+                  <span className="font-bold ml-4">Contato:</span>{" "}
+                  {cliente.phoneNumber}
                 </p>
                 <p className="mt-2">
                   <span className="font-bold">E-mail:</span> {cliente.email}
                 </p>
                 <p className="mt-2">
-                  <span className="font-bold">Endereço:</span> {cliente.address.street}, {cliente.address.number} - {cliente.address.neighborhood}, {cliente.address.city} - {cliente.address.state}, {cliente.address.zipCode}
+                  <span className="font-bold">Endereço:</span>{" "}
+                  {cliente.address.street}, {cliente.address.number} -{" "}
+                  {cliente.address.neighborhood}, {cliente.address.city} -{" "}
+                  {cliente.address.state}, {cliente.address.zipCode}
                 </p>
               </li>
             ))}
