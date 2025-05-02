@@ -14,8 +14,8 @@ import Etiquetas from "./pages/admin/Etiquetas";
 import Leitor from "./pages/admin/Leitor";
 import RemessaNova from "./pages/admin/RemessaNova";
 
-import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
+import { AuthProvider } from "./context/AuthProvider";
 
 function App() {
   return (
