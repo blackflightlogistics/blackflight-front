@@ -1,15 +1,17 @@
+// src/pages/admin/Clientes.tsx
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { clienteService, Cliente } from "../../services/clienteService";
-import ClienteForm, {
-  ClienteFormData,
-} from "../../components/admin/ClienteForm";
+import ClienteForm, { ClienteFormData } from "../../components/admin/ClienteForm";
+import { formatarLinkWhatsapp } from "../../utils/formatarLinkWhatsapp";
 
 function Clientes() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [formVisible, setFormVisible] = useState(false);
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [carregando, setCarregando] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     carregarClientes();
@@ -30,14 +32,14 @@ function Clientes() {
       city: form.city,
       state: form.state,
       zipCode: form.zipCode,
-      country: form.country, // ou ajustar conforme for
+      country: form.country,
     };
 
     await clienteService.adicionar({
       name: form.name,
       phoneNumber: form.phoneNumber,
       email: form.email,
-      address: endereco,
+      addresses: [endereco],
     });
 
     setFormVisible(false);
@@ -53,17 +55,12 @@ function Clientes() {
         >
           ☰ Menu
         </button>
-        <Sidebar
-          mobileAberta={sidebarAberta}
-          onFechar={() => setSidebarAberta(false)}
-        />
+        <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
       </div>
 
-      {/* Conteúdo principal */}
       <div className="flex-1 flex flex-col h-screen overflow-y-auto bg-[#fcf7f1] pt-16 p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold font-primary">Clientes</h1>
-
           <button
             onClick={() => setFormVisible(!formVisible)}
             className="bg-orange text-white px-4 py-2 rounded hover:opacity-90 font-secondary text-sm"
@@ -73,10 +70,7 @@ function Clientes() {
         </div>
 
         {formVisible && (
-          <ClienteForm
-            onSubmit={handleSalvarCliente}
-            onCancel={() => setFormVisible(false)}
-          />
+          <ClienteForm onSubmit={handleSalvarCliente} onCancel={() => setFormVisible(false)} />
         )}
 
         {carregando ? (
@@ -94,18 +88,35 @@ function Clientes() {
               >
                 <p>
                   <span className="font-bold">Nome:</span> {cliente.name}
-                  <span className="font-bold ml-4">Contato:</span>{" "}
-                  {cliente.phoneNumber}
+                  <span className="font-bold ml-4">Contato: </span> {formatarLinkWhatsapp( cliente.phoneNumber,{ icon: true })} 
                 </p>
                 <p className="mt-2">
                   <span className="font-bold">E-mail:</span> {cliente.email}
                 </p>
-                <p className="mt-2">
-                  <span className="font-bold">Endereço:</span>{" "}
-                  {cliente.address.street}, {cliente.address.number} -{" "}
-                  {cliente.address.neighborhood}, {cliente.address.city} -{" "}
-                  {cliente.address.state}, {cliente.address.zipCode}
-                </p>
+                <div className="mt-2 space-y-1">
+                  <span className="font-bold">Endereços:</span>
+                  {cliente.addresses.length === 0 ? (
+                    <p className="text-gray-600">Nenhum endereço cadastrado</p>
+                  ) : (
+                    <ul className="ml-4 list-disc">
+                      {cliente.addresses.map((endereco, idx) => (
+                        <li key={idx}>
+                          {endereco.number} - {endereco.street} - {endereco.neighborhood} - 
+                          {endereco.city} - {endereco.state} - {endereco.country} {endereco.zipCode}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                <div className="mt-4">
+                  <button
+                    onClick={() => navigate(`/admin/clientes/${cliente.id}/editar`)}
+                    className="bg-orange text-white px-4 py-2 rounded hover:opacity-90 font-secondary text-sm"
+                  >
+                    Editar
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

@@ -59,8 +59,8 @@ function NovaEncomenda() {
     async function carregarDados() {
       setLoadingTela(true);
       await clienteService.listar().then(setClientes);
-      await configService.carregar().then((conf) => {
-        setAdicionalExpresso(conf.adicionalExpresso || 0);
+      await configService.buscar().then((conf) => {
+        setAdicionalExpresso(Number(conf.expressAmount) || 0);
       });
       setLoadingTela(false);
     }
@@ -176,7 +176,7 @@ function NovaEncomenda() {
                   name: form.name,
                   email: form.email,
                   phoneNumber: form.phoneNumber,
-                  address: endereco,
+                  addresses: [endereco],
                 });
                 setClientes(await clienteService.listar());
                 setRemetenteId(novo.id);
@@ -198,12 +198,12 @@ function NovaEncomenda() {
               const cliente = clientes.find((c) => c.id === id);
               if (cliente) {
                 setEndereco({
-                  rua: cliente.address.street,
-                  numero: cliente.address.number,
-                  bairro: cliente.address.neighborhood,
-                  cidade: cliente.address.city,
-                  estado: cliente.address.state,
-                  cep: cliente.address.zipCode,
+                  rua: cliente.addresses[0].street,
+                  numero: cliente.addresses[0].number,
+                  bairro: cliente.addresses[0].neighborhood,
+                  cidade: cliente.addresses[0].city,
+                  estado: cliente.addresses[0].state,
+                  cep: cliente.addresses[0].zipCode,
                 });
               }
             }}
@@ -225,7 +225,7 @@ function NovaEncomenda() {
                   name: form.name,
                   email: form.email,
                   phoneNumber: form.phoneNumber,
-                  address: endereco,
+                  addresses: [endereco],
                 });
                 setClientes(await clienteService.listar());
                 setDestinatarioId(novo.id);

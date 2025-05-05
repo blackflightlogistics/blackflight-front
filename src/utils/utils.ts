@@ -52,3 +52,4 @@ export function paymentTypeToString(paymentType: string): string {
       return "Tipo de pagamento desconhecido";
   }
 }
+

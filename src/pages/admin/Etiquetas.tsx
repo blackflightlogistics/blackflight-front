@@ -101,11 +101,11 @@ function EtiquetaEncomenda() {
           <section className="border p-4 rounded bg-white shadow">
             <h2 className="text-lg font-semibold mb-2">Remetente</h2>
             <p>{remetente.name}</p>
-            <p className="text-sm text-gray-600">{remetente.address.city} - {remetente.address.state} - {remetente.address.country}</p>
+            <p className="text-sm text-gray-600">{remetente.addresses[0].city} - {remetente.addresses[0].state} - {remetente.addresses[0].country}</p>
 
             <h2 className="text-lg font-semibold mt-4 mb-2">Destinatário</h2>
             <p>{destinatario.name}</p>
-            <p className="text-sm text-gray-600">{destinatario.address.city} - {destinatario.address.state} - {destinatario.address.country}</p>
+            <p className="text-sm text-gray-600">{destinatario.addresses[0].city} - {destinatario.addresses[0].state} - {destinatario.addresses[0].country}</p>
 
             <p className="text-sm text-gray-500 mt-2">
               Data de geração: {dataGeracao}

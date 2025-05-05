@@ -111,7 +111,7 @@ function EncomendaPagamento() {
           <p>
             {remetente.name} - {remetente.email} - {remetente.phoneNumber}
           </p>
-          <p className="text-sm text-gray-600">{remetente.address.city} - {remetente.address.state} - {remetente.address.zipCode}</p>
+          <p className="text-sm text-gray-600">{remetente.addresses[0].city} - {remetente.addresses[0].state} - {remetente.addresses[0].zipCode}</p>
         </section>
 
         {/* Destinatário */}
@@ -120,7 +120,7 @@ function EncomendaPagamento() {
           <p>
             {destinatario.name} - {destinatario.email} - {destinatario.phoneNumber}
           </p>
-          <p className="text-sm text-gray-600">{destinatario.address.city} - {destinatario.address.state} - {destinatario.address.zipCode}</p>
+          <p className="text-sm text-gray-600">{destinatario.addresses[0].city} - {destinatario.addresses[0].state} - {destinatario.addresses[0].zipCode}</p>
         </section>
 
         {/* Pacotes */}

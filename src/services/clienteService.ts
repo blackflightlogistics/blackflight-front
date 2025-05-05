@@ -1,5 +1,5 @@
+// src/services/clienteService.ts
 import api from "../api/api";
-
 
 export type Address = {
   street: string;
@@ -16,16 +16,21 @@ export type Cliente = {
   name: string;
   phoneNumber: string;
   email: string;
-  address: Address;
+  addresses: Address[];
 };
+
 type RawAccount = {
   id: string;
   name: string;
   email: string;
   phone_number: string;
-  street?: string;
-  number?: string;
-  neighborhood?: string;
+  adresses?: RawAdress[]; // <- campo correto da API
+};
+
+type RawAdress = {
+  street: string;
+  number: string;
+  neighborhood: string;
   city: string;
   state: string;
   cep: string;
@@ -42,47 +47,53 @@ export const clienteService = {
       name: item.name,
       phoneNumber: item.phone_number,
       email: item.email,
-      address: {
-        street: item.street || "",
-        number: item.number || "",
-        neighborhood: item.neighborhood || "",
-        city: item.city || "",
-        state: item.state || "",
-        zipCode: item.cep || "",
-        country: item.country || "",
-      },
+      addresses: item.adresses?.map((addr) => ({
+        street: addr.street || "",
+        number: addr.number || "",
+        neighborhood: addr.neighborhood || "",
+        city: addr.city || "",
+        state: addr.state || "",
+        zipCode: addr.cep || "",
+        country: addr.country || "",
+      })) || [],
     }));
   },
-  adicionar: async (cliente: Omit<Cliente, "id" | "address"> & { address: Address }): Promise<Cliente> => {
+
+  adicionar: async (
+    cliente: Omit<Cliente, "id">
+  ): Promise<Cliente> => {
     const payload = {
       name: cliente.name,
       email: cliente.email,
       phone_number: cliente.phoneNumber,
-      number: cliente.address.number,
-      city: cliente.address.city,
-      state: cliente.address.state,
-      country: cliente.address.country,
-      cep: cliente.address.zipCode,
+      adresses: cliente.addresses.map((addr) => ({
+        street: addr.street,
+        number: addr.number,
+        neighborhood: addr.neighborhood,
+        city: addr.city,
+        state: addr.state,
+        cep: addr.zipCode,
+        country: addr.country,
+      })),
     };
 
     const response = await api.post("/accounts", payload);
-
     const saved = response.data;
 
     return {
       id: saved.id,
       name: saved.name,
-      email: saved.email,
       phoneNumber: saved.phone_number,
-      address: {
-        street: "", // Por enquanto sem campo vindo
-        number: saved.number,
-        neighborhood: "",
-        city: saved.city,
-        state: saved.state,
-        zipCode: saved.cep,
-        country: saved.country,
-      },
+      email: saved.email,
+      addresses: saved.adresses?.map((addr: RawAdress) => ({
+        street: addr.street,
+        number: addr.number,
+        neighborhood: addr.neighborhood,
+        city: addr.city,
+        state: addr.state,
+        zipCode: addr.cep,
+        country: addr.country,
+      })) || [],
     };
   },
 
@@ -95,30 +106,35 @@ export const clienteService = {
       name: item.name,
       phoneNumber: item.phone_number,
       email: item.email,
-      address: {
-        street: item.street || "",
-        number: item.number || "",
-        neighborhood: item.neighborhood || "",
-        city: item.city || "",
-        state: item.state || "",
-        zipCode: item.cep || "",
-        country: item.country || "",
-      },
+      addresses: item.adresses?.map((addr: RawAdress) => ({
+        street: addr.street,
+        number: addr.number,
+        neighborhood: addr.neighborhood,
+        city: addr.city,
+        state: addr.state,
+        zipCode: addr.cep,
+        country: addr.country,
+      })) || [],
     };
   },
 
-  atualizar: async (id: string, dados: Partial<Cliente>): Promise<Cliente> => {
+  atualizar: async (
+    id: string,
+    dados: Partial<Cliente>
+  ): Promise<Cliente> => {
     const payload = {
       name: dados.name,
       email: dados.email,
       phone_number: dados.phoneNumber,
-      street: dados.address?.street,
-      number: dados.address?.number,
-      neighborhood: dados.address?.neighborhood,
-      city: dados.address?.city,
-      state: dados.address?.state,
-      cep: dados.address?.zipCode,
-      country: dados.address?.country,
+      adresses: dados.addresses?.map((addr) => ({
+        street: addr.street,
+        number: addr.number,
+        neighborhood: addr.neighborhood,
+        city: addr.city,
+        state: addr.state,
+        cep: addr.zipCode,
+        country: addr.country,
+      })),
     };
 
     const response = await api.put(`/accounts/${id}`, payload);
@@ -129,15 +145,15 @@ export const clienteService = {
       name: item.name,
       phoneNumber: item.phone_number,
       email: item.email,
-      address: {
-        street: item.street || "",
-        number: item.number || "",
-        neighborhood: item.neighborhood || "",
-        city: item.city || "",
-        state: item.state || "",
-        zipCode: item.cep || "",
-        country: item.country || "",
-      },
+      addresses: item.adresses?.map((addr: RawAdress) => ({
+        street: addr.street,
+        number: addr.number,
+        neighborhood: addr.neighborhood,
+        city: addr.city,
+        state: addr.state,
+        zipCode: addr.cep,
+        country: addr.country,
+      })) || [],
     };
   },
 

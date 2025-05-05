@@ -9,7 +9,8 @@ module.exports = {
         orangeBorder: "#FFE8D0",
         black: "#0B0601",
         transparent: "transparent",
-        lightGrey:"#D1D5DB"
+        lightGrey:"#D1D5DB",
+        grey: "#6B7280",
       },
       fontFamily: {
         roboto: ['Roboto', 'sans-serif'],

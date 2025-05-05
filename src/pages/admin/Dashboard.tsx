@@ -31,7 +31,7 @@ const Dashboard = () => {
 
         <DashboardCards />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+        <div className=" gap-6 my-6">
           <OrdersChart />
           {/* Você pode adicionar outro gráfico ou mapa aqui */}
         </div>
