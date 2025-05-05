@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 export type ClienteFormData = {
+  id?: string;
   name: string;
   phoneNumber: string;
   email: string;

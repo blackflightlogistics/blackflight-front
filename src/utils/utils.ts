@@ -23,7 +23,7 @@ export function isPacoteStatus(status: string): status is PacoteStatus {
 
   
 }
-export function statusToString(status: string): string {
+export function pacoteStatusToString(status: string): string {
   switch (status) {
     case "em_preparacao":
       return "Em Preparação";
@@ -48,6 +48,19 @@ export function paymentTypeToString(paymentType: string): string {
       return "Parcelado";
     case "na_retirada":
       return "Na Retirada";
+    default:
+      return "Tipo de pagamento desconhecido";
+  }
+}
+
+export function paymentStringToEnum(paymentType: string): string {
+  switch (paymentType) {
+    case "À Vista":
+      return "a_vista";
+    case "Parcelado":
+      return "parcelado";
+    case "Na Retirada":
+      return "na_retirada";
     default:
       return "Tipo de pagamento desconhecido";
   }

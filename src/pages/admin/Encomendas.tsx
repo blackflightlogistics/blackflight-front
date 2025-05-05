@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { Order, orderService } from "../../services/encomendaService";
 import { Cliente, clienteService } from "../../services/clienteService";
-import { paymentTypeToString, statusToString } from "../../utils/utils";
+import { pacoteStatusToString } from "../../utils/utils";
 
 function Encomendas() {
   const [encomendas, setEncomendas] = useState<Order[]>([]);
@@ -87,9 +87,8 @@ function Encomendas() {
                           </p>
                           <p>
                             <strong>Endereço: </strong>
-                            {e.to_account.city} - {e.to_account.state} -{" "}
-                            {e.to_account.country} <br/>- aqui deveria vir o cep nao
-                            ?
+                            {e.number} - {e.street} - {e.neighborhood} -{e.city}{" "}
+                            - {e.state} -{e.country} - {e.zip_code} <br />
                           </p>
                         </div>
 
@@ -97,25 +96,24 @@ function Encomendas() {
                           <p>
                             <strong>Valor total:</strong>{" "}
                             <span className="text-black font-bold">
-                             $ {e.total_value}
-                           
+                              $ {e.total_value}
                             </span>
                           </p>
                           <p>
                             <strong>Status de pagamento:</strong>{" "}
                             <span className="text-black">
-                              {e.status == null
-                                ? "enviado sem status precisamos bloquear"
-                                : statusToString(e.status)}{" "}
+                              {e.payment_type !== "" && e.payment_type !== null
+                                ? e.payment_type
+                                : "Em aberto"}
                             </span>
                           </p>
                           <p>
                             {/* <strong>Forma de pagamento:</strong> {e.formaPagamento} */}
                             <strong>Forma de pagamento: </strong>
                             <span className="text-black">
-                              {e.payment_type == null
-                                ? "enviado sem status precisamos bloquear"
-                                : paymentTypeToString(e.payment_type)}
+                              {e.payment_type !== "" && e.payment_type !== null
+                                ? e.payment_type
+                                : "Em aberto"}
                             </span>
                           </p>
                         </div>
@@ -132,11 +130,11 @@ function Encomendas() {
                               <div className="flex items-center gap-2 w-full">
                                 <div className="w-3 h-3 bg-orange rounded-full" />
                                 <p className="font-bold">
-                                  {p.description} - {Number(p.weight) / 1000} kg
+                                  {p.description} - {Number(p.weight)} kg
                                 </p>
                               </div>
                               <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                                {p.status}
+                                {pacoteStatusToString(p.status)}
                               </span>
                               <div className="text-right text-sm mt-4 md:mt-0"></div>
                             </div>

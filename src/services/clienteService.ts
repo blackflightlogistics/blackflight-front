@@ -69,7 +69,7 @@ export const clienteService = {
       email: cliente.email,
       phone_number: cliente.phoneNumber,
       adresses: cliente.addresses.map((addr) => ({
-        id: addr.id ?? null,
+        adress_id: (  addr.id == "" ? null : addr.id),
         street: addr.street,
         number: addr.number,
         neighborhood: addr.neighborhood,
@@ -79,7 +79,7 @@ export const clienteService = {
         country: addr.country,
       })),
     };
-
+console.log("payload", payload);
     const response = await api.post("/accounts", payload);
     const saved = response.data;
 
@@ -89,6 +89,7 @@ export const clienteService = {
       phoneNumber: saved.phone_number,
       email: saved.email,
       addresses: saved.adresses?.map((addr: RawAdress) => ({
+        id: addr.id,
         street: addr.street,
         number: addr.number,
         neighborhood: addr.neighborhood,
@@ -131,7 +132,7 @@ export const clienteService = {
       email: dados.email,
       phone_number: dados.phoneNumber,
       adresses: dados.addresses?.map((addr) => ({
-        adress_id: addr.id ?? null,
+        adress_id:(  addr.id == "" ? null : addr.id),
         street: addr.street,
         number: addr.number,
         neighborhood: addr.neighborhood,
@@ -151,6 +152,7 @@ export const clienteService = {
       phoneNumber: item.phone_number,
       email: item.email,
       addresses: item.adresses?.map((addr: RawAdress) => ({
+        id: addr.id,
         street: addr.street,
         number: addr.number,
         neighborhood: addr.neighborhood,

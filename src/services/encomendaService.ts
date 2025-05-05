@@ -3,13 +3,13 @@ import api from "../api/api";
 
 export type FormaPagamento = "a_vista" | "parcelado" | "na_retirada";
 export type PacoteStatus =
-  |"em_preparacao"
+  | "em_preparacao"
   | "em_transito"
   | "aguardando_retirada"
   | "entregue"
   | "cancelada";
 export type EncomendaStatus =
-  |  "em_preparacao"
+  | "em_preparacao"
   | "em_transito"
   | "aguardando_retirada"
   | "entregue"
@@ -51,12 +51,19 @@ export interface Order {
   inserted_at: string;
   updated_at: string;
   packages: Package[];
-
-  // Novos campos
   total_value: string | null;
   descount: string | null;
   paid_now: string | null;
   payment_type: string | null;
+  neighborhood: string;
+  street: string;
+  city: string;
+  state: string;
+  country: string;
+  number: string;
+  additional_info: string;
+  zip_code: string;
+  cep: string;
 }
 
 export interface CreateOrderPayload {
@@ -65,6 +72,16 @@ export interface CreateOrderPayload {
   status?: string;
   is_express: boolean;
   scheduled_date?: string;
+  city: string;
+  state: string;
+  country: string;
+  number: string;
+  additional_info: string;
+  cep: string;
+  paid_now: string;
+  descount: string;
+  payment_type: string;
+  total_value: string;
   packages: {
     description: string;
     weight: string;

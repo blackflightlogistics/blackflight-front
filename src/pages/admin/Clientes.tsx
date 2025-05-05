@@ -26,6 +26,7 @@ function Clientes() {
 
   const handleSalvarCliente = async (form: ClienteFormData) => {
     const endereco = {
+      
       street: form.street,
       number: form.number,
       neighborhood: form.neighborhood,

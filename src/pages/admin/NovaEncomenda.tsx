@@ -5,7 +5,7 @@ import { clienteService, Cliente } from "../../services/clienteService";
 import { configService } from "../../services/configService";
 import ClienteSelect from "../../components/admin/ClienteSelect";
 import dayjs from "dayjs";
-import { orderService } from "../../services/encomendaService";
+import { orderService, PacoteStatus } from "../../services/encomendaService";
 import ClienteForm from "../../components/admin/ClienteForm";
 
 function NovaEncomenda() {
@@ -20,15 +20,10 @@ function NovaEncomenda() {
     estado: "",
     cep: "",
   });
-  type PacoteStatus =
-    | "em preparação"
-    | "em transito"
-    | "aguardando retirada"
-    | "entregue"
-    | "cancelada";
+
   const [loadingTela, setLoadingTela] = useState(true);
   const [statusPacote, setStatusPacote] =
-    useState<PacoteStatus>("em preparação");
+    useState<PacoteStatus>("em_preparacao");
 
   const [remetenteId, setRemetenteId] = useState<string>("");
   const [destinatarioId, setDestinatarioId] = useState<string>("");
@@ -54,6 +49,9 @@ function NovaEncomenda() {
 
   const [loadingSalvar, setLoadingSalvar] = useState(false);
   const [loadingPagamento, setLoadingPagamento] = useState(false);
+  const [showRemetenteEndereco, setShowRemetenteEndereco] = useState(false);
+  const [showDestinatarioEndereco, setShowDestinatarioEndereco] =
+    useState(false);
 
   useEffect(() => {
     async function carregarDados() {
@@ -73,10 +71,9 @@ function NovaEncomenda() {
     const novoPacote = {
       description: descricaoPacote,
       weight: pesoPacote,
-      status: "waiting",
+      status: statusPacote,
       declared_value: valorDeclaradoPacote || "0",
     };
-
     setPacotes([...pacotes, novoPacote]);
     setDescricaoPacote("");
     setPesoPacote("");
@@ -85,16 +82,29 @@ function NovaEncomenda() {
 
   const salvarEncomenda = async (irParaPagamento = false) => {
     if (!remetenteId || !destinatarioId || pacotes.length === 0) return;
-
     try {
       if (irParaPagamento) setLoadingPagamento(true);
       else setLoadingSalvar(true);
 
+      const destinatario = clientes.find((c) => c.id === destinatarioId);
+      const endereco = destinatario?.addresses?.[0];
+      if (!endereco) return;
       const novaEncomenda = await orderService.adicionar({
+        status: "em_preparacao",
         from_account_id: remetenteId,
         to_account_id: destinatarioId,
         is_express: encomendaExpressa,
         scheduled_date: encomendaExpressa ? dataEnvioExpressa : undefined,
+        city: endereco.city,
+        state: endereco.state,
+        country: endereco.country,
+        number: endereco.number,
+        cep: endereco.zipCode,
+        additional_info: "",
+        paid_now: "",
+        descount: "",
+        payment_type: "",
+        total_value: "",
         packages: pacotes,
       });
 
@@ -111,22 +121,21 @@ function NovaEncomenda() {
 
   if (loadingTela) {
     return (
-      <div>
-        <div className="h-screen flex overflow-hidden">
-          <button
-            className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
-            onClick={() => setSidebarAberta(true)}
-          >
-            ☰ Menu
-          </button>
+      <div className="h-screen flex overflow-hidden">
+        <button
+          className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
+          onClick={() => setSidebarAberta(true)}
+        >
+          ☰ Menu
+        </button>
 
-          <Sidebar
-            mobileAberta={sidebarAberta}
-            onFechar={() => setSidebarAberta(false)}
-          />
-          <div className="flex items-center justify-center h-screen">
-            <div className="w-12 h-12 border-4 border-orange border-t-transparent rounded-full animate-spin"></div>
-          </div>
+        <Sidebar
+          mobileAberta={sidebarAberta}
+          onFechar={() => setSidebarAberta(false)}
+        />
+
+        <div className="flex-1 flex items-center justify-center bg-[#fcf8f5]">
+          <div className="w-12 h-12 border-4 border-orange border-t-transparent rounded-full animate-spin"></div>
         </div>
       </div>
     );
@@ -157,9 +166,66 @@ function NovaEncomenda() {
             label="Remetente"
             clientes={clientes}
             selectedId={remetenteId}
-            onSelect={(id) => setRemetenteId(id)}
+            onSelect={(id) => {
+              setRemetenteId(id);
+              setShowRemetenteEndereco(false);
+            }}
             onCadastrarNovo={() => setShowRemetenteForm(true)}
           />
+
+          {remetenteId && (
+            <button
+              className="text-sm text-blue-600 "
+              onClick={() => setShowRemetenteEndereco((prev) => !prev)}
+            >
+              {showRemetenteEndereco ? "Ocultar endereço" : "Ver endereço"}
+            </button>
+          )}
+
+          {showRemetenteEndereco && (
+            <div className="grid md:grid-cols-3 gap-2 bg-white p-4 border border-orange rounded">
+              {(() => {
+                const cliente = clientes.find((c) => c.id === remetenteId);
+                const addr = cliente?.addresses?.[0];
+                if (!addr) return <p>Sem endereço cadastrado.</p>;
+                return (
+                  <>
+                    <input
+                      disabled
+                      className="p-2 border rounded"
+                      value={addr.street}
+                    />
+                    <input
+                      disabled
+                      className="p-2 border rounded"
+                      value={addr.number}
+                    />
+                    <input
+                      disabled
+                      className="p-2 border rounded"
+                      value={addr.neighborhood}
+                    />
+                    <input
+                      disabled
+                      className="p-2 border rounded"
+                      value={addr.city}
+                    />
+                    <input
+                      disabled
+                      className="p-2 border rounded"
+                      value={addr.state}
+                    />
+                    <input
+                      disabled
+                      className="p-2 border rounded"
+                      value={addr.zipCode}
+                    />
+                  </>
+                );
+              })()}
+            </div>
+          )}
+
           {showRemetenteForm && (
             <ClienteForm
               onSubmit={async (form) => {
@@ -178,7 +244,8 @@ function NovaEncomenda() {
                   phoneNumber: form.phoneNumber,
                   addresses: [endereco],
                 });
-                setClientes(await clienteService.listar());
+                const novaLista = await clienteService.listar();
+                setClientes(novaLista);
                 setRemetenteId(novo.id);
                 setShowRemetenteForm(false);
               }}
@@ -195,20 +262,75 @@ function NovaEncomenda() {
             selectedId={destinatarioId}
             onSelect={(id) => {
               setDestinatarioId(id);
+              setShowDestinatarioEndereco(false);
               const cliente = clientes.find((c) => c.id === id);
               if (cliente) {
                 setEndereco({
-                  rua: cliente.addresses[0].street,
-                  numero: cliente.addresses[0].number,
-                  bairro: cliente.addresses[0].neighborhood,
-                  cidade: cliente.addresses[0].city,
-                  estado: cliente.addresses[0].state,
-                  cep: cliente.addresses[0].zipCode,
+                  rua: cliente.addresses[0]?.street || "",
+                  numero: cliente.addresses[0]?.number || "",
+                  bairro: cliente.addresses[0]?.neighborhood || "",
+                  cidade: cliente.addresses[0]?.city || "",
+                  estado: cliente.addresses[0]?.state || "",
+                  cep: cliente.addresses[0]?.zipCode || "",
                 });
               }
             }}
             onCadastrarNovo={() => setShowDestinatarioForm(true)}
           />
+
+          {destinatarioId && (
+            <button
+              className="text-sm text-blue-600 "
+              onClick={() => setShowDestinatarioEndereco((prev) => !prev)}
+            >
+              {showDestinatarioEndereco ? "Ocultar endereço" : "Ver endereço"}
+            </button>
+          )}
+
+          {showDestinatarioEndereco && (
+            <div className="grid md:grid-cols-3 gap-2 bg-white p-4 border border-orange rounded">
+              {(() => {
+                const cliente = clientes.find((c) => c.id === destinatarioId);
+                const addr = cliente?.addresses?.[0];
+                if (!addr) return <p>Sem endereço cadastrado.</p>;
+                return (
+                  <>
+                    <input
+                      disabled
+                      className="p-2 border rounded"
+                      value={addr.street}
+                    />
+                    <input
+                      disabled
+                      className="p-2 border rounded"
+                      value={addr.number}
+                    />
+                    <input
+                      disabled
+                      className="p-2 border rounded"
+                      value={addr.neighborhood}
+                    />
+                    <input
+                      disabled
+                      className="p-2 border rounded"
+                      value={addr.city}
+                    />
+                    <input
+                      disabled
+                      className="p-2 border rounded"
+                      value={addr.state}
+                    />
+                    <input
+                      disabled
+                      className="p-2 border rounded"
+                      value={addr.zipCode}
+                    />
+                  </>
+                );
+              })()}
+            </div>
+          )}
+
           {showDestinatarioForm && (
             <ClienteForm
               onSubmit={async (form) => {
@@ -227,7 +349,8 @@ function NovaEncomenda() {
                   phoneNumber: form.phoneNumber,
                   addresses: [endereco],
                 });
-                setClientes(await clienteService.listar());
+                const novaLista = await clienteService.listar();
+                setClientes(novaLista);
                 setDestinatarioId(novo.id);
                 setShowDestinatarioForm(false);
               }}
@@ -269,27 +392,43 @@ function NovaEncomenda() {
               onChange={(e) => setDescricaoPacote(e.target.value)}
             />
             <input
-              placeholder="Peso (g)"
+              placeholder="Peso (kg)"
               type="number"
+              step="0.1"
               className="p-2 border rounded"
               value={pesoPacote}
               onChange={(e) => setPesoPacote(e.target.value)}
+              onBlur={() => {
+                const num = parseFloat(pesoPacote.replace(",", "."));
+                if (!isNaN(num)) {
+                  setPesoPacote(num.toFixed(1));
+                }
+              }}
             />
             <input
               placeholder="Valor Declarado (opcional)"
               type="number"
+              step="0.1"
               className="p-2 border rounded"
               value={valorDeclaradoPacote}
               onChange={(e) => setValorDeclaradoPacote(e.target.value)}
+              onBlur={() => {
+                const num = parseFloat(valorDeclaradoPacote.replace(",", "."));
+                if (!isNaN(num)) {
+                  setValorDeclaradoPacote(num.toFixed(1));
+                } else {
+                  setValorDeclaradoPacote("0.0");
+                }
+              }}
             />
             <select
               className="p-2 border rounded"
               value={statusPacote}
               onChange={(e) => setStatusPacote(e.target.value as PacoteStatus)}
             >
-              <option value="em preparação">Em preparação</option>
-              <option value="em transito">Em trânsito</option>
-              <option value="aguardando retirada">Aguardando retirada</option>
+              <option value="em_preparacao">Em preparação</option>
+              <option value="em_transito">Em trânsito</option>
+              <option value="aguardando_retirada">Aguardando retirada</option>
               <option value="entregue">Entregue</option>
               <option value="cancelada">Cancelada</option>
             </select>
@@ -320,7 +459,6 @@ function NovaEncomenda() {
             {loadingSalvar ? "Salvando..." : "Salvar Encomenda"}
           </button>
 
-         
           <button
             onClick={
               () => salvarEncomenda(true)
@@ -328,7 +466,7 @@ function NovaEncomenda() {
             }
             className="px-6 py-3 bg-orange text-white rounded hover:opacity-80 font-secondary text-sm"
           >
-           {loadingPagamento ? "Redirecionando..." : "Ir para Pagamento"}
+            {loadingPagamento ? "Redirecionando..." : "Ir para Pagamento"}
           </button>
         </div>
       </main>
