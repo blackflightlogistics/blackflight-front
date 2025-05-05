@@ -16,13 +16,13 @@ function EncomendaPagamento() {
   const [encomenda, setEncomenda] = useState<Order | null>(null);
   const [remetente, setRemetente] = useState<Cliente | null>(null);
   const [destinatario, setDestinatario] = useState<Cliente | null>(null);
-  const [formaPagamento, setFormaPagamento] =
-    useState<FormaPagamento>("a_vista");
+  const [formaPagamento, setFormaPagamento] = useState<FormaPagamento>("a_vista");
   const [desconto, setDesconto] = useState("");
   const [mostrarMaisOpcoes, setMostrarMaisOpcoes] = useState(false);
   const [valorPagoInput, setValorPagoInput] = useState("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [pacotesSelecionados, setPacotesSelecionados] = useState<string[]>([]);
+  const [pacotesRemovidos, setPacotesRemovidos] = useState<string[]>([]);
   const [carregando, setCarregando] = useState(true);
 
   const togglePacote = (id: string) => {
@@ -31,9 +31,14 @@ function EncomendaPagamento() {
     );
   };
 
+  const toggleRemoverPacote = (id: string) => {
+    setPacotesRemovidos((prev) =>
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+    );
+  };
+
   const toggleTodos = () => {
     if (!encomenda) return;
-
     if (pacotesSelecionados.length === encomenda.packages.length) {
       setPacotesSelecionados([]);
     } else {
@@ -49,18 +54,14 @@ function EncomendaPagamento() {
     const carregar = async () => {
       setCarregando(true);
       const encomendaEncontrada = await orderService.buscarPorId(id);
-      console.log("Encomenda encontrada:", encomendaEncontrada);
       setEncomenda(encomendaEncontrada);
-      // setFormaPagamento(encomendaEncontrada.formaPagamento || "à vista");
-      setFormaPagamento("a_vista");
+      setFormaPagamento(encomendaEncontrada.payment_type as FormaPagamento || "a_vista");
+      setValorPagoInput(encomendaEncontrada.paid_now || "");
+      setDesconto(encomendaEncontrada.descount || "");
       setPacotesSelecionados(encomendaEncontrada.packages.map((p) => p.id));
 
-      const remetente = await clienteService.buscarPorId(
-        encomendaEncontrada.from_account_id
-      );
-      const destinatario = await clienteService.buscarPorId(
-        encomendaEncontrada.to_account_id
-      );
+      const remetente = await clienteService.buscarPorId(encomendaEncontrada.from_account_id);
+      const destinatario = await clienteService.buscarPorId(encomendaEncontrada.to_account_id);
 
       setRemetente(remetente);
       setDestinatario(destinatario);
@@ -73,27 +74,36 @@ function EncomendaPagamento() {
   const valorBase = Number(encomenda?.total_value) || 0;
   const valorDesconto = desconto ? parseFloat(desconto) : 0;
   const valorFinal = Math.max(0, valorBase - valorDesconto);
-  const valorPago =
-    formaPagamento === "a_vista" ? valorFinal : parseFloat(valorPagoInput) || 0;
+  const valorPago = formaPagamento === "a_vista" ? valorFinal : parseFloat(valorPagoInput) || 0;
 
   const statusPagamento =
     valorPago >= valorFinal ? "pago" : valorPago > 0 ? "parcial" : "pendente";
 
   const salvarPagamento = async () => {
-    // await orderService.atualizar({
-    //   ...encomenda,
-    //   formaPagamento,
-    //   valorPago,
-    //   statusPagamento,
-    //   valorTotal: valorFinal,
-    // });
+    if (!encomenda) return;
 
-    navigate("/admin/encomendas");
+    await orderService.atualizar(encomenda.id, {
+      from_account_id: encomenda.from_account_id,
+      to_account_id: encomenda.to_account_id,
+      status: encomenda.status || undefined,
+      is_express: encomenda.is_express,
+      scheduled_date: encomenda.scheduled_date || undefined,
+      city: encomenda.city,
+      country: encomenda.country,
+      state: encomenda.state,
+      number: encomenda.number,
+      additional_info: encomenda.additional_info,
+      cep: encomenda.cep,
+      paid_now: valorPago.toFixed(2),
+      descount: desconto || "0.0",
+      payment_type: formaPagamento,
+      total_value: encomenda.total_value || "0.0",
+      removed_packages: pacotesRemovidos,
+    });
   };
 
   return (
     <div className="h-screen overflow-hidden">
-      {/* Sidebar fixa */}
       <div className="md:fixed md:top-0 md:left-0 md:h-screen md:w-64 bg-black text-white border-r z-10">
         <button
           className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
@@ -107,7 +117,6 @@ function EncomendaPagamento() {
         />
       </div>
 
-      {/* Conteúdo principal */}
       <main className="md:ml-64 h-full overflow-y-auto bg-[#fcf8f5] p-6 space-y-6">
         <h1 className="text-2xl font-bold font-primary text-black">
           Conferência de Pagamento
@@ -118,33 +127,26 @@ function EncomendaPagamento() {
           </div>
         ) : (
           <>
-            {/* Remetente */}
             <section className="space-y-1">
               <h2 className="text-lg font-semibold">Remetente</h2>
               <p>
                 {remetente.name} - {remetente.email} - {formatarLinkWhatsapp(remetente.phoneNumber,{icon: true})}
               </p>
               <p className="text-sm text-gray-600">
-                {remetente.addresses[0].city} - {remetente.addresses[0].state} -{" "}
-                {remetente.addresses[0].zipCode}
+                {remetente.addresses[0].city} - {remetente.addresses[0].state} - {remetente.addresses[0].zipCode}
               </p>
             </section>
 
-            {/* Destinatário */}
             <section className="space-y-1">
               <h2 className="text-lg font-semibold">Destinatário</h2>
               <p>
-                {destinatario.name} - {destinatario.email} -{" "}
-                {formatarLinkWhatsapp(destinatario.phoneNumber,{icon: true})}
+                {destinatario.name} - {destinatario.email} - {formatarLinkWhatsapp(destinatario.phoneNumber,{icon: true})}
               </p>
               <p className="text-sm text-gray-600">
-                {destinatario.addresses[0].city} -{" "}
-                {destinatario.addresses[0].state} -{" "}
-                {destinatario.addresses[0].zipCode}
+                {destinatario.addresses[0].city} - {destinatario.addresses[0].state} - {destinatario.addresses[0].zipCode}
               </p>
             </section>
 
-            {/* Pacotes */}
             <section className="space-y-2">
               <div className="flex justify-between items-center mb-2">
                 <h2 className="text-lg font-semibold">Pacotes</h2>
@@ -152,14 +154,12 @@ function EncomendaPagamento() {
                   onClick={toggleTodos}
                   className="text-sm text-blue-600 hover:underline"
                 >
-                  {pacotesSelecionados.length === encomenda.packages.length
-                    ? "Desmarcar todos"
-                    : "Selecionar todos"}
+                  {pacotesSelecionados.length === encomenda.packages.length ? "Desmarcar todos" : "Selecionar todos"}
                 </button>
               </div>
               <ul className="space-y-2">
                 {encomenda.packages.map((p) => (
-                  <li key={p.id} className="p-2 border rounded bg-white">
+                  <li key={p.id} className="p-2 border rounded bg-white flex justify-between items-center">
                     <label className="flex items-start gap-2">
                       <input
                         type="checkbox"
@@ -168,35 +168,30 @@ function EncomendaPagamento() {
                         className="mt-1"
                       />
                       <div>
-                        📦 <strong>{p.description}</strong> - {p.weight}kg aqui
-                        temos problemas
-                        <br />
-                        {/* 💰 R$ {p.valorCalculado?.toFixed(2)} */}
-                        {/* {p.valorDeclarado && (
-                      <span className="ml-2 text-sm">
-                        🛡️ Seguro: R$ {p.valorDeclarado.toFixed(2)}
-                      </span>
-                    )} */}
+                        📦 <strong>{p.description}</strong> - {p.weight}kg
                       </div>
                     </label>
+                    <button
+                      className="text-sm text-red-600 hover:underline"
+                      onClick={() => toggleRemoverPacote(p.id)}
+                    >
+                      {pacotesRemovidos.includes(p.id) ? "Desfazer" : "Remover"}
+                    </button>
                   </li>
                 ))}
               </ul>
             </section>
 
-            {/* Forma de Pagamento */}
             <section className="space-y-2">
               <h2 className="text-lg font-semibold">Forma de Pagamento</h2>
               <select
                 value={formaPagamento}
-                onChange={(e) =>
-                  setFormaPagamento(e.target.value as FormaPagamento)
-                }
+                onChange={(e) => setFormaPagamento(e.target.value as FormaPagamento)}
                 className="p-2 border rounded w-full md:w-1/2"
               >
-                <option value="à vista">À vista</option>
+                <option value="a_vista">À vista</option>
                 <option value="parcelado">Parcelado</option>
-                <option value="na retirada">Na retirada</option>
+                <option value="na_retirada">Na retirada</option>
               </select>
             </section>
 
@@ -214,7 +209,6 @@ function EncomendaPagamento() {
               </div>
             )}
 
-            {/* Mais opções */}
             <div>
               <button
                 onClick={() => setMostrarMaisOpcoes(!mostrarMaisOpcoes)}
@@ -232,35 +226,39 @@ function EncomendaPagamento() {
                     className="p-2 border rounded w-full md:w-1/2"
                     value={desconto}
                     onChange={(e) => setDesconto(e.target.value)}
+                    onBlur={() => {
+                      const num = parseFloat(desconto.replace(",", "."));
+                      if (!isNaN(num)) {
+                        setDesconto(num.toFixed(1));
+                      }
+                    }}
                   />
                 </div>
               )}
             </div>
 
-            {/* Totais */}
             <div className="mt-4 space-y-1">
               <p className="text-lg font-semibold">
-                Valor final:{" "}
-                <span className="text-green-700">
-                  R$ {valorFinal.toFixed(2)}{" "}
-                </span>
+                Valor final: <span className="text-green-700">R$ {valorFinal.toFixed(2)}</span>
               </p>
               <p className="text-sm text-gray-700">
                 <strong>Status do pagamento:</strong> {statusPagamento}
               </p>
             </div>
 
-            {/* Ações */}
             <div className="flex flex-col md:flex-row gap-4 mt-6">
               <button
-                onClick={salvarPagamento}
+                onClick={async () => {
+                  await salvarPagamento();
+                  navigate("/admin/encomendas");
+                }}
                 className="px-6 py-3 bg-black text-white rounded hover:opacity-80 text-sm font-secondary"
               >
                 Confirmar e Salvar
               </button>
               <button
-                onClick={() => {
-                  salvarPagamento();
+                onClick={async () => {
+                  // await salvarPagamento();
                   navigate(`/admin/encomendas/${encomenda.id}/etiquetas`, {
                     state: { pacotesSelecionados },
                   });

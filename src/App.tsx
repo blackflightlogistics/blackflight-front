@@ -17,6 +17,8 @@ import RemessaNova from "./pages/admin/RemessaNova";
 import PrivateRoute from "./components/PrivateRoute";
 import { AuthProvider } from "./context/AuthProvider";
 import ClienteEditar from "./pages/admin/ClienteEditar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -120,15 +122,17 @@ function App() {
             }
           />
           <Route
-          path="/admin/clientes/:id/editar"
-          element={
-            <PrivateRoute>
-              <ClienteEditar />
-            </PrivateRoute>
-          }
-        />
+            path="/admin/clientes/:id/editar"
+            element={
+              <PrivateRoute>
+                <ClienteEditar />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
+
+      <ToastContainer />
     </Router>
   );
 }

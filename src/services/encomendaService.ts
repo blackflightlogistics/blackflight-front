@@ -90,6 +90,30 @@ export interface CreateOrderPayload {
   }[];
 }
 
+export interface UpdateOrderPayload {
+  from_account_id: string;
+  to_account_id: string;
+  status?: string;
+  is_express: boolean;
+  scheduled_date?: string;
+  city: string;
+  state: string;
+  country: string;
+  number: string;
+  additional_info: string;
+  cep: string;
+  paid_now: string;
+  descount: string;
+  payment_type: string;
+  total_value: string;
+  added_packages?: {
+    description: string;
+    weight: string;
+    status: string;
+    declared_value: string;
+  }[];
+  removed_packages?: string[];
+}
 export const orderService = {
   listar: async (): Promise<Order[]> => {
     const response = await api.get<{ data: Order[] }>("/orders");
@@ -103,6 +127,10 @@ export const orderService = {
 
   adicionar: async (orderData: CreateOrderPayload): Promise<Order> => {
     const response = await api.post<Order>("/orders", orderData);
+    return response.data;
+  },
+  atualizar: async (orderId: string, data: UpdateOrderPayload): Promise<Order> => {
+    const response = await api.put<Order>(`/orders/${orderId}`, data);
     return response.data;
   },
 };

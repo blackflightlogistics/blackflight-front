@@ -1,9 +1,9 @@
-// src/pages/admin/RemessaNova.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { orderService, Order } from "../../services/encomendaService";
 import { remessaService } from "../../services/remessaService";
+import { toast } from "react-toastify";
 
 const RemessaNova = () => {
   const [encomendas, setEncomendas] = useState<Order[]>([]);
@@ -29,41 +29,59 @@ const RemessaNova = () => {
       setSelecionadas(encomendas.map((e) => e.id));
     }
   };
-
   const salvar = async () => {
-    // const encomendasSelecionadas = encomendas.filter((e) =>
-    //   selecionadas.includes(e.id)
-    // );
-    // const pesoTotal = encomendasSelecionadas.reduce(
-    //   (soma, e) => soma + e.packages.reduce((s, p) => s + Number(p.weight), 0),
-    //   0
-    // );
-
-    await remessaService.adicionar({
-      country: pais,
-      orders:[...selecionadas],
-      
-    });
-
-    navigate("/admin/remessas");
+    if (!pais.trim()) {
+      toast.error("Informe o país da remessa.");
+      return;
+    }
+  
+    if (selecionadas.length === 0) {
+      toast.error("Selecione ao menos uma encomenda.");
+      return;
+    }
+  
+    try {
+      await remessaService.adicionar({
+        country: pais,
+        orders: [...selecionadas],
+      });
+      toast.success("Remessa criada com sucesso!");
+      navigate("/admin/remessas");
+    } catch (error) {
+      console.error("Erro ao criar remessa:", error);
+      toast.error("Erro ao criar remessa.");
+    }
   };
+  
 
   return (
-    <div className="flex">
-      <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
-      <main className="flex-1 p-6 space-y-6">
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar
+        mobileAberta={sidebarAberta}
+        onFechar={() => setSidebarAberta(false)}
+      />
+      <main className="flex-1 p-6 space-y-6 overflow-y-auto bg-[#fcf8f5]">
+        <div className="flex flex-col md:flex-row md:items-end md:gap-4">
+          <label className="block w-full md:w-auto">
+            País:
+            <input
+              value={pais}
+              onChange={(e) => setPais(e.target.value)}
+              className="p-2 border rounded w-full mt-1"
+            />
+          </label>
+
+          <button
+            onClick={salvar}
+            className="mt-4 md:mt-0 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            Criar Remessa
+          </button>
+        </div>
+
         <h1 className="text-2xl font-bold">Nova Remessa Manual</h1>
 
-        <label className="block">
-          País:
-          <input
-            value={pais}
-            onChange={(e) => setPais(e.target.value)}
-            className="p-2 border rounded w-full mt-1"
-          />
-        </label>
-
-        <div className="mt-4">
+        <div className="mt-2">
           <button
             onClick={toggleTodas}
             className="text-blue-600 text-sm hover:underline mb-2"
@@ -85,11 +103,15 @@ const RemessaNova = () => {
                   />
                   <div>
                     <p>
-                      <strong>#{e.id}</strong> – {e.status} – {e.packages.length} pacote(s)
+                      <strong>#{e.id}</strong> – {e.status} –{" "}
+                      {e.packages.length} pacote(s)
                     </p>
                     <p className="text-sm text-gray-600">
                       Peso:{" "}
-                      {e.packages.reduce((s, p) => s + Number(p.weight), 0).toFixed(2)} kg
+                      {e.packages
+                        .reduce((s, p) => s + Number(p.weight), 0)
+                        .toFixed(2)}{" "}
+                      kg
                     </p>
                   </div>
                 </label>
@@ -97,13 +119,6 @@ const RemessaNova = () => {
             ))}
           </ul>
         </div>
-
-        <button
-          onClick={salvar}
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-        >
-          Criar Remessa
-        </button>
       </main>
     </div>
   );
