@@ -75,6 +75,7 @@ function ClienteEditar() {
   const handleAdicionarEndereco = () => {
     setEditandoEnderecoIndex(null);
     setEnderecoTemp({
+      id: "",
       street: "",
       number: "",
       neighborhood: "",

@@ -320,13 +320,7 @@ function NovaEncomenda() {
             {loadingSalvar ? "Salvando..." : "Salvar Encomenda"}
           </button>
 
-          <button
-            onClick={() => salvarEncomenda(true)}
-            className="px-6 py-3 bg-orange text-white rounded hover:opacity-90 font-secondary text-sm"
-            disabled={loadingPagamento}
-          >
-            {loadingPagamento ? "Redirecionando..." : "Ir para Pagamento"}
-          </button>
+         
           <button
             onClick={
               () => salvarEncomenda(true)
@@ -334,7 +328,7 @@ function NovaEncomenda() {
             }
             className="px-6 py-3 bg-orange text-white rounded hover:opacity-80 font-secondary text-sm"
           >
-            Ir para Pagamento
+           {loadingPagamento ? "Redirecionando..." : "Ir para Pagamento"}
           </button>
         </div>
       </main>

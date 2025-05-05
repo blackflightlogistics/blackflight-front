@@ -2,6 +2,7 @@
 import api from "../api/api";
 
 export type Address = {
+  id?: string;
   street: string;
   number: string;
   neighborhood: string;
@@ -28,6 +29,7 @@ type RawAccount = {
 };
 
 type RawAdress = {
+  id?: string;
   street: string;
   number: string;
   neighborhood: string;
@@ -67,6 +69,7 @@ export const clienteService = {
       email: cliente.email,
       phone_number: cliente.phoneNumber,
       adresses: cliente.addresses.map((addr) => ({
+        id: addr.id ?? null,
         street: addr.street,
         number: addr.number,
         neighborhood: addr.neighborhood,
@@ -108,6 +111,7 @@ export const clienteService = {
       email: item.email,
       addresses: item.adresses?.map((addr: RawAdress) => ({
         street: addr.street,
+        id: addr.id,
         number: addr.number,
         neighborhood: addr.neighborhood,
         city: addr.city,
@@ -127,6 +131,7 @@ export const clienteService = {
       email: dados.email,
       phone_number: dados.phoneNumber,
       adresses: dados.addresses?.map((addr) => ({
+        adress_id: addr.id ?? null,
         street: addr.street,
         number: addr.number,
         neighborhood: addr.neighborhood,
