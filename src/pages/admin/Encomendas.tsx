@@ -88,7 +88,7 @@ function Encomendas() {
                           <p>
                             <strong>Endereço: </strong>
                             {e.number} - {e.street} - {e.neighborhood} -{e.city}{" "}
-                            - {e.state} -{e.country} - {e.zip_code} <br />
+                            - {e.state} -{e.country} - {e.cep} <br />
                           </p>
                         </div>
 
