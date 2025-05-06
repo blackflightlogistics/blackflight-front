@@ -1,13 +1,11 @@
+import { FaWhatsapp } from "react-icons/fa";
+
 const Header = () => {
   return (
     <>
       <div className="flex    items-center justify-between  bg-orange pl-[2rem]  pr-[2rem]">
         <div className="flex mt-1 mb-1  gap-2 items-center">
-          <img
-            src="/phone.svg"
-            alt="logo"
-            className="w-[1rem] h-[1rem]"
-          />
+          <FaWhatsapp className="text-white" />
           <p className="font-base text-base font-normal text-white">
             (11) 4567-8900
           </p>

@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { saveToken, saveAccountId } from "../../utils/storage";
 
 import Header from "../../components/home/Header";
-import Navbar from "../../components/Navbar";
 import { authService } from "../../api/authService";
 import { useAuth } from "../../context/useAuth";
 
@@ -41,7 +40,6 @@ function Login() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <Navbar />
 
       <div
         className="relative flex-1 flex items-center justify-center bg-cover bg-center"
@@ -95,6 +93,13 @@ function Login() {
               disabled={loading}
             >
               {loading ? "Entrando..." : "Entrar"}
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("/")}
+              className="w-full bg-gray-400 text-white font-semibold rounded-md py-2 hover:opacity-90 transition"
+            >
+              Voltar
             </button>
           </form>
         </div>
