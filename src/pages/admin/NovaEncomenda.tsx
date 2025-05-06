@@ -68,7 +68,12 @@ function NovaEncomenda() {
     useState<Address | null>(null);
   const [enderecoOriginalRemetente, setEnderecoOriginalRemetente] =
     useState<Address | null>(null);
-
+  const [
+    exibindoListaEnderecosDestinatario,
+    setExibindoListaEnderecosDestinatario,
+  ] = useState(false);
+  const [exibindoListaEnderecosRemetente, setExibindoListaEnderecosRemetente] =
+    useState(false);
   useEffect(() => {
     async function carregarDados() {
       setLoadingTela(true);
@@ -205,39 +210,85 @@ function NovaEncomenda() {
           />
 
           {remetenteId && (
-            <button
-              className="text-sm text-blue-600"
-              onClick={() => setShowRemetenteEndereco((prev) => !prev)}
-            >
-              {showRemetenteEndereco ? "Ocultar endereço" : "Ver endereço"}
-            </button>
+            <div className="flex gap-4">
+              <button
+                className="text-sm text-blue-600"
+                onClick={() => {
+                  setShowRemetenteEndereco((prev) => !prev);
+                  setExibindoListaEnderecosRemetente(false);
+                }}
+              >
+                {showRemetenteEndereco ? "Ocultar endereço" : "Ver endereço"}
+              </button>
+              <button
+                className="text-sm text-blue-600"
+                onClick={() => {
+                  setExibindoListaEnderecosRemetente((prev) => !prev);
+                  setShowRemetenteEndereco(false);
+                }}
+              >
+                {exibindoListaEnderecosRemetente
+                  ? "Ocultar endereços salvos"
+                  : "Endereços salvos"}
+              </button>
+            </div>
+          )}
+
+          {exibindoListaEnderecosRemetente && (
+            <div className="space-y-2 bg-white p-4 border border-orange rounded">
+              {clientes
+                .find((c) => c.id === remetenteId)
+                ?.addresses.map((addr, idx) => (
+                  <div
+                    key={idx}
+                    className="p-2 border rounded hover:bg-orange-100 cursor-pointer"
+                    onClick={() => {
+                      const enderecoLower = {
+                        street: addr.street.toLowerCase(),
+                        number: addr.number.toLowerCase(),
+                        neighborhood: addr.neighborhood.toLowerCase(),
+                        city: addr.city.toLowerCase(),
+                        state: addr.state.toLowerCase(),
+                        zipCode: addr.zipCode.toLowerCase(),
+                        country: addr.country.toLowerCase(),
+                      };
+                      setEnderecoEditavelRemetente(enderecoLower);
+                      setEnderecoOriginalRemetente(enderecoLower);
+                      setExibindoListaEnderecosRemetente(false);
+                    }}
+                  >
+                    {addr.street}, {addr.number}, {addr.neighborhood},{" "}
+                    {addr.city} - {addr.state}, {addr.zipCode} ({addr.country})
+                  </div>
+                ))}
+            </div>
           )}
 
           {showRemetenteEndereco && enderecoEditavelRemetente && (
             <div className="grid md:grid-cols-3 gap-2 bg-white p-4 border border-orange rounded">
-            {[
-              ["street", "Rua"],
-              ["number", "Número"],
-              ["neighborhood", "Bairro"],
-              ["city", "Cidade"],
-              ["state", "Estado"],
-              ["zipCode", "CEP"],
-              ["country", "País"],
-            ].map(([key, label]) => (
-              <input
-                key={key}
-                className="p-2 border rounded"
-                value={enderecoEditavelRemetente[key as keyof Address] || ""}
-                onChange={(e) =>
-                  setEnderecoEditavelRemetente((prev) =>
-                    prev
-                      ? { ...prev, [key]: e.target.value.toLowerCase() }
-                      : null
-                  )
-                }
-                placeholder={label}
-              />
-            ))}
+              {[
+                ["street", "Rua"],
+                ["number", "Número"],
+                ["neighborhood", "Bairro"],
+                ["city", "Cidade"],
+                ["state", "Estado"],
+                ["zipCode", "CEP"],
+                ["country", "País"],
+              ].map(([key, label]) => (
+                <input
+                  key={key}
+                  className="p-2 border rounded"
+                  value={enderecoEditavelRemetente[key as keyof Address] || ""}
+                  onChange={(e) =>
+                    setEnderecoEditavelRemetente((prev) =>
+                      prev
+                        ? { ...prev, [key]: e.target.value.toLowerCase() }
+                        : null
+                    )
+                  }
+                  placeholder={label}
+                />
+              ))}
 
               {JSON.stringify(enderecoEditavelRemetente) !==
                 JSON.stringify(enderecoOriginalRemetente) && (
@@ -305,6 +356,7 @@ function NovaEncomenda() {
             onSelect={(id) => {
               setDestinatarioId(id);
               setShowDestinatarioEndereco(false);
+              setExibindoListaEnderecosDestinatario(false);
               const cliente = clientes.find((c) => c.id === id);
               const endereco = cliente?.addresses?.[0];
               if (endereco) {
@@ -319,32 +371,79 @@ function NovaEncomenda() {
                 };
                 setEnderecoEditavel(enderecoLower);
                 setEnderecoOriginal(enderecoLower);
-                setEnderecoSelecionado(enderecoLower); // define o endereço a ser usado
+                setEnderecoSelecionado(enderecoLower);
               }
             }}
             onCadastrarNovo={() => setShowDestinatarioForm(true)}
           />
 
           {destinatarioId && (
-            <button
-              className="text-sm text-blue-600"
-              onClick={() => setShowDestinatarioEndereco((prev) => !prev)}
-            >
-              {showDestinatarioEndereco ? "Ocultar endereço" : "Ver endereço"}
-            </button>
+            <div className="flex gap-4">
+              <button
+                className="text-sm text-blue-600"
+                onClick={() => {
+                  setShowDestinatarioEndereco((prev) => !prev);
+                  setExibindoListaEnderecosDestinatario(false);
+                }}
+              >
+                {showDestinatarioEndereco ? "Ocultar endereço" : "Ver endereço"}
+              </button>
+              <button
+                className="text-sm text-blue-600"
+                onClick={() => {
+                  setExibindoListaEnderecosDestinatario((prev) => !prev);
+                  setShowDestinatarioEndereco(false);
+                }}
+              >
+                {exibindoListaEnderecosDestinatario
+                  ? "Ocultar endereços salvos"
+                  : "Endereços salvos"}
+              </button>
+            </div>
+          )}
+
+          {exibindoListaEnderecosDestinatario && (
+            <div className="space-y-2 bg-white p-4 border border-orange rounded">
+              {clientes
+                .find((c) => c.id === destinatarioId)
+                ?.addresses.map((addr, idx) => (
+                  <div
+                    key={idx}
+                    className="p-2 border rounded hover:bg-orange-100 cursor-pointer"
+                    onClick={() => {
+                      setEnderecoSelecionado(addr);
+                      const enderecoLower = {
+                        street: addr.street.toLowerCase(),
+                        number: addr.number.toLowerCase(),
+                        neighborhood: addr.neighborhood.toLowerCase(),
+                        city: addr.city.toLowerCase(),
+                        state: addr.state.toLowerCase(),
+                        zipCode: addr.zipCode.toLowerCase(),
+                        country: addr.country.toLowerCase(),
+                      };
+                      setEnderecoEditavel(enderecoLower);
+                      setEnderecoOriginal(enderecoLower);
+                      setExibindoListaEnderecosDestinatario(false);
+                    }}
+                  >
+                    {addr.street}, {addr.number}, {addr.neighborhood},{" "}
+                    {addr.city} - {addr.state}, {addr.zipCode} ({addr.country})
+                  </div>
+                ))}
+            </div>
           )}
 
           {showDestinatarioEndereco && enderecoEditavel && (
             <div className="grid md:grid-cols-3 gap-2 bg-white p-4 border border-orange rounded">
               {[
-                ["street", "Rua"],
-                ["number", "Número"],
-                ["neighborhood", "Bairro"],
-                ["city", "Cidade"],
-                ["state", "Estado"],
-                ["zipCode", "CEP"],
-                ["country", "País"],
-              ].map(([key, label]) => (
+                "street",
+                "number",
+                "neighborhood",
+                "city",
+                "state",
+                "zipCode",
+                "country",
+              ].map((key) => (
                 <input
                   key={key}
                   className="p-2 border rounded"
@@ -356,7 +455,7 @@ function NovaEncomenda() {
                         : null
                     )
                   }
-                  placeholder={label}
+                  placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
                 />
               ))}
 
