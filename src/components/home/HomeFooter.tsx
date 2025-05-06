@@ -16,7 +16,7 @@ const HomeFooter = ({ codigoDigitado, setCodigoDigitado, handleSubmit }: HomeFoo
         <div>
           <div className="mb-4">
             <Link to="/" className="text-xl font-bold text-black">
-              <img src="image.png" alt="logo" className="w-[3rem] h-[2rem]" />
+              <img src="logo.png" alt="logo"  />
             </Link>
           </div>
           <div className="flex gap-4">
