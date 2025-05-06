@@ -43,7 +43,7 @@ const SidebarContent = ({
         {/* Logo */}
         <div className="mb-10">
           <Link to="/">
-            <img src="/image.png" alt="Logo" className="w-[3rem] h-[2rem]" />
+            <img src="/logo.png" alt="Logo"  />
           </Link>
         </div>
 
