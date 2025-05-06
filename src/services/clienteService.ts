@@ -50,6 +50,7 @@ export const clienteService = {
       phoneNumber: item.phone_number,
       email: item.email,
       addresses: item.adresses?.map((addr) => ({
+        id: addr.id || "",
         street: addr.street || "",
         number: addr.number || "",
         neighborhood: addr.neighborhood || "",

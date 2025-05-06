@@ -96,10 +96,10 @@ function ClienteEditar() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen overflow-hidden">
       <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
 
-      <main className="flex-1 p-6 pt-20 bg-[#fcf7f1] space-y-6">
+      <main className="flex-1 overflow-y-auto p-6 pt-20 bg-[#fcf7f1] space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold font-primary">Editar Cliente</h1>
           <button

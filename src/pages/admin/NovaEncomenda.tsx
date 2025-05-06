@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
-import { clienteService, Cliente } from "../../services/clienteService";
+import {
+  clienteService,
+  Cliente,
+  Address,
+} from "../../services/clienteService";
 import { configService } from "../../services/configService";
 import ClienteSelect from "../../components/admin/ClienteSelect";
 import dayjs from "dayjs";
@@ -12,14 +16,14 @@ function NovaEncomenda() {
   const navigate = useNavigate();
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [sidebarAberta, setSidebarAberta] = useState(false);
-  const [, setEndereco] = useState({
-    rua: "",
-    numero: "",
-    bairro: "",
-    cidade: "",
-    estado: "",
-    cep: "",
-  });
+  // const [, setEndereco] = useState({
+  //   rua: "",
+  //   numero: "",
+  //   bairro: "",
+  //   cidade: "",
+  //   estado: "",
+  //   cep: "",
+  // });
 
   const [loadingTela, setLoadingTela] = useState(true);
   const [statusPacote, setStatusPacote] =
@@ -52,6 +56,18 @@ function NovaEncomenda() {
   const [showRemetenteEndereco, setShowRemetenteEndereco] = useState(false);
   const [showDestinatarioEndereco, setShowDestinatarioEndereco] =
     useState(false);
+  const [enderecoEditavel, setEnderecoEditavel] = useState<Address | null>(
+    null
+  );
+  const [enderecoOriginal, setEnderecoOriginal] = useState<Address | null>(
+    null
+  );
+  const [enderecoSelecionado, setEnderecoSelecionado] =
+    useState<Address | null>(null);
+  const [enderecoEditavelRemetente, setEnderecoEditavelRemetente] =
+    useState<Address | null>(null);
+  const [enderecoOriginalRemetente, setEnderecoOriginalRemetente] =
+    useState<Address | null>(null);
 
   useEffect(() => {
     async function carregarDados() {
@@ -86,8 +102,8 @@ function NovaEncomenda() {
       if (irParaPagamento) setLoadingPagamento(true);
       else setLoadingSalvar(true);
 
-      const destinatario = clientes.find((c) => c.id === destinatarioId);
-      const endereco = destinatario?.addresses?.[0];
+      // const destinatario = clientes.find((c) => c.id === destinatarioId);
+      const endereco = enderecoSelecionado;
       if (!endereco) return;
       const novaEncomenda = await orderService.adicionar({
         status: "em_preparacao",
@@ -169,60 +185,85 @@ function NovaEncomenda() {
             onSelect={(id) => {
               setRemetenteId(id);
               setShowRemetenteEndereco(false);
+              const cliente = clientes.find((c) => c.id === id);
+              const endereco = cliente?.addresses?.[0];
+              if (endereco) {
+                const enderecoLower = {
+                  street: endereco.street.toLowerCase(),
+                  number: endereco.number.toLowerCase(),
+                  neighborhood: endereco.neighborhood.toLowerCase(),
+                  city: endereco.city.toLowerCase(),
+                  state: endereco.state.toLowerCase(),
+                  zipCode: endereco.zipCode.toLowerCase(),
+                  country: endereco.country.toLowerCase(),
+                };
+                setEnderecoEditavelRemetente(enderecoLower);
+                setEnderecoOriginalRemetente(enderecoLower);
+              }
             }}
             onCadastrarNovo={() => setShowRemetenteForm(true)}
           />
 
           {remetenteId && (
             <button
-              className="text-sm text-blue-600 "
+              className="text-sm text-blue-600"
               onClick={() => setShowRemetenteEndereco((prev) => !prev)}
             >
               {showRemetenteEndereco ? "Ocultar endereço" : "Ver endereço"}
             </button>
           )}
 
-          {showRemetenteEndereco && (
+          {showRemetenteEndereco && enderecoEditavelRemetente && (
             <div className="grid md:grid-cols-3 gap-2 bg-white p-4 border border-orange rounded">
-              {(() => {
-                const cliente = clientes.find((c) => c.id === remetenteId);
-                const addr = cliente?.addresses?.[0];
-                if (!addr) return <p>Sem endereço cadastrado.</p>;
-                return (
-                  <>
-                    <input
-                      disabled
-                      className="p-2 border rounded"
-                      value={addr.street}
-                    />
-                    <input
-                      disabled
-                      className="p-2 border rounded"
-                      value={addr.number}
-                    />
-                    <input
-                      disabled
-                      className="p-2 border rounded"
-                      value={addr.neighborhood}
-                    />
-                    <input
-                      disabled
-                      className="p-2 border rounded"
-                      value={addr.city}
-                    />
-                    <input
-                      disabled
-                      className="p-2 border rounded"
-                      value={addr.state}
-                    />
-                    <input
-                      disabled
-                      className="p-2 border rounded"
-                      value={addr.zipCode}
-                    />
-                  </>
-                );
-              })()}
+            {[
+              ["street", "Rua"],
+              ["number", "Número"],
+              ["neighborhood", "Bairro"],
+              ["city", "Cidade"],
+              ["state", "Estado"],
+              ["zipCode", "CEP"],
+              ["country", "País"],
+            ].map(([key, label]) => (
+              <input
+                key={key}
+                className="p-2 border rounded"
+                value={enderecoEditavelRemetente[key as keyof Address] || ""}
+                onChange={(e) =>
+                  setEnderecoEditavelRemetente((prev) =>
+                    prev
+                      ? { ...prev, [key]: e.target.value.toLowerCase() }
+                      : null
+                  )
+                }
+                placeholder={label}
+              />
+            ))}
+
+              {JSON.stringify(enderecoEditavelRemetente) !==
+                JSON.stringify(enderecoOriginalRemetente) && (
+                <button
+                  className="mt-2 px-4 py-2 bg-green-600 text-white rounded col-span-full"
+                  onClick={async () => {
+                    if (!remetenteId || !enderecoEditavelRemetente) return;
+                    const cliente = clientes.find((c) => c.id === remetenteId);
+                    if (!cliente) return;
+                    await clienteService.atualizar(remetenteId, {
+                      ...cliente,
+                      addresses: [
+                        ...cliente.addresses,
+                        enderecoEditavelRemetente,
+                      ],
+                    });
+                    const novaLista = await clienteService.listar();
+                    setClientes(novaLista);
+                    setEnderecoOriginalRemetente({
+                      ...enderecoEditavelRemetente,
+                    });
+                  }}
+                >
+                  Salvar endereço
+                </button>
+              )}
             </div>
           )}
 
@@ -264,15 +305,20 @@ function NovaEncomenda() {
               setDestinatarioId(id);
               setShowDestinatarioEndereco(false);
               const cliente = clientes.find((c) => c.id === id);
-              if (cliente) {
-                setEndereco({
-                  rua: cliente.addresses[0]?.street || "",
-                  numero: cliente.addresses[0]?.number || "",
-                  bairro: cliente.addresses[0]?.neighborhood || "",
-                  cidade: cliente.addresses[0]?.city || "",
-                  estado: cliente.addresses[0]?.state || "",
-                  cep: cliente.addresses[0]?.zipCode || "",
-                });
+              const endereco = cliente?.addresses?.[0];
+              if (endereco) {
+                const enderecoLower = {
+                  street: endereco.street.toLowerCase(),
+                  number: endereco.number.toLowerCase(),
+                  neighborhood: endereco.neighborhood.toLowerCase(),
+                  city: endereco.city.toLowerCase(),
+                  state: endereco.state.toLowerCase(),
+                  zipCode: endereco.zipCode.toLowerCase(),
+                  country: endereco.country.toLowerCase(),
+                };
+                setEnderecoEditavel(enderecoLower);
+                setEnderecoOriginal(enderecoLower);
+                setEnderecoSelecionado(enderecoLower); // define o endereço a ser usado
               }
             }}
             onCadastrarNovo={() => setShowDestinatarioForm(true)}
@@ -280,54 +326,62 @@ function NovaEncomenda() {
 
           {destinatarioId && (
             <button
-              className="text-sm text-blue-600 "
+              className="text-sm text-blue-600"
               onClick={() => setShowDestinatarioEndereco((prev) => !prev)}
             >
               {showDestinatarioEndereco ? "Ocultar endereço" : "Ver endereço"}
             </button>
           )}
 
-          {showDestinatarioEndereco && (
+          {showDestinatarioEndereco && enderecoEditavel && (
             <div className="grid md:grid-cols-3 gap-2 bg-white p-4 border border-orange rounded">
-              {(() => {
-                const cliente = clientes.find((c) => c.id === destinatarioId);
-                const addr = cliente?.addresses?.[0];
-                if (!addr) return <p>Sem endereço cadastrado.</p>;
-                return (
-                  <>
-                    <input
-                      disabled
-                      className="p-2 border rounded"
-                      value={addr.street}
-                    />
-                    <input
-                      disabled
-                      className="p-2 border rounded"
-                      value={addr.number}
-                    />
-                    <input
-                      disabled
-                      className="p-2 border rounded"
-                      value={addr.neighborhood}
-                    />
-                    <input
-                      disabled
-                      className="p-2 border rounded"
-                      value={addr.city}
-                    />
-                    <input
-                      disabled
-                      className="p-2 border rounded"
-                      value={addr.state}
-                    />
-                    <input
-                      disabled
-                      className="p-2 border rounded"
-                      value={addr.zipCode}
-                    />
-                  </>
-                );
-              })()}
+              {[
+                ["street", "Rua"],
+                ["number", "Número"],
+                ["neighborhood", "Bairro"],
+                ["city", "Cidade"],
+                ["state", "Estado"],
+                ["zipCode", "CEP"],
+                ["country", "País"],
+              ].map(([key, label]) => (
+                <input
+                  key={key}
+                  className="p-2 border rounded"
+                  value={enderecoEditavel[key as keyof Address] || ""}
+                  onChange={(e) =>
+                    setEnderecoEditavel((prev) =>
+                      prev
+                        ? { ...prev, [key]: e.target.value.toLowerCase() }
+                        : null
+                    )
+                  }
+                  placeholder={label}
+                />
+              ))}
+
+              {JSON.stringify(enderecoEditavel) !==
+                JSON.stringify(enderecoOriginal) && (
+                <button
+                  className="mt-2 px-4 py-2 bg-green-600 text-white rounded col-span-full"
+                  onClick={async () => {
+                    if (!destinatarioId || !enderecoEditavel) return;
+                    const cliente = clientes.find(
+                      (c) => c.id === destinatarioId
+                    );
+                    if (!cliente) return;
+                    await clienteService.atualizar(destinatarioId, {
+                      ...cliente,
+                      addresses: [...cliente.addresses, enderecoEditavel],
+                    });
+                    const novaLista = await clienteService.listar();
+                    setClientes(novaLista);
+                    setEnderecoOriginal({ ...enderecoEditavel });
+                    setEnderecoSelecionado({ ...enderecoEditavel }); // usa novo endereço
+                  }}
+                >
+                  Salvar endereço
+                </button>
+              )}
             </div>
           )}
 
@@ -353,6 +407,7 @@ function NovaEncomenda() {
                 setClientes(novaLista);
                 setDestinatarioId(novo.id);
                 setShowDestinatarioForm(false);
+                setEnderecoSelecionado(endereco);
               }}
               onCancel={() => setShowDestinatarioForm(false)}
             />
