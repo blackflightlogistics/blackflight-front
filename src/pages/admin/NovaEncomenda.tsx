@@ -16,14 +16,6 @@ function NovaEncomenda() {
   const navigate = useNavigate();
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [sidebarAberta, setSidebarAberta] = useState(false);
-  // const [, setEndereco] = useState({
-  //   rua: "",
-  //   numero: "",
-  //   bairro: "",
-  //   cidade: "",
-  //   estado: "",
-  //   cep: "",
-  // });
 
   const [loadingTela, setLoadingTela] = useState(true);
   const [statusPacote, setStatusPacote] =
@@ -47,10 +39,8 @@ function NovaEncomenda() {
   const [encomendaExpressa, setEncomendaExpressa] = useState(false);
   const [dataEnvioExpressa, setDataEnvioExpressa] = useState("");
   const [adicionalExpresso, setAdicionalExpresso] = useState<number>(0);
-
   const [showRemetenteForm, setShowRemetenteForm] = useState(false);
   const [showDestinatarioForm, setShowDestinatarioForm] = useState(false);
-
   const [loadingSalvar, setLoadingSalvar] = useState(false);
   const [loadingPagamento, setLoadingPagamento] = useState(false);
   const [showRemetenteEndereco, setShowRemetenteEndereco] = useState(false);
@@ -373,6 +363,8 @@ function NovaEncomenda() {
                 setEnderecoOriginal(enderecoLower);
                 setEnderecoSelecionado(enderecoLower);
               }
+              setShowDestinatarioEndereco((prev) => !prev);
+              setExibindoListaEnderecosDestinatario(false);
             }}
             onCadastrarNovo={() => setShowDestinatarioForm(true)}
           />
