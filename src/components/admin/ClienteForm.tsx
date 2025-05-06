@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLanguage } from "../../context/useLanguage";
 
 export type ClienteFormData = {
   id?: string;
@@ -21,6 +22,8 @@ type Props = {
 };
 
 const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
+  const { translations: t } = useLanguage();
+
   const [form, setForm] = useState<ClienteFormData>({
     name: initialData?.name || "",
     phoneNumber: initialData?.phoneNumber || "",
@@ -60,7 +63,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input
           name="name"
-          placeholder="Nome"
+          placeholder={t.form_nome}
           required
           value={form.name}
           onChange={handleChange}
@@ -68,7 +71,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         />
         <input
           name="phoneNumber"
-          placeholder="Telefone"
+          placeholder={t.form_telefone}
           required
           value={form.phoneNumber}
           onChange={handleChange}
@@ -76,7 +79,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         />
         <input
           name="email"
-          placeholder="E-mail"
+          placeholder={t.form_email}
           required
           type="email"
           value={form.email}
@@ -85,7 +88,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         />
         <input
           name="street"
-          placeholder="Rua"
+          placeholder={t.form_rua}
           required
           value={form.street}
           onChange={handleChange}
@@ -93,7 +96,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         />
         <input
           name="number"
-          placeholder="Número"
+          placeholder={t.form_numero}
           required
           value={form.number}
           onChange={handleChange}
@@ -101,7 +104,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         />
         <input
           name="neighborhood"
-          placeholder="Bairro"
+          placeholder={t.form_bairro}
           required
           value={form.neighborhood}
           onChange={handleChange}
@@ -109,7 +112,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         />
         <input
           name="city"
-          placeholder="Cidade"
+          placeholder={t.form_cidade}
           required
           value={form.city}
           onChange={handleChange}
@@ -117,7 +120,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         />
         <input
           name="state"
-          placeholder="Estado"
+          placeholder={t.form_estado}
           required
           value={form.state}
           onChange={handleChange}
@@ -125,7 +128,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         />
         <input
           name="zipCode"
-          placeholder="CEP"
+          placeholder={t.form_cep}
           required
           value={form.zipCode}
           onChange={handleChange}
@@ -133,7 +136,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         />
         <input
           name="country"
-          placeholder="País"
+          placeholder={t.form_pais}
           required
           value={form.country}
           onChange={handleChange}
@@ -145,7 +148,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
           type="submit"
           className="bg-orange text-white px-4 py-2 rounded hover:opacity-90 font-secondary text-sm"
         >
-          Salvar Cliente
+          {t.form_salvar_cliente}
         </button>
         {onCancel && (
           <button
@@ -153,7 +156,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
             onClick={onCancel}
             className="px-4 py-2 border rounded text-sm"
           >
-            Cancelar
+            {t.form_cancelar}
           </button>
         )}
       </div>

@@ -7,10 +7,12 @@ import {
   Cliente,
   Address,
 } from "../../services/clienteService";
+import { useLanguage } from "../../context/useLanguage";
 
 function ClienteEditar() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { translations: t } = useLanguage();
 
   const [cliente, setCliente] = useState<Cliente | null>(null);
   const [sidebarAberta, setSidebarAberta] = useState(false);
@@ -59,9 +61,7 @@ function ClienteEditar() {
 
   const handleRemoverEndereco = async (index: number) => {
     if (!cliente) return;
-    const confirm = window.confirm(
-      "Tem certeza que deseja remover este endereço?"
-    );
+    const confirm = window.confirm(t.confirmar_remover_endereco);
     if (!confirm) return;
 
     const novosEnderecos = cliente.addresses.filter((_, i) => i !== index);
@@ -104,12 +104,12 @@ function ClienteEditar() {
 
       <main className="flex-1 overflow-y-auto p-6 pt-20 bg-[#fcf7f1] space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold font-primary">Editar Cliente</h1>
+          <h1 className="text-2xl font-bold font-primary">{t.editar_cliente}</h1>
           <button
             onClick={() => navigate("/admin/clientes")}
             className="bg-orange text-white px-4 py-2 rounded hover:opacity-90 font-secondary text-sm"
           >
-            Voltar para listagem
+            {t.voltar_para_listagem}
           </button>
         </div>
 
@@ -127,7 +127,7 @@ function ClienteEditar() {
                   onChange={(e) =>
                     setCliente({ ...cliente, name: e.target.value })
                   }
-                  placeholder="Nome"
+                  placeholder={t.form_nome}
                   className="p-2 border rounded"
                 />
                 <input
@@ -136,7 +136,7 @@ function ClienteEditar() {
                   onChange={(e) =>
                     setCliente({ ...cliente, email: e.target.value })
                   }
-                  placeholder="E-mail"
+                  placeholder={t.form_email}
                   className="p-2 border rounded"
                 />
                 <input
@@ -145,14 +145,14 @@ function ClienteEditar() {
                   onChange={(e) =>
                     setCliente({ ...cliente, phoneNumber: e.target.value })
                   }
-                  placeholder="Telefone"
+                  placeholder={t.form_telefone}
                   className="p-2 border rounded"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <h2 className="font-bold font-primary text-lg">Endereços</h2>
+              <h2 className="font-bold font-primary text-lg">{t.enderecos}</h2>
 
               {cliente.addresses.map((addr, index) => (
                 <div
@@ -168,13 +168,13 @@ function ClienteEditar() {
                       onClick={() => handleEditarEndereco(index)}
                       className="px-4 py-2 bg-orange text-white rounded"
                     >
-                      Editar
+                      {t.editar}
                     </button>
                     <button
                       onClick={() => handleRemoverEndereco(index)}
                       className="px-4 py-2 bg-grey text-white rounded"
                     >
-                      Remover
+                      {t.remover}
                     </button>
                   </div>
                 </div>
@@ -191,7 +191,7 @@ function ClienteEditar() {
                           street: e.target.value,
                         })
                       }
-                      placeholder="Rua"
+                      placeholder={t.form_rua}
                       className="p-2 border rounded"
                     />
                     <input
@@ -202,7 +202,7 @@ function ClienteEditar() {
                           number: e.target.value,
                         })
                       }
-                      placeholder="Número"
+                      placeholder={t.form_numero}
                       className="p-2 border rounded"
                     />
                     <input
@@ -213,7 +213,7 @@ function ClienteEditar() {
                           neighborhood: e.target.value,
                         })
                       }
-                      placeholder="Bairro"
+                      placeholder={t.form_bairro}
                       className="p-2 border rounded"
                     />
                     <input
@@ -224,7 +224,7 @@ function ClienteEditar() {
                           city: e.target.value,
                         })
                       }
-                      placeholder="Cidade"
+                      placeholder={t.form_cidade}
                       className="p-2 border rounded"
                     />
                     <input
@@ -235,7 +235,7 @@ function ClienteEditar() {
                           state: e.target.value,
                         })
                       }
-                      placeholder="Estado"
+                      placeholder={t.form_estado}
                       className="p-2 border rounded"
                     />
                     <input
@@ -246,7 +246,7 @@ function ClienteEditar() {
                           zipCode: e.target.value,
                         })
                       }
-                      placeholder="CEP"
+                      placeholder={t.form_cep}
                       className="p-2 border rounded"
                     />
                     <input
@@ -257,7 +257,7 @@ function ClienteEditar() {
                           country: e.target.value,
                         })
                       }
-                      placeholder="País"
+                      placeholder={t.form_pais}
                       className="p-2 border rounded"
                     />
                   </div>
@@ -267,7 +267,7 @@ function ClienteEditar() {
                       onClick={handleSalvarEndereco}
                       className="px-4 py-2 bg-orange text-white rounded"
                     >
-                      Salvar endereço
+                      {t.salvar_endereco}
                     </button>
                     <button
                       onClick={() => {
@@ -277,7 +277,7 @@ function ClienteEditar() {
                       }}
                       className="px-4 py-2 bg-gray-500 text-white rounded"
                     >
-                      Cancelar
+                      {t.form_cancelar}
                     </button>
                   </div>
                 </div>
@@ -288,7 +288,7 @@ function ClienteEditar() {
                   onClick={handleAdicionarEndereco}
                   className="mt-4 px-4 py-2 bg-orange text-white rounded"
                 >
-                  Adicionar novo endereço
+                  {t.adicionar_endereco}
                 </button>
               )}
             </div>
@@ -300,7 +300,7 @@ function ClienteEditar() {
               {loading ? (
                 <div className="animate-spin mx-12 rounded-full h-6 w-6 border-4 border-white border-t-transparent"></div>
               ) : (
-                " Salvar Alterações"
+                t.salvar_alteracoes
               )}
             </button>
           </>

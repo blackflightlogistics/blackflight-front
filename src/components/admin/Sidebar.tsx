@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { FaChevronRight } from "react-icons/fa";
+import { useLanguage } from "../../context/useLanguage";
 
 interface SidebarProps {
   mobileAberta?: boolean;
@@ -36,6 +37,8 @@ const SidebarContent = ({
 }: {
   isActive: (path: string) => boolean;
 }) => {
+  const { changeLanguage, language, translations: t } = useLanguage();
+
   return (
     <div className="flex flex-col justify-between h-full">
       {/* Parte de cima */}
@@ -43,23 +46,63 @@ const SidebarContent = ({
         {/* Logo */}
         <div className="mb-10">
           <Link to="/">
-            <img src="/logo.png" alt="Logo"  />
+            <img src="/logo.png" alt="Logo" />
           </Link>
         </div>
 
         {/* Links principais */}
         <nav className="flex flex-col gap-6">
-          <SidebarLink to="/admin" label="Dashboard" active={isActive("/admin")} />
-          <SidebarLink to="/admin/clientes" label="Clientes" active={isActive("/admin/clientes")} />
-          <SidebarLink to="/admin/encomendas" label="Encomendas" active={isActive("/admin/encomendas")} />
-          <SidebarLink to="/admin/remessas" label="Remessas" active={isActive("/admin/remessas")} />
-          <SidebarLink to="/admin/leitor" label="Leitor de Código" active={isActive("/admin/leitor")} />
+          <SidebarLink to="/admin" label={t.sidebar_dashboard} active={isActive("/admin")} />
+          <SidebarLink to="/admin/clientes" label={t.sidebar_clientes} active={isActive("/admin/clientes")} />
+          <SidebarLink to="/admin/encomendas" label={t.sidebar_encomendas} active={isActive("/admin/encomendas")} />
+          <SidebarLink to="/admin/remessas" label={t.sidebar_remessas} active={isActive("/admin/remessas")} />
+          <SidebarLink to="/admin/leitor" label={t.sidebar_leitor} active={isActive("/admin/leitor")} />
+
+          {/* Botões de idioma */}
+          <div className="flex flex-col gap-2 mt-6 pl-2">
+            <button
+              onClick={() => changeLanguage("EN")}
+              className={`text-sm text-left ${
+                language === "EN" ? "text-orange font-semibold" : "text-white"
+              } hover:text-orange`}
+            >
+              🇺🇸 English
+            </button>
+            <button
+              onClick={() => changeLanguage("FR")}
+              className={`text-sm text-left ${
+                language === "FR" ? "text-orange font-semibold" : "text-white"
+              } hover:text-orange`}
+            >
+              🇫🇷 Français
+            </button>
+            <button
+              onClick={() => changeLanguage("ES")}
+              className={`text-sm text-left ${
+                language === "ES" ? "text-orange font-semibold" : "text-white"
+              } hover:text-orange`}
+            >
+              🇪🇸 Español
+            </button>
+            <button
+              onClick={() => changeLanguage("PT")}
+              className={`text-sm text-left ${
+                language === "PT" ? "text-orange font-semibold" : "text-white"
+              } hover:text-orange`}
+            >
+              🇧🇷 Português
+            </button>
+          </div>
         </nav>
       </div>
 
       {/* Parte de baixo */}
       <div className="pt-10">
-        <SidebarLink to="/admin/configuracoes" label="⚙️ Configurações" active={isActive("/admin/configuracoes")} />
+        <SidebarLink
+          to="/admin/configuracoes"
+          label={t.sidebar_configuracoes}
+          active={isActive("/admin/configuracoes")}
+        />
       </div>
     </div>
   );

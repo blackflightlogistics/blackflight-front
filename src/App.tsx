@@ -19,121 +19,124 @@ import { AuthProvider } from "./context/AuthProvider";
 import ClienteEditar from "./pages/admin/ClienteEditar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { LanguageProvider } from "./context/LanguageProvider";
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <Routes>
-          {/* Site público */}
-          <Route path="/" element={<Home />} />
-          <Route path="/rastreamento" element={<Rastreamento />} />
+    <LanguageProvider>
+      <Router>
+        <AuthProvider>
+          <Routes>
+            {/* Site público */}
+            <Route path="/" element={<Home />} />
+            <Route path="/rastreamento" element={<Rastreamento />} />
 
-          {/* Login público */}
-          <Route path="/admin/login" element={<Login />} />
+            {/* Login público */}
+            <Route path="/admin/login" element={<Login />} />
 
-          {/* Área privada /admin */}
-          <Route
-            path="/admin"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin/clientes"
-            element={
-              <PrivateRoute>
-                <Clientes />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin/remessas"
-            element={
-              <PrivateRoute>
-                <Remessas />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin/remessas/:id"
-            element={
-              <PrivateRoute>
-                <RemessaDetalhes />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin/remessas/nova"
-            element={
-              <PrivateRoute>
-                <RemessaNova />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin/configuracoes"
-            element={
-              <PrivateRoute>
-                <Configuracoes />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin/encomendas"
-            element={
-              <PrivateRoute>
-                <Encomendas />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin/encomendas/nova"
-            element={
-              <PrivateRoute>
-                <NovaEncomenda />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin/encomendas/:id/pagamento"
-            element={
-              <PrivateRoute>
-                <EncomendaPagamento />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin/encomendas/:id/etiquetas"
-            element={
-              <PrivateRoute>
-                <Etiquetas />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin/leitor"
-            element={
-              <PrivateRoute>
-                <Leitor />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/admin/clientes/:id/editar"
-            element={
-              <PrivateRoute>
-                <ClienteEditar />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </AuthProvider>
+            {/* Área privada /admin */}
+            <Route
+              path="/admin"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/clientes"
+              element={
+                <PrivateRoute>
+                  <Clientes />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/remessas"
+              element={
+                <PrivateRoute>
+                  <Remessas />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/remessas/:id"
+              element={
+                <PrivateRoute>
+                  <RemessaDetalhes />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/remessas/nova"
+              element={
+                <PrivateRoute>
+                  <RemessaNova />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/configuracoes"
+              element={
+                <PrivateRoute>
+                  <Configuracoes />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/encomendas"
+              element={
+                <PrivateRoute>
+                  <Encomendas />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/encomendas/nova"
+              element={
+                <PrivateRoute>
+                  <NovaEncomenda />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/encomendas/:id/pagamento"
+              element={
+                <PrivateRoute>
+                  <EncomendaPagamento />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/encomendas/:id/etiquetas"
+              element={
+                <PrivateRoute>
+                  <Etiquetas />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/leitor"
+              element={
+                <PrivateRoute>
+                  <Leitor />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/clientes/:id/editar"
+              element={
+                <PrivateRoute>
+                  <ClienteEditar />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </AuthProvider>
 
-      <ToastContainer />
-    </Router>
+        <ToastContainer />
+      </Router>
+    </LanguageProvider>
   );
 }
 

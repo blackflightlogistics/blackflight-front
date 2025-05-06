@@ -6,6 +6,7 @@ import { saveToken, saveAccountId } from "../../utils/storage";
 import Header from "../../components/home/Header";
 import { authService } from "../../api/authService";
 import { useAuth } from "../../context/useAuth";
+import { useLanguage } from "../../context/useLanguage";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { translations } = useLanguage();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,12 +28,12 @@ function Login() {
 
       saveToken(token);
       saveAccountId(account_id);
-      login(token); // Atualiza contexto também
+      login(token);
 
       navigate("/admin");
     } catch (error) {
       console.error(error);
-      alert("E-mail ou senha inválidos.");
+      alert(translations.login_error);
     } finally {
       setLoading(false);
     }
@@ -50,7 +52,7 @@ function Login() {
         <div className="relative z-10 bg-white rounded-xl shadow-md p-8 w-full max-w-md mx-auto">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold font-primary text-black">
-              Acesso administrativo
+              {translations.login_title}
             </h2>
             <button
               onClick={() => navigate("/")}
@@ -63,7 +65,7 @@ function Login() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1 text-gray-700">
-                E-mail
+                {translations.login_email_label}
               </label>
               <input
                 type="email"
@@ -76,7 +78,7 @@ function Login() {
 
             <div>
               <label className="block text-sm font-medium mb-1 text-gray-700">
-                Senha
+                {translations.login_password_label}
               </label>
               <input
                 type="password"
@@ -92,14 +94,14 @@ function Login() {
               className="w-full bg-orange text-white font-semibold rounded-md py-2 hover:opacity-90 transition"
               disabled={loading}
             >
-              {loading ? "Entrando..." : "Entrar"}
+              {loading ? translations.login_loading : translations.login_submit}
             </button>
             <button
               type="button"
               onClick={() => navigate("/")}
               className="w-full bg-gray-400 text-white font-semibold rounded-md py-2 hover:opacity-90 transition"
             >
-              Voltar
+              {translations.login_back_button}
             </button>
           </form>
         </div>

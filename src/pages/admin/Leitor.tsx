@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import QrScanner from "qr-scanner";
-import { orderService, } from "../../services/encomendaService";
+import { orderService } from "../../services/encomendaService";
 import ConfirmacaoCheckinModal from "../../components/admin/ConfirmacaoCheckinModal";
 import { isEncomendaStatus, isPacoteStatus } from "../../utils/utils";
+import { useLanguage } from "../../context/useLanguage";
 
 function Leitor() {
+  const { translations: t } = useLanguage();
   const [videoRef, setVideoRef] = useState<HTMLVideoElement | null>(null);
   const [codigoLido, setCodigoLido] = useState<string>("");
   const [cameraAtiva, setCameraAtiva] = useState(true);
@@ -15,16 +16,12 @@ function Leitor() {
   const [modalCodigo, setModalCodigo] = useState<string>("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
 
-
-//   const navigate = useNavigate();
-
   useEffect(() => {
     if (!videoRef || !cameraAtiva) return;
 
     const scanner = new QrScanner(
       videoRef,
       (result) => {
-        console.log("Código lido:", result);
         const codigo = result.data;
         setCodigoLido(codigo);
         setCameraAtiva(false);
@@ -53,7 +50,7 @@ function Leitor() {
       setModalCodigo(codigo);
       setModalAberto(true);
     } else {
-      alert("Código inválido");
+      alert(t.alerta_codigo_invalido);
       setCameraAtiva(true);
     }
   };
@@ -63,7 +60,6 @@ function Leitor() {
       const id = modalCodigo.replace("E-", "");
       const encomenda = await orderService.buscarPorId(id);
 
-      // Atualizar status da encomenda e pacotes se necessário
       encomenda.status = status;
       if (status === "em_preparacao" || status === "em_transito") {
         encomenda.packages = encomenda.packages.map((p) => ({
@@ -75,9 +71,9 @@ function Leitor() {
           p.status !== "entregue" ? { ...p, status: "cancelada" } : p
         );
       }
-//todo: corrigir o cancelamento de encomenda
+
       // await orderService.atualizar(encomenda);
-      alert("Status da encomenda atualizado com sucesso.");
+      alert(t.status_encomenda_atualizado);
     }
 
     if (modalTipo === "pacote" && isPacoteStatus(status)) {
@@ -91,12 +87,11 @@ function Leitor() {
       encomenda.packages = encomenda.packages.map((p) =>
         p.id === pacoteId ? { ...p, status } : p
       );
-//todo: corrigir o cancelamento de pacote
+
       // await orderService.atualizar(encomenda);
-      alert("Status do pacote atualizado com sucesso.");
+      alert(t.status_pacote_atualizado);
     }
 
-    // Resetar estado
     setModalAberto(false);
     setModalTipo(null);
     setModalCodigo("");
@@ -106,12 +101,12 @@ function Leitor() {
 
   return (
     <div className="flex h-screen">
-     <div className=" md:top-0 md:left-0 md:h-screen md:w-64 bg-black text-white z-10">
+      <div className="md:top-0 md:left-0 md:h-screen md:w-64 bg-black text-white z-10">
         <button
           className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
           onClick={() => setSidebarAberta(true)}
         >
-          ☰ Menu
+          ☰ {t.menu}
         </button>
 
         <Sidebar
@@ -119,8 +114,8 @@ function Leitor() {
           onFechar={() => setSidebarAberta(false)}
         />
       </div>
-      <main className="flex-1 p-4 space-y-6 pt-16  overflow-y-auto">
-        <h1 className="text-2xl font-bold">Leitor de Códigos</h1>
+      <main className="flex-1 p-4 space-y-6 pt-16 overflow-y-auto">
+        <h1 className="text-2xl font-bold">{t.leitor_titulo}</h1>
 
         {cameraAtiva ? (
           <video
@@ -130,7 +125,7 @@ function Leitor() {
         ) : (
           <div>
             <p className="text-green-600 font-semibold">
-              Código lido: {codigoLido}
+              {t.codigo_lido}: {codigoLido}
             </p>
             <button
               onClick={() => {
@@ -139,7 +134,7 @@ function Leitor() {
               }}
               className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              Ler outro código
+              {t.ler_outro_codigo}
             </button>
           </div>
         )}

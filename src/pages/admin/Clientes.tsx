@@ -1,10 +1,10 @@
-// src/pages/admin/Clientes.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { clienteService, Cliente } from "../../services/clienteService";
 import ClienteForm, { ClienteFormData } from "../../components/admin/ClienteForm";
 import { formatarLinkWhatsapp } from "../../utils/formatarLinkWhatsapp";
+import { useLanguage } from "../../context/useLanguage";
 
 function Clientes() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -12,6 +12,7 @@ function Clientes() {
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [carregando, setCarregando] = useState(true);
   const navigate = useNavigate();
+  const { translations: t } = useLanguage();
 
   useEffect(() => {
     carregarClientes();
@@ -26,7 +27,6 @@ function Clientes() {
 
   const handleSalvarCliente = async (form: ClienteFormData) => {
     const endereco = {
-      
       street: form.street,
       number: form.number,
       neighborhood: form.neighborhood,
@@ -54,19 +54,19 @@ function Clientes() {
           className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
           onClick={() => setSidebarAberta(true)}
         >
-          ☰ Menu
+          ☰ {t.menu}
         </button>
         <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
       </div>
 
       <div className="flex-1 flex flex-col h-screen overflow-y-auto bg-[#fcf7f1] pt-16 p-6">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold font-primary">Clientes</h1>
+          <h1 className="text-2xl font-bold font-primary">{t.client_title}</h1>
           <button
             onClick={() => setFormVisible(!formVisible)}
             className="bg-orange text-white px-4 py-2 rounded hover:opacity-90 font-secondary text-sm"
           >
-            {formVisible ? "Cancelar" : "Novo cliente"}
+            {formVisible ? t.cancelar : t.novo_cliente}
           </button>
         </div>
 
@@ -79,7 +79,7 @@ function Clientes() {
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange border-t-transparent"></div>
           </div>
         ) : clientes.length === 0 ? (
-          <p className="text-gray-600">Nenhum cliente cadastrado.</p>
+          <p className="text-gray-600">{t.nenhum_cliente}</p>
         ) : (
           <ul className="space-y-4">
             {clientes.map((cliente) => (
@@ -88,16 +88,17 @@ function Clientes() {
                 className="border border-orange bg-white p-4 rounded-md text-sm font-secondary"
               >
                 <p>
-                  <span className="font-bold">Nome:</span> {cliente.name}
-                  <span className="font-bold ml-4">Contato: </span> {formatarLinkWhatsapp( cliente.phoneNumber,{ icon: true })} 
+                  <span className="font-bold">{t.nome}:</span> {cliente.name}
+                  <span className="font-bold ml-4">{t.contato}: </span>
+                  {formatarLinkWhatsapp(cliente.phoneNumber, { icon: true })}
                 </p>
                 <p className="mt-2">
                   <span className="font-bold">E-mail:</span> {cliente.email}
                 </p>
                 <div className="mt-2 space-y-1">
-                  <span className="font-bold">Endereços:</span>
+                  <span className="font-bold">{t.enderecos}:</span>
                   {cliente.addresses.length === 0 ? (
-                    <p className="text-gray-600">Nenhum endereço cadastrado</p>
+                    <p className="text-gray-600">{t.nenhum_endereco}</p>
                   ) : (
                     <ul className="ml-4 list-disc">
                       {cliente.addresses.map((endereco, idx) => (
@@ -115,7 +116,7 @@ function Clientes() {
                     onClick={() => navigate(`/admin/clientes/${cliente.id}/editar`)}
                     className="bg-orange text-white px-4 py-2 rounded hover:opacity-90 font-secondary text-sm"
                   >
-                    Editar
+                    {t.editar}
                   </button>
                 </div>
               </li>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../../context/useLanguage"; // ⬅️ importação do hook de tradução
 import Sidebar from "../../components/admin/Sidebar";
 import {
   clienteService,
@@ -13,6 +14,7 @@ import { orderService, PacoteStatus } from "../../services/encomendaService";
 import ClienteForm from "../../components/admin/ClienteForm";
 
 function NovaEncomenda() {
+  const { translations: t } = useLanguage(); // ⬅️ hook com os textos traduzidos
   const navigate = useNavigate();
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [sidebarAberta, setSidebarAberta] = useState(false);
@@ -97,7 +99,6 @@ function NovaEncomenda() {
       if (irParaPagamento) setLoadingPagamento(true);
       else setLoadingSalvar(true);
 
-      // const destinatario = clientes.find((c) => c.id === destinatarioId);
       const endereco = enderecoSelecionado;
       if (!endereco) return;
       const novaEncomenda = await orderService.adicionar({
@@ -137,7 +138,7 @@ function NovaEncomenda() {
           className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
           onClick={() => setSidebarAberta(true)}
         >
-          ☰ Menu
+          ☰ {t.menu}
         </button>
 
         <Sidebar
@@ -158,7 +159,7 @@ function NovaEncomenda() {
         className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
         onClick={() => setSidebarAberta(true)}
       >
-        ☰ Menu
+        ☰ {t.menu}
       </button>
 
       <Sidebar
@@ -168,13 +169,13 @@ function NovaEncomenda() {
 
       <main className="flex-1 overflow-y-auto bg-[#fcf8f5] p-6 space-y-6">
         <h1 className="pt-10 md:pt-0 text-2xl font-bold font-primary text-black">
-          Nova Encomenda
+          {t.nova_encomenda}
         </h1>
 
         {/* Remetente */}
         <div className="space-y-2">
           <ClienteSelect
-            label="Remetente"
+            label={t.remetente}
             clientes={clientes}
             selectedId={remetenteId}
             onSelect={(id) => {
@@ -208,7 +209,7 @@ function NovaEncomenda() {
                   setExibindoListaEnderecosRemetente(false);
                 }}
               >
-                {showRemetenteEndereco ? "Ocultar endereço" : "Ver endereço"}
+                {showRemetenteEndereco ? t.ocultar_endereco : t.ver_endereco}
               </button>
               <button
                 className="text-sm text-blue-600"
@@ -218,12 +219,11 @@ function NovaEncomenda() {
                 }}
               >
                 {exibindoListaEnderecosRemetente
-                  ? "Ocultar endereços salvos"
-                  : "Endereços salvos"}
+                  ? t.ocultar_enderecos_salvos
+                  : t.enderecos_salvos}
               </button>
             </div>
           )}
-
           {exibindoListaEnderecosRemetente && (
             <div className="space-y-2 bg-white p-4 border border-orange rounded">
               {clientes
@@ -253,17 +253,16 @@ function NovaEncomenda() {
                 ))}
             </div>
           )}
-
           {showRemetenteEndereco && enderecoEditavelRemetente && (
             <div className="grid md:grid-cols-3 gap-2 bg-white p-4 border border-orange rounded">
               {[
-                ["street", "Rua"],
-                ["number", "Número"],
-                ["neighborhood", "Bairro"],
-                ["city", "Cidade"],
-                ["state", "Estado"],
-                ["zipCode", "CEP"],
-                ["country", "País"],
+                ["street", t.rua],
+                ["number", t.numero],
+                ["neighborhood", t.bairro],
+                ["city", t.cidade],
+                ["state", t.estado],
+                ["zipCode", t.cep],
+                ["country", t.pais],
               ].map(([key, label]) => (
                 <input
                   key={key}
@@ -303,7 +302,7 @@ function NovaEncomenda() {
                     setShowRemetenteEndereco(false);
                   }}
                 >
-                  Salvar endereço
+                  {t.salvar_endereco}
                 </button>
               )}
             </div>
@@ -340,7 +339,7 @@ function NovaEncomenda() {
         {/* Destinatário */}
         <div className="space-y-2">
           <ClienteSelect
-            label="Destinatário"
+            label={t.destinatario}
             clientes={clientes}
             selectedId={destinatarioId}
             onSelect={(id) => {
@@ -378,7 +377,7 @@ function NovaEncomenda() {
                   setExibindoListaEnderecosDestinatario(false);
                 }}
               >
-                {showDestinatarioEndereco ? "Ocultar endereço" : "Ver endereço"}
+                {showDestinatarioEndereco ? t.ocultar_endereco : t.ver_endereco}
               </button>
               <button
                 className="text-sm text-blue-600"
@@ -388,8 +387,8 @@ function NovaEncomenda() {
                 }}
               >
                 {exibindoListaEnderecosDestinatario
-                  ? "Ocultar endereços salvos"
-                  : "Endereços salvos"}
+                  ? t.ocultar_enderecos_salvos
+                  : t.enderecos_salvos}
               </button>
             </div>
           )}
@@ -403,7 +402,6 @@ function NovaEncomenda() {
                     key={idx}
                     className="p-2 border rounded hover:bg-orange-100 cursor-pointer"
                     onClick={() => {
-                      setEnderecoSelecionado(addr);
                       const enderecoLower = {
                         street: addr.street.toLowerCase(),
                         number: addr.number.toLowerCase(),
@@ -415,6 +413,7 @@ function NovaEncomenda() {
                       };
                       setEnderecoEditavel(enderecoLower);
                       setEnderecoOriginal(enderecoLower);
+                      setEnderecoSelecionado(enderecoLower);
                       setExibindoListaEnderecosDestinatario(false);
                     }}
                   >
@@ -428,14 +427,14 @@ function NovaEncomenda() {
           {showDestinatarioEndereco && enderecoEditavel && (
             <div className="grid md:grid-cols-3 gap-2 bg-white p-4 border border-orange rounded">
               {[
-                "street",
-                "number",
-                "neighborhood",
-                "city",
-                "state",
-                "zipCode",
-                "country",
-              ].map((key) => (
+                ["street", t.rua],
+                ["number", t.numero],
+                ["neighborhood", t.bairro],
+                ["city", t.cidade],
+                ["state", t.estado],
+                ["zipCode", t.cep],
+                ["country", t.pais],
+              ].map(([key, label]) => (
                 <input
                   key={key}
                   className="p-2 border rounded"
@@ -447,7 +446,7 @@ function NovaEncomenda() {
                         : null
                     )
                   }
-                  placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+                  placeholder={label}
                 />
               ))}
 
@@ -472,7 +471,7 @@ function NovaEncomenda() {
                     setShowDestinatarioEndereco(false);
                   }}
                 >
-                  Salvar endereço
+                  {t.salvar_endereco}
                 </button>
               )}
             </div>
@@ -515,7 +514,8 @@ function NovaEncomenda() {
               checked={encomendaExpressa}
               onChange={(e) => setEncomendaExpressa(e.target.checked)}
             />
-            Encomenda expressa (adicional R$ {adicionalExpresso.toFixed(2)})
+            {t.encomenda_expressa} ({t.adicional} R${" "}
+            {adicionalExpresso.toFixed(2)})
           </label>
           {encomendaExpressa && (
             <input
@@ -530,17 +530,19 @@ function NovaEncomenda() {
 
         {/* Pacotes */}
         <div className="space-y-4">
-          <h2 className="text-lg font-bold font-primary text-black">Pacotes</h2>
+          <h2 className="text-lg font-bold font-primary text-black">
+            {t.pacotes}
+          </h2>
 
           <div className="grid md:grid-cols-5 gap-4">
             <input
-              placeholder="Descrição"
+              placeholder={t.descricao}
               className="p-2 border rounded"
               value={descricaoPacote}
               onChange={(e) => setDescricaoPacote(e.target.value)}
             />
             <input
-              placeholder="Peso (kg)"
+              placeholder={t.peso_kg}
               type="number"
               step="0.1"
               className="p-2 border rounded"
@@ -554,7 +556,7 @@ function NovaEncomenda() {
               }}
             />
             <input
-              placeholder="Valor Declarado (opcional)"
+              placeholder={t.valor_declarado}
               type="number"
               step="0.1"
               className="p-2 border rounded"
@@ -562,11 +564,7 @@ function NovaEncomenda() {
               onChange={(e) => setValorDeclaradoPacote(e.target.value)}
               onBlur={() => {
                 const num = parseFloat(valorDeclaradoPacote.replace(",", "."));
-                if (!isNaN(num)) {
-                  setValorDeclaradoPacote(num.toFixed(1));
-                } else {
-                  setValorDeclaradoPacote("0.0");
-                }
+                setValorDeclaradoPacote(!isNaN(num) ? num.toFixed(1) : "0.0");
               }}
             />
             <select
@@ -574,24 +572,26 @@ function NovaEncomenda() {
               value={statusPacote}
               onChange={(e) => setStatusPacote(e.target.value as PacoteStatus)}
             >
-              <option value="em_preparacao">Em preparação</option>
-              <option value="em_transito">Em trânsito</option>
-              <option value="aguardando_retirada">Aguardando retirada</option>
-              <option value="entregue">Entregue</option>
-              <option value="cancelada">Cancelada</option>
+              <option value="em_preparacao">{t.status_em_preparacao}</option>
+              <option value="em_transito">{t.status_em_transito}</option>
+              <option value="aguardando_retirada">
+                {t.status_aguardando_retirada}
+              </option>
+              <option value="entregue">{t.status_entregue}</option>
+              <option value="cancelada">{t.status_cancelada}</option>
             </select>
             <button
               onClick={adicionarPacote}
               className="px-4 py-2 bg-orange text-white rounded hover:opacity-90"
             >
-              Adicionar
+              {t.adicionar}
             </button>
           </div>
 
           <ul className="space-y-2">
             {pacotes.map((p) => (
               <li key={p.description} className="p-2 bg-white border rounded">
-                📦 {p.description} — {p.weight}kg ({p.status})
+                📦 {p.description} — {p.weight}kg 
               </li>
             ))}
           </ul>
@@ -604,17 +604,16 @@ function NovaEncomenda() {
             className="px-6 py-3 bg-black text-white rounded hover:opacity-80 font-secondary text-sm"
             disabled={loadingSalvar}
           >
-            {loadingSalvar ? "Salvando..." : "Salvar Encomenda"}
+            {loadingSalvar ? t.salvando : t.salvar_encomenda}
           </button>
 
           <button
-            onClick={
-              () => salvarEncomenda(true)
-              // navigate(`/admin/encomendas/${novaEncomenda.id}/pagamento`);
-            }
+            onClick={async () => {
+              await salvarEncomenda(true);
+            }}
             className="px-6 py-3 bg-orange text-white rounded hover:opacity-80 font-secondary text-sm"
           >
-            {loadingPagamento ? "Redirecionando..." : "Ir para Pagamento"}
+            {loadingPagamento ? t.redirecionando : t.ir_para_pagamento}
           </button>
         </div>
       </main>
