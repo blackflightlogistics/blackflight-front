@@ -11,7 +11,7 @@ export function formatarLinkWhatsapp(numero: string, options?: Options): JSX.Ele
 
   const cleaned = numero.replace(/\D/g, "");
 
-  if (cleaned.length < 10) return null;
+  if (cleaned.length < 10) return <span>{numero}</span>;
 
   const possuiCodigoPais = cleaned.length > 11;
   const codigoPais = possuiCodigoPais ? cleaned.slice(0, cleaned.length - 11) : "55";
