@@ -259,6 +259,7 @@ function NovaEncomenda() {
                     setEnderecoOriginalRemetente({
                       ...enderecoEditavelRemetente,
                     });
+                    setShowRemetenteEndereco(false);
                   }}
                 >
                   Salvar endereço
@@ -376,7 +377,8 @@ function NovaEncomenda() {
                     const novaLista = await clienteService.listar();
                     setClientes(novaLista);
                     setEnderecoOriginal({ ...enderecoEditavel });
-                    setEnderecoSelecionado({ ...enderecoEditavel }); // usa novo endereço
+                    setEnderecoSelecionado({ ...enderecoEditavel });
+                    setShowDestinatarioEndereco(false);
                   }}
                 >
                   Salvar endereço
