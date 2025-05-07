@@ -163,7 +163,7 @@ const Remessas = () => {
                         >
                           {r.pesoTotal.toFixed(2)} kg
                         </p> */}
-                        aqui falta o peso apra mostrar se esta perto dos 23kg
+                        aqui falta o peso apra mostrar o peso total da remessa
                       </div>
 
                       <Link
@@ -210,21 +210,7 @@ const Remessas = () => {
                     {acoesAbertas === r.id && (
                       <div className="absolute right-0 mt-11 w-48 bg-white border border-gray-300 rounded shadow-md z-20">
                         <ul className="flex flex-col text-sm">
-                          {/* {r.status === "aberta" && r.pesoTotal >= 23 && (
-                            <li>
-                              <button
-                                onClick={() => {
-                                  fecharRemessa(r.id);
-                                  setAcoesAbertas(null);
-                                }}
-                                className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                              >
-                                Fechar Remessa
-                              </button>
-                            </li>
-                          )} */}
-                          aqui falta o peso para mostrar o botão de fechar
-                          remessa
+                         
                           {r.status === "fechada" && (
                             <li>
                               <button
@@ -241,10 +227,19 @@ const Remessas = () => {
                           <li>
                             <Link
                               to={`/admin/remessas/${r.id}`}
-                              className="block px-4 py-2 hover:bg-gray-100"
+                              className="block px-2 py-1 bg-orange text-white text-center font-semibold rounded hover:opacity-90 transition text-sm m-1"
                               onClick={() => setAcoesAbertas(null)}
                             >
-                              Ver Detalhes
+                              
+                             Cancelar Remessa
+                            </Link>
+                            <Link
+                              to={`/admin/remessas/${r.id}`}
+                              className="block px-2 py-1 bg-orange text-white text-center font-semibold rounded hover:opacity-90 transition text-sm m-1"
+                              onClick={() => setAcoesAbertas(null)}
+                            >
+                              
+                             Gerar etiquetas
                             </Link>
                           </li>
                         </ul>

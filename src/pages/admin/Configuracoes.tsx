@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/admin/Sidebar";
 import { configService } from "../../services/configService";
+import { useLanguage } from "../../context/useLanguage";
+
 
 const Configuracoes = () => {
   const [precoPorQuilo, setPrecoPorQuilo] = useState("");
@@ -10,6 +12,7 @@ const Configuracoes = () => {
   const [mensagem, setMensagem] = useState("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [carregando, setCarregando] = useState(true);
+  const { changeLanguage, language,translations: t } = useLanguage();
 
   useEffect(() => {
     const carregarConfiguracoes = async () => {
@@ -89,6 +92,42 @@ const Configuracoes = () => {
               onChange={(e) => setAdicionalExpresso(e.target.value)}
               className="p-2 border rounded w-full"
             />
+          </div>
+          {/* Botões de idioma */}
+          <div className="flex flex-col gap-2 mt-6 pl-2">
+            <p>{t.selecione_o_idioma}</p>
+            <button
+              onClick={() => changeLanguage("EN")}
+              className={`text-sm text-left ${
+                language === "EN" ? "text-orange font-semibold" : "text-black"
+              } hover:text-orange`}
+            >
+              🇺🇸 English
+            </button>
+            <button
+              onClick={() => changeLanguage("FR")}
+              className={`text-sm text-left ${
+                language === "FR" ? "text-orange font-semibold" : "text- black"
+              } hover:text-orange`}
+            >
+              🇫🇷 Français
+            </button>
+            <button
+              onClick={() => changeLanguage("ES")}
+              className={`text-sm text-left ${
+                language === "ES" ? "text-orange font-semibold" : "text- black"
+              } hover:text-orange`}
+            >
+              🇪🇸 Español
+            </button>
+            <button
+              onClick={() => changeLanguage("PT")}
+              className={`text-sm text-left ${
+                language === "PT" ? "text-orange font-semibold" : "text- black"
+              } hover:text-orange`}
+            >
+              🇧🇷 Português
+            </button>
           </div>
         </div>
 

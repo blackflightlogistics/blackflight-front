@@ -4,6 +4,7 @@ import Sidebar from "../../components/admin/Sidebar";
 import { orderService, Order } from "../../services/encomendaService";
 import { remessaService } from "../../services/remessaService";
 import { toast } from "react-toastify";
+import { pacoteStatusToString } from "../../utils/utils";
 
 const RemessaNova = () => {
   const [encomendas, setEncomendas] = useState<Order[]>([]);
@@ -34,12 +35,12 @@ const RemessaNova = () => {
       toast.error("Informe o país da remessa.");
       return;
     }
-  
+
     if (selecionadas.length === 0) {
       toast.error("Selecione ao menos uma encomenda.");
       return;
     }
-  
+
     try {
       await remessaService.adicionar({
         country: pais,
@@ -52,7 +53,6 @@ const RemessaNova = () => {
       toast.error("Erro ao criar remessa.");
     }
   };
-  
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -102,8 +102,12 @@ const RemessaNova = () => {
                     className="mt-1"
                   />
                   <div>
+                    <p className="text-sm text-gray-600">
+                      Pais: <strong>{e.country}</strong>{" "}
+                    </p>
                     <p>
-                      <strong>#{e.id}</strong> – {e.status} –{" "}
+                      <strong>#{e.id}</strong> –{" "}
+                      {pacoteStatusToString(e.status ?? "Sem status definido")} –{" "}
                       {e.packages.length} pacote(s)
                     </p>
                     <p className="text-sm text-gray-600">

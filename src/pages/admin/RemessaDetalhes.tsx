@@ -3,13 +3,13 @@ import { useParams, Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { remessaService, Shipment } from "../../services/remessaService";
 import { orderService, Order } from "../../services/encomendaService";
-import { clienteService, Cliente } from "../../services/clienteService";
+// import { clienteService, Cliente } from "../../services/clienteService";
 
 const RemessaDetalhes = () => {
   const { id } = useParams<{ id: string }>();
   const [remessa, setRemessa] = useState<Shipment | null>(null);
   const [encomendas, setEncomendas] = useState<Order[]>([]);
-  const [clientes, setClientes] = useState<Cliente[]>([]);
+  // const [clientes, setClientes] = useState<Cliente[]>([]);
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [carregando, setCarregando] = useState(true); // ⬅️ novo estado de loading
 
@@ -18,14 +18,14 @@ const RemessaDetalhes = () => {
       setCarregando(true);
       const r = await remessaService.buscarPorId(id ?? "aqui ta indo default");
       const todasEncomendas = await orderService.listar();
-      const todasClientes = await clienteService.listar();
+      // const todasClientes = await clienteService.listar();
       if (r) {
         const relacionadas = todasEncomendas.filter((e) =>
           r.orders.map((o) => o.id).includes(e.id)
         );
         setRemessa(r);
         setEncomendas(relacionadas);
-        setClientes(todasClientes);
+        // setClientes(todasClientes);
         setCarregando(false);
       }
     };
@@ -57,7 +57,7 @@ const RemessaDetalhes = () => {
           <h1 className="text-2xl font-bold">Detalhes da Remessa</h1>
           <Link
             to="/admin/remessas"
-            className="bg-orange hover:bg-blue-700 text-white px-4 py-2 rounded text-sm transition"
+            className="bg-orange  text-white px-4 py-2 rounded text-sm transition"
           >
             ← Voltar
           </Link>
@@ -73,7 +73,7 @@ const RemessaDetalhes = () => {
                 <strong>País:</strong> {remessa.country}
               </p>
               <p>
-                <strong>Status:</strong> {remessa.status}
+                <strong>Status:</strong> {remessa.status ??"sem status"}
               </p>
               {/* <p><strong>Peso total:</strong> {remessa.pesoTotal.toFixed(2)} kg</p> */}
               <p>
@@ -96,14 +96,7 @@ const RemessaDetalhes = () => {
                 <p className="text-gray-600">Nenhuma encomenda vinculada.</p>
               ) : (
                 <ul className="space-y-4">
-                  {encomendas.map((e) => {
-                    const remetente =
-                      clientes.find((c) => c.id === e.id)?.name ||
-                      "Remetente não encontrado";
-                    const destinatario =
-                      clientes.find((c) => c.id === e.id)?.name ||
-                      "Destinatário não encontrado";
-
+                  {encomendas.map((e) => {                  
                     return (
                       <li
                         key={e.id}
@@ -113,15 +106,14 @@ const RemessaDetalhes = () => {
                           <div>
                             <p className="font-semibold">Encomenda #{e.id}</p>
                             <p className="text-sm">
-                              <strong>De:</strong> {remetente}
+                              <strong>De:</strong> {e.from_account.name.toLowerCase()}
                             </p>
                             <p className="text-sm">
-                              <strong>Para:</strong> {destinatario}
+                              <strong>Para:</strong> {e.to_account.name.toLowerCase()}
                             </p>
                             {/* <p className="text-sm"><strong>Endereço de entrega:</strong> {`${e.enderecoEntrega.rua}, ${e.enderecoEntrega.numero} - ${e.enderecoEntrega.bairro}, ${e.enderecoEntrega.cidade} - ${e.enderecoEntrega.estado}, ${e.enderecoEntrega.cep}`}</p> */}
                             <p className="text-sm">
-                              <strong>Endereço de entrega:</strong> temos
-                              problema nessa linha revisar contrato
+                              <strong>Endereço de entrega:</strong> {e.number}{" "}{e.street}{" "}{e.neighborhood}{" "}{e.city}{" "}{e.state}{" "}{e.country}{" "}{e.cep}
                             </p>
                           </div>
                         </div>

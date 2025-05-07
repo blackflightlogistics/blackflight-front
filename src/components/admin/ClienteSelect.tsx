@@ -83,7 +83,7 @@ const ClienteSelect = ({
                         }`
                       }
                     >
-                      <div className="font-semibold">{cliente.name}</div>
+                      <div className="font-semibold">{cliente.name.toLocaleLowerCase()}</div>
                       <div className="text-xs text-gray-500">
                         {cliente.email} | {cliente.phoneNumber}
                       </div>

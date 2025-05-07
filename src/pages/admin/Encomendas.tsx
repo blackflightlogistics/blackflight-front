@@ -2,26 +2,26 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { Order, orderService } from "../../services/encomendaService";
-import { Cliente, clienteService } from "../../services/clienteService";
+import { clienteService } from "../../services/clienteService";
 import { pacoteStatusToString } from "../../utils/utils";
 import { useLanguage } from "../../context/useLanguage";
 
 function Encomendas() {
   const { translations: t } = useLanguage();
   const [encomendas, setEncomendas] = useState<Order[]>([]);
-  const [clientes, setClientes] = useState<Cliente[]>([]);
+  // const [clientes, setClientes] = useState<Cliente[]>([]);
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     const carregar = async () => {
       setCarregando(true);
-      const [encomendasData, clientesData] = await Promise.all([
+      const [encomendasData] = await Promise.all([
         orderService.listar(),
         clienteService.listar(),
       ]);
       setEncomendas(encomendasData);
-      setClientes(clientesData);
+      // setClientes(clientesData);
       setCarregando(false);
     };
 
@@ -67,12 +67,6 @@ function Encomendas() {
             ) : (
               <ul className="space-y-4">
                 {encomendas.map((e) => {
-                  const remetente =
-                    clientes.find((c) => c.id === e.from_account_id)?.name ||
-                    "—";
-                  const destinatario =
-                    clientes.find((c) => c.id === e.to_account_id)?.name || "—";
-
                   return (
                     <li
                       key={e.id}
@@ -81,15 +75,17 @@ function Encomendas() {
                       <div className="flex flex-col md:flex-row md:justify-between">
                         <div className="space-y-1 text-sm text-black">
                           <p>
-                            <strong>{t.de}</strong> {remetente}
+                            <strong>{t.de}</strong>{" "}
+                            {e.from_account.name.toLocaleLowerCase()}
                           </p>
                           <p>
-                            <strong>{t.para}</strong> {destinatario}
+                            <strong>{t.para}</strong>{" "}
+                            {e.to_account.name.toLocaleLowerCase()}
                           </p>
                           <p>
-                            <strong>{t.endereco}</strong>{" "}
-                            {e.number} - {e.street} - {e.neighborhood} - {e.city} -{" "}
-                            {e.state} - {e.country} - {e.cep}
+                            <strong>{t.endereco}</strong> {e.number} -{" "}
+                            {e.street} - {e.neighborhood} - {e.city} - {e.state}{" "}
+                            - {e.country} - {e.cep}
                           </p>
                         </div>
 
@@ -97,7 +93,7 @@ function Encomendas() {
                           <p>
                             <strong>{t.valor_total}</strong>{" "}
                             <span className="text-black font-bold">
-                              $ {e.total_value}
+                              $ {Number(e.total_value).toFixed(2)}
                             </span>
                           </p>
                           <p>

@@ -12,6 +12,7 @@ import ClienteSelect from "../../components/admin/ClienteSelect";
 import dayjs from "dayjs";
 import { orderService, PacoteStatus } from "../../services/encomendaService";
 import ClienteForm from "../../components/admin/ClienteForm";
+import DecimalMoneyInput from "../../components/form/DecimalMoneyInput";
 
 function NovaEncomenda() {
   const { translations: t } = useLanguage(); // ⬅️ hook com os textos traduzidos
@@ -541,7 +542,13 @@ function NovaEncomenda() {
               value={descricaoPacote}
               onChange={(e) => setDescricaoPacote(e.target.value)}
             />
-            <input
+            <DecimalMoneyInput
+              value={pesoPacote}
+              onChange={(val) => setPesoPacote(val)}
+              placeholder={t.peso_kg}
+              decimalPlaces={2}
+            />
+            {/* <input
               placeholder={t.peso_kg}
               type="number"
               step="0.1"
@@ -554,8 +561,14 @@ function NovaEncomenda() {
                   setPesoPacote(num.toFixed(1));
                 }
               }}
+            /> */}
+            <DecimalMoneyInput
+              value={valorDeclaradoPacote}
+              onChange={(val) => setValorDeclaradoPacote(val)}
+              placeholder={t.valor_declarado}
+              decimalPlaces={2}
             />
-            <input
+            {/* <input
               placeholder={t.valor_declarado}
               type="number"
               step="0.1"
@@ -566,7 +579,8 @@ function NovaEncomenda() {
                 const num = parseFloat(valorDeclaradoPacote.replace(",", "."));
                 setValorDeclaradoPacote(!isNaN(num) ? num.toFixed(1) : "0.0");
               }}
-            />
+            /> */}
+
             <select
               className="p-2 border rounded"
               value={statusPacote}
@@ -591,7 +605,7 @@ function NovaEncomenda() {
           <ul className="space-y-2">
             {pacotes.map((p) => (
               <li key={p.description} className="p-2 bg-white border rounded">
-                📦 {p.description} — {p.weight}kg 
+                📦 {p.description} — {p.weight}kg
               </li>
             ))}
           </ul>

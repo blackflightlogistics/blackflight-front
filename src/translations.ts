@@ -58,7 +58,7 @@ export const translations = {
         pacotes: "Packages",
         descricao: "Description",
         peso_kg: "Weight (kg)",
-        valor_declarado: "Declared value (optional)",
+        valor_declarado: "Declared value",
         adicionar: "Add",
         status_em_preparacao: "In preparation",
         status_em_transito: "In transit",
@@ -115,6 +115,7 @@ export const translations = {
         alerta_codigo_invalido: "Invalid code",
         status_encomenda_atualizado: "Order status updated successfully.",
         status_pacote_atualizado: "Package status updated successfully.",
+        selecione_o_idioma: "Select language",
 
     },
     ES: {
@@ -176,7 +177,7 @@ export const translations = {
         pacotes: "Paquetes",
         descricao: "Descripción",
         peso_kg: "Peso (kg)",
-        valor_declarado: "Valor declarado (opcional)",
+        valor_declarado: "Valor declarado",
         adicionar: "Agregar",
         status_em_preparacao: "En preparación",
         status_em_transito: "En tránsito",
@@ -233,6 +234,7 @@ export const translations = {
         alerta_codigo_invalido: "Código inválido",
         status_encomenda_atualizado: "Estado del pedido actualizado con éxito.",
         status_pacote_atualizado: "Estado del paquete actualizado con éxito.",
+        selecione_o_idioma: "Seleccione el idioma",
 
     },
     FR: {
@@ -294,7 +296,7 @@ export const translations = {
         pacotes: "Colis",
         descricao: "Description",
         peso_kg: "Poids (kg)",
-        valor_declarado: "Valeur déclarée (optionnel)",
+        valor_declarado: "Valeur déclarée",
         adicionar: "Ajouter",
         status_em_preparacao: "En préparation",
         status_em_transito: "En transit",
@@ -351,6 +353,7 @@ export const translations = {
         alerta_codigo_invalido: "Code invalide",
         status_encomenda_atualizado: "Statut de la commande mis à jour avec succès.",
         status_pacote_atualizado: "Statut du colis mis à jour avec succès.",
+        selecione_o_idioma: "Sélectionnez la langue",
 
 
     },
@@ -413,7 +416,7 @@ export const translations = {
         pacotes: "Pacotes",
         descricao: "Descrição",
         peso_kg: "Peso (kg)",
-        valor_declarado: "Valor Declarado (opcional)",
+        valor_declarado: "Valor Declarado",
         adicionar: "Adicionar",
         status_em_preparacao: "Em preparação",
         status_em_transito: "Em trânsito",
@@ -470,6 +473,7 @@ export const translations = {
         alerta_codigo_invalido: "Código inválido",
         status_encomenda_atualizado: "Status da encomenda atualizado com sucesso.",
         status_pacote_atualizado: "Status do pacote atualizado com sucesso.",
+        selecione_o_idioma: "Selecione o idioma",
 
     }
 
