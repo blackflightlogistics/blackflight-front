@@ -20,6 +20,7 @@ import ClienteEditar from "./pages/admin/ClienteEditar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { LanguageProvider } from "./context/LanguageProvider";
+import EtiquetaRemessa from "./pages/admin/EtiquetasRemessas";
 
 function App() {
   return (
@@ -107,11 +108,20 @@ function App() {
                 </PrivateRoute>
               }
             />
+            
             <Route
               path="/admin/encomendas/:id/etiquetas"
               element={
                 <PrivateRoute>
                   <Etiquetas />
+                </PrivateRoute>
+              }
+            />
+             <Route
+              path="/admin/remessas/:id/etiquetas"
+              element={
+                <PrivateRoute>
+                  <EtiquetaRemessa />
                 </PrivateRoute>
               }
             />

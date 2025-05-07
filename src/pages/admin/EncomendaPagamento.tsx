@@ -79,8 +79,8 @@ function EncomendaPagamento() {
 
   const estaSelecionado = (id: string) => pacotesSelecionados.includes(id);
   const carregar = async () => {
-    setCarregando(true);
     if (!id) return;
+    setCarregando(true);
     const encomendaEncontrada = await orderService.buscarPorId(id);
     setEncomenda(encomendaEncontrada);
     setFormaPagamento(

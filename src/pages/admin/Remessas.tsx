@@ -234,7 +234,7 @@ const Remessas = () => {
                              Cancelar Remessa
                             </Link>
                             <Link
-                              to={`/admin/remessas/${r.id}`}
+                              to={`/admin/remessas/${r.id}/etiquetas`}
                               className="block px-2 py-1 bg-orange text-white text-center font-semibold rounded hover:opacity-90 transition text-sm m-1"
                               onClick={() => setAcoesAbertas(null)}
                             >

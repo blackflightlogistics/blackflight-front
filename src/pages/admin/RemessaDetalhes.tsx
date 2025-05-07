@@ -32,10 +32,6 @@ const RemessaDetalhes = () => {
     carregar();
   }, [id]);
 
-  // if (!remessa) {
-  //   return <p className="p-6">Carregando detalhes da remessa...</p>;
-  // }
-
   return (
     <div className="h-screen overflow-hidden">
       <div className="md:fixed md:top-0 md:left-0 md:h-screen md:w-64 bg-white border-r z-10">
@@ -69,11 +65,19 @@ const RemessaDetalhes = () => {
         ) : (
           <>
             <div className="bg-white border border-orange rounded-xl p-6 space-y-2 shadow-sm">
+              <div className="flex justify-between items-start mb-2">
+                <p>
+                  <strong>País:</strong> {remessa.country}
+                </p>
+                <Link
+                  to={`/admin/remessas/${id}/etiquetas`}
+                  className="block px-2 py-1 bg-orange text-white text-center font-semibold rounded hover:opacity-90 transition text-sm m-1"
+                >
+                  Gerar etiquetas
+                </Link>
+              </div>
               <p>
-                <strong>País:</strong> {remessa.country}
-              </p>
-              <p>
-                <strong>Status:</strong> {remessa.status ??"sem status"}
+                <strong>Status:</strong> {remessa.status ?? "sem status"}
               </p>
               {/* <p><strong>Peso total:</strong> {remessa.pesoTotal.toFixed(2)} kg</p> */}
               <p>
@@ -96,7 +100,7 @@ const RemessaDetalhes = () => {
                 <p className="text-gray-600">Nenhuma encomenda vinculada.</p>
               ) : (
                 <ul className="space-y-4">
-                  {encomendas.map((e) => {                  
+                  {encomendas.map((e) => {
                     return (
                       <li
                         key={e.id}
@@ -106,14 +110,18 @@ const RemessaDetalhes = () => {
                           <div>
                             <p className="font-semibold">Encomenda #{e.id}</p>
                             <p className="text-sm">
-                              <strong>De:</strong> {e.from_account.name.toLowerCase()}
+                              <strong>De:</strong>{" "}
+                              {e.from_account.name.toLowerCase()}
                             </p>
                             <p className="text-sm">
-                              <strong>Para:</strong> {e.to_account.name.toLowerCase()}
+                              <strong>Para:</strong>{" "}
+                              {e.to_account.name.toLowerCase()}
                             </p>
                             {/* <p className="text-sm"><strong>Endereço de entrega:</strong> {`${e.enderecoEntrega.rua}, ${e.enderecoEntrega.numero} - ${e.enderecoEntrega.bairro}, ${e.enderecoEntrega.cidade} - ${e.enderecoEntrega.estado}, ${e.enderecoEntrega.cep}`}</p> */}
                             <p className="text-sm">
-                              <strong>Endereço de entrega:</strong> {e.number}{" "}{e.street}{" "}{e.neighborhood}{" "}{e.city}{" "}{e.state}{" "}{e.country}{" "}{e.cep}
+                              <strong>Endereço de entrega:</strong> {e.number}{" "}
+                              {e.street} {e.neighborhood} {e.city} {e.state}{" "}
+                              {e.country} {e.cep}
                             </p>
                           </div>
                         </div>
