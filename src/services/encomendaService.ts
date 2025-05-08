@@ -115,8 +115,12 @@ export interface UpdateOrderPayload {
   removed_packages?: string[];
 }
 export const orderService = {
-  listar: async (): Promise<Order[]> => {
-    const response = await api.get<{ data: Order[] }>("/orders");
+  listar: async (forShipment?: boolean): Promise<Order[]> => {
+    const params = forShipment
+      ? { filter: JSON.stringify({ for_shipment: "true" }) }
+      : {};
+  
+    const response = await api.get<{ data: Order[] }>("/orders", { params });
     return response.data.data;
   },
 

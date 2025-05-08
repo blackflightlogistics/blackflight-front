@@ -14,7 +14,7 @@ const RemessaNova = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    orderService.listar().then(setEncomendas);
+    orderService.listar(true).then(setEncomendas);
   }, []);
 
   const toggleEncomenda = (id: string) => {
@@ -105,8 +105,17 @@ const RemessaNova = () => {
                     <p className="text-sm text-gray-600">
                       Pais: <strong>{e.country}</strong>{" "}
                     </p>
+                    <p className="text-sm text-gray-600">
+                      Rementente: <strong>{e.from_account.name.toLocaleLowerCase()}</strong>{" "}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Destinatario: <strong>{e.to_account.name.toLocaleLowerCase()}</strong>{" "}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Codigo de rastreio: <strong>Falta codigo de rastreio</strong>{" "}
+                    </p>
                     <p>
-                      <strong>#{e.id}</strong> –{" "}
+                      <strong>Status:</strong> {" "}
                       {pacoteStatusToString(e.status ?? "Sem status definido")} –{" "}
                       {e.packages.length} pacote(s)
                     </p>
