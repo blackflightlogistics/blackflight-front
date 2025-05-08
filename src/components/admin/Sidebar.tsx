@@ -46,7 +46,7 @@ const SidebarContent = ({
         {/* Logo */}
         <div className="mb-10">
           <Link to="/">
-            <img src="/logo.png" alt="Logo" />
+            <img src="/logo3.png" alt="Logo" />
           </Link>
         </div>
 

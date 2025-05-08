@@ -27,7 +27,7 @@ const Navbar = () => {
       <div className="flex  justify-between items-center max-w-7xl mx-auto px-4 md:px-8">
         {/* LOGO */}
         <Link to="/" className="text-xl font-bold text-black">
-          <img src="/image.png" alt="logo" className="w-[3rem] h-[2rem]" />
+          <img src="/minimal_logo_black.svg" alt="logo" className="w-[2rem] h-[3rem]" />
         </Link>
 
         {/* LINKS - DESKTOP */}
@@ -36,32 +36,7 @@ const Navbar = () => {
           <p className="font-secondary text-sm font-medium">Rastreio</p>
           <p className="font-secondary text-sm font-medium">Quem Somos</p>
           <p className="font-secondary text-sm font-medium">Nossos Serviços</p>
-          {/* <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const codigo = e.currentTarget.codigo.value;
-              const destino = document.getElementById("rastreamento-resultado");
-              if (codigo && destino) {
-                window.scrollTo({
-                  top: destino.offsetTop - 80,
-                  behavior: "smooth",
-                });
-                window.dispatchEvent(
-                  new CustomEvent("buscar-encomenda", { detail: codigo })
-                );
-              }
-            }}
-            className="flex items-center border border-gray-400 rounded"
-          >
-            <input
-              name="codigo"
-              placeholder="Código de rastreio"
-              className="px-3 py-2 text-sm outline-none"
-            />
-            <button type="submit" className="px-3 py-2">
-              🔍
-            </button>
-          </form> */}
+          
 
           
         </div>
