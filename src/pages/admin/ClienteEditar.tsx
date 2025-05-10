@@ -89,7 +89,7 @@ function ClienteEditar() {
       neighborhood: "",
       city: "",
       state: "",
-      zipCode: "",
+      cep: "",
       country: "",
     });
     setModoEnderecoVisivel(true);
@@ -161,7 +161,7 @@ function ClienteEditar() {
                 >
                   <p>
                     {addr.street}, {addr.number} - {addr.neighborhood},{" "}
-                    {addr.city} - {addr.state}, {addr.zipCode}, {addr.country}
+                    {addr.city} - {addr.state}, {addr.cep}, {addr.country}
                   </p>
                   <div className="flex gap-2 mt-2">
                     <button
@@ -239,11 +239,11 @@ function ClienteEditar() {
                       className="p-2 border rounded"
                     />
                     <input
-                      value={enderecoTemp.zipCode}
+                      value={enderecoTemp.cep}
                       onChange={(e) =>
                         setEnderecoTemp({
                           ...enderecoTemp,
-                          zipCode: e.target.value,
+                          cep: e.target.value,
                         })
                       }
                       placeholder={t.form_cep}

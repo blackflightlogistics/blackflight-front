@@ -6,7 +6,7 @@ interface Props {
   logo?: string;
 }
 
-const QRCodeComLogo = ({ value, size = 128, logo = "/image.png" }: Props) => {
+const QRCodeComLogo = ({ value, size = 128, logo = "/minimal_logo_black.svg" }: Props) => {
   return (
     <div className="relative w-[128px] h-[128px]">
       <QRCodeSVG

@@ -2,14 +2,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { Order, orderService } from "../../services/encomendaService";
-import { clienteService } from "../../services/clienteService";
-import { pacoteStatusToString } from "../../utils/utils";
+import { pacoteStatusToString, paymentTypeToString } from "../../utils/utils";
 import { useLanguage } from "../../context/useLanguage";
 
 function Encomendas() {
   const { translations: t } = useLanguage();
   const [encomendas, setEncomendas] = useState<Order[]>([]);
-  // const [clientes, setClientes] = useState<Cliente[]>([]);
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [carregando, setCarregando] = useState(true);
 
@@ -18,7 +16,6 @@ function Encomendas() {
       setCarregando(true);
       const [encomendasData] = await Promise.all([
         orderService.listar(),
-        clienteService.listar(),
       ]);
       setEncomendas(encomendasData);
       // setClientes(clientesData);
@@ -99,13 +96,13 @@ function Encomendas() {
                           <p>
                             <strong>{t.status_pagamento}</strong>{" "}
                             <span className="text-black">
-                              {e.payment_type || t.em_aberto}
+                              {e.payment_status || t.em_aberto}
                             </span>
                           </p>
                           <p>
                             <strong>{t.forma_pagamento}</strong>{" "}
                             <span className="text-black">
-                              {e.payment_type || t.em_aberto}
+                              {paymentTypeToString(e?.payment_type ?? "",t) ??""}
                             </span>
                           </p>
                         </div>
@@ -126,7 +123,7 @@ function Encomendas() {
                                 </p>
                               </div>
                               <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                                {pacoteStatusToString(p.status)}
+                                {pacoteStatusToString(p.status, t)}
                               </span>
                             </div>
                           ))}

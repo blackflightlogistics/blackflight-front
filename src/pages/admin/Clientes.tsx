@@ -32,7 +32,7 @@ function Clientes() {
       neighborhood: form.neighborhood,
       city: form.city,
       state: form.state,
-      zipCode: form.zipCode,
+      cep: form.cep,
       country: form.country,
     };
 
@@ -104,7 +104,7 @@ function Clientes() {
                       {cliente.addresses.map((endereco, idx) => (
                         <li key={idx}>
                           {endereco.number} - {endereco.street} - {endereco.neighborhood} - 
-                          {endereco.city} - {endereco.state} - {endereco.country} {endereco.zipCode}
+                          {endereco.city} - {endereco.state} - {endereco.country} {endereco.cep}
                         </li>
                       ))}
                     </ul>

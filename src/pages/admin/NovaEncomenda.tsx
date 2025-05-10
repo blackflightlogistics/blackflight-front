@@ -112,7 +112,7 @@ function NovaEncomenda() {
         state: endereco.state,
         country: endereco.country,
         number: endereco.number,
-        cep: endereco.zipCode,
+        cep: endereco.cep,
         additional_info: "",
         paid_now: "",
         descount: "",
@@ -191,7 +191,7 @@ function NovaEncomenda() {
                   neighborhood: endereco.neighborhood.toLowerCase(),
                   city: endereco.city.toLowerCase(),
                   state: endereco.state.toLowerCase(),
-                  zipCode: endereco.zipCode.toLowerCase(),
+                  cep: endereco.cep.toLowerCase(),
                   country: endereco.country.toLowerCase(),
                 };
                 setEnderecoEditavelRemetente(enderecoLower);
@@ -240,7 +240,7 @@ function NovaEncomenda() {
                         neighborhood: addr.neighborhood.toLowerCase(),
                         city: addr.city.toLowerCase(),
                         state: addr.state.toLowerCase(),
-                        zipCode: addr.zipCode.toLowerCase(),
+                        cep: addr.cep.toLowerCase(),
                         country: addr.country.toLowerCase(),
                       };
                       setEnderecoEditavelRemetente(enderecoLower);
@@ -249,7 +249,7 @@ function NovaEncomenda() {
                     }}
                   >
                     {addr.street}, {addr.number}, {addr.neighborhood},{" "}
-                    {addr.city} - {addr.state}, {addr.zipCode} ({addr.country})
+                    {addr.city} - {addr.state}, {addr.cep} ({addr.country})
                   </div>
                 ))}
             </div>
@@ -262,7 +262,7 @@ function NovaEncomenda() {
                 ["neighborhood", t.bairro],
                 ["city", t.cidade],
                 ["state", t.estado],
-                ["zipCode", t.cep],
+                ["cep", t.cep],
                 ["country", t.pais],
               ].map(([key, label]) => (
                 <input
@@ -318,7 +318,7 @@ function NovaEncomenda() {
                   neighborhood: form.neighborhood,
                   city: form.city,
                   state: form.state,
-                  zipCode: form.zipCode,
+                  cep: form.cep,
                   country: form.country,
                 };
                 const novo = await clienteService.adicionar({
@@ -356,7 +356,7 @@ function NovaEncomenda() {
                   neighborhood: endereco.neighborhood.toLowerCase(),
                   city: endereco.city.toLowerCase(),
                   state: endereco.state.toLowerCase(),
-                  zipCode: endereco.zipCode.toLowerCase(),
+                  cep: endereco.cep.toLowerCase(),
                   country: endereco.country.toLowerCase(),
                 };
                 setEnderecoEditavel(enderecoLower);
@@ -409,7 +409,7 @@ function NovaEncomenda() {
                         neighborhood: addr.neighborhood.toLowerCase(),
                         city: addr.city.toLowerCase(),
                         state: addr.state.toLowerCase(),
-                        zipCode: addr.zipCode.toLowerCase(),
+                        cep: addr.cep.toLowerCase(),
                         country: addr.country.toLowerCase(),
                       };
                       setEnderecoEditavel(enderecoLower);
@@ -419,7 +419,7 @@ function NovaEncomenda() {
                     }}
                   >
                     {addr.street}, {addr.number}, {addr.neighborhood},{" "}
-                    {addr.city} - {addr.state}, {addr.zipCode} ({addr.country})
+                    {addr.city} - {addr.state}, {addr.cep} ({addr.country})
                   </div>
                 ))}
             </div>
@@ -433,7 +433,7 @@ function NovaEncomenda() {
                 ["neighborhood", t.bairro],
                 ["city", t.cidade],
                 ["state", t.estado],
-                ["zipCode", t.cep],
+                ["cep", t.cep],
                 ["country", t.pais],
               ].map(([key, label]) => (
                 <input
@@ -487,7 +487,7 @@ function NovaEncomenda() {
                   neighborhood: form.neighborhood,
                   city: form.city,
                   state: form.state,
-                  zipCode: form.zipCode,
+                  cep: form.cep,
                   country: form.country,
                 };
                 const novo = await clienteService.adicionar({

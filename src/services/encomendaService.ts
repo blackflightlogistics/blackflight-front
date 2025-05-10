@@ -1,5 +1,6 @@
 // src/services/encomendaService.ts
 import api from "../api/api";
+import { Address, Cliente } from "./clienteService";
 
 export type FormaPagamento = "a_vista" | "parcelado" | "na_retirada";
 export type PacoteStatus =
@@ -15,10 +16,18 @@ export type EncomendaStatus =
   | "entregue"
   | "cancelada";
 
+  export type EncomendaPagamentoStatus =
+  | "pago"
+  | "parcial"
+  | "pendente"
+  | "cancelado";
+
 export interface Account {
   id: string;
   name: string;
   email: string;
+  street: string;
+  neighborhood: string;
   phone_number: string;
   inserted_at: string;
   country: string;
@@ -26,6 +35,7 @@ export interface Account {
   city: string;
   state: string;
   number: string;
+   addresses: Address[];
 }
 
 export interface Package {
@@ -42,8 +52,9 @@ export interface Order {
   id: string;
   from_account_id: string;
   to_account_id: string;
-  from_account: Account;
-  to_account: Account;
+  payment_status: string | null;
+  from_account: Cliente;
+  to_account: Cliente;
   status: string | null;
   is_express: boolean;
   scheduled_date: string | null;
@@ -64,6 +75,7 @@ export interface Order {
   additional_info: string;
   zip_code: string;
   cep: string;
+  tracking_code: string | null;
 }
 
 export interface CreateOrderPayload {
@@ -105,6 +117,7 @@ export interface UpdateOrderPayload {
   paid_now: string;
   descount: string;
   payment_type: string;
+  payment_status: EncomendaPagamentoStatus;
   total_value: string;
   added_packages?: {
     description: string;

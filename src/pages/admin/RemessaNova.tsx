@@ -5,6 +5,7 @@ import { orderService, Order } from "../../services/encomendaService";
 import { remessaService } from "../../services/remessaService";
 import { toast } from "react-toastify";
 import { pacoteStatusToString } from "../../utils/utils";
+import { useLanguage } from "../../context/useLanguage";
 
 const RemessaNova = () => {
   const [encomendas, setEncomendas] = useState<Order[]>([]);
@@ -12,6 +13,7 @@ const RemessaNova = () => {
   const [pais, setPais] = useState("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const navigate = useNavigate();
+  const { translations: t } = useLanguage();
 
   useEffect(() => {
     orderService.listar(true).then(setEncomendas);
@@ -63,7 +65,7 @@ const RemessaNova = () => {
       <main className="flex-1 p-6 space-y-6 overflow-y-auto bg-[#fcf8f5]">
         <div className="flex flex-col md:flex-row md:items-end md:gap-4">
           <label className="block w-full md:w-auto">
-            País:
+            {t.pais_label}
             <input
               value={pais}
               onChange={(e) => setPais(e.target.value)}
@@ -75,7 +77,7 @@ const RemessaNova = () => {
             onClick={salvar}
             className="mt-4 md:mt-0 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
-            Criar Remessa
+            {t.criar_remessa}
           </button>
         </div>
 
@@ -87,8 +89,8 @@ const RemessaNova = () => {
             className="text-blue-600 text-sm hover:underline mb-2"
           >
             {selecionadas.length === encomendas.length
-              ? "Desmarcar todas"
-              : "Selecionar todas"}
+              ? t.desmarcar_todos
+              : t.selecionar_todos}
           </button>
 
           <ul className="space-y-2">
@@ -106,21 +108,26 @@ const RemessaNova = () => {
                       Pais: <strong>{e.country}</strong>{" "}
                     </p>
                     <p className="text-sm text-gray-600">
-                      Rementente: <strong>{e.from_account.name.toLocaleLowerCase()}</strong>{" "}
+                      {t.remetente}:{" "}
+                      <strong>{e.from_account.name.toLocaleLowerCase()}</strong>
                     </p>
                     <p className="text-sm text-gray-600">
-                      Destinatario: <strong>{e.to_account.name.toLocaleLowerCase()}</strong>{" "}
+                      {t.destinatario}:{" "}
+                      <strong>{e.to_account.name.toLocaleLowerCase()}</strong>{" "}
                     </p>
                     <p className="text-sm text-gray-600">
-                      Codigo de rastreio: <strong>Falta codigo de rastreio</strong>{" "}
+                      {t.tracking_code}:{" "}
+                      <strong>
+                        {t.tracking_code ?? "Sem código de rastreio"}
+                      </strong>
                     </p>
                     <p>
-                      <strong>Status:</strong> {" "}
-                      {pacoteStatusToString(e.status ?? "Sem status definido")} –{" "}
-                      {e.packages.length} pacote(s)
+                      <strong>{t.status}</strong>:{" "}
+                      {pacoteStatusToString(e.status ?? "", t)} –{" "}
+                      {e.packages.length} {t.pacotes}
                     </p>
                     <p className="text-sm text-gray-600">
-                      Peso:{" "}
+                      {t.peso}:{" "}
                       {e.packages
                         .reduce((s, p) => s + Number(p.weight), 0)
                         .toFixed(2)}{" "}

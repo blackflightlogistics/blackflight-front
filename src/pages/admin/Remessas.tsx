@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/admin/Sidebar";
 import { remessaService, Shipment } from "../../services/remessaService";
-import { orderService, Order } from "../../services/encomendaService";
 import { Link } from "react-router-dom";
 
 const Remessas = () => {
   const [remessas, setRemessas] = useState<Shipment[]>([]);
-  const [encomendas, setEncomendas] = useState<Order[]>([]);
   const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [buscaPais, setBuscaPais] = useState<string>("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
@@ -16,12 +14,9 @@ const Remessas = () => {
   useEffect(() => {
     const carregar = async () => {
       setCarregando(true);
-      const [remessasData, encomendasData] = await Promise.all([
-        remessaService.listar(),
-        orderService.listar(),
-      ]);
+      const remessasData = await remessaService.listar();
       setRemessas(remessasData);
-      setEncomendas(encomendasData);
+      setRemessas(remessasData);
       setCarregando(false);
     };
 
@@ -126,9 +121,7 @@ const Remessas = () => {
         ) : (
           <ul className="space-y-4">
             {remessasFiltradas.map((r) => {
-              const encomendasDaRemessa = encomendas.filter((e) =>
-                r.orders.map((o) => o.id).includes(e.id)
-              );
+              const encomendasDaRemessa = r.orders;
               return (
                 <li
                   key={r.id}
@@ -178,19 +171,49 @@ const Remessas = () => {
                   {encomendasDaRemessa.length > 0 && (
                     <div className="mt-3 space-y-2">
                       {encomendasDaRemessa.map((e) => (
-                        <div
-                          key={e.id}
-                          className="flex items-center justify-between text-sm border border-orange rounded p-2"
-                        >
-                          <div>
-                            <span className="font-bold">#{e.id}</span> –{" "}
-                            {e.packages.length} pacote(s)
-                          </div>
-                          <div className="text-gray-600">
-                            {e.packages
-                              .reduce((s, p) => s + Number(p.weight), 0)
-                              .toFixed(2)}{" "}
-                            kg
+                        <div>
+                          <strong>Dados da Encomenda</strong>
+
+                          <div
+                            key={e.id}
+                            className=" items-center justify-between text-sm border border-orange rounded p-2"
+                          >
+                            <div>
+                              <div className="mt-2                                                                             ">
+                                <p className="text-sm text-gray-600">
+                                  Pais: <strong>{r.country}</strong>{" "}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                  Rementente:{" "}
+                                  <strong>
+                                    {e?.from_account?.name?.toLocaleLowerCase()}
+                                  </strong>{" "}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                  Destinatario:{" "}
+                                  <strong>
+                                    {e.to_account.name?.toLocaleLowerCase()}
+                                  </strong>{" "}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                  Codigo de rastreio:{" "}
+                                  <strong>Falta codigo de rastreio</strong>{" "}
+                                </p>
+                              </div>
+                            </div>
+                            <div>
+                            <div className="flex">
+                              <span className="font-bold">#{e.id}</span> – {" "}
+                              {e.packages.length} pacote(s) – {" "}
+                              {e.packages
+                                .reduce((s, p) => s + Number(p.weight), 0)
+                                .toFixed(2)}{" "}
+                              kg
+                            </div>
+                            <div className="text-gray-600">
+                             
+                            </div>
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -210,7 +233,6 @@ const Remessas = () => {
                     {acoesAbertas === r.id && (
                       <div className="absolute right-0 mt-11 w-48 bg-white border border-gray-300 rounded shadow-md z-20">
                         <ul className="flex flex-col text-sm">
-                         
                           {r.status === "fechada" && (
                             <li>
                               <button
@@ -230,16 +252,14 @@ const Remessas = () => {
                               className="block px-2 py-1 bg-orange text-white text-center font-semibold rounded hover:opacity-90 transition text-sm m-1"
                               onClick={() => setAcoesAbertas(null)}
                             >
-                              
-                             Cancelar Remessa
+                              Cancelar Remessa
                             </Link>
                             <Link
                               to={`/admin/remessas/${r.id}/etiquetas`}
                               className="block px-2 py-1 bg-orange text-white text-center font-semibold rounded hover:opacity-90 transition text-sm m-1"
                               onClick={() => setAcoesAbertas(null)}
                             >
-                              
-                             Gerar etiquetas
+                              Gerar etiquetas
                             </Link>
                           </li>
                         </ul>

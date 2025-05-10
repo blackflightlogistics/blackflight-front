@@ -1,6 +1,7 @@
 // src/utils/validadorStatus.ts
 
 import { EncomendaStatus, PacoteStatus } from "../services/encomendaService";
+import { TranslationsType } from "../context/languageUtils";
 
 export function isEncomendaStatus(status: string): status is EncomendaStatus {
   return [
@@ -23,31 +24,33 @@ export function isPacoteStatus(status: string): status is PacoteStatus {
 
   
 }
-export function pacoteStatusToString(status: string): string {
+
+export function pacoteStatusToString(status: string, t: TranslationsType): string {
   switch (status) {
     case "em_preparacao":
-      return "Em Preparação";
+      return t.status_em_preparacao;
     case "em_transito":
-      return "Em Transito";
+      return t.status_em_transito;
     case "aguardando_retirada":
-      return "Aguardando Retirada";
+      return t.status_aguardando_retirada;
     case "entregue":
-      return "Entregue";
+      return t.status_entregue;
     case "cancelada":
-      return "Cancelada";
+      return t.status_cancelada;
     default:
       return "Status desconhecido";
   }
 }
 
-export function paymentTypeToString(paymentType: string): string {
+
+export function paymentTypeToString(paymentType: string, t: TranslationsType): string {
   switch (paymentType) {
     case "a_vista":
-      return "À Vista";
+      return t.forma_pagamento_a_vista;
     case "parcelado":
-      return "Parcelado";
+      return t.forma_pagamento_parcelado;
     case "na_retirada":
-      return "Na Retirada";
+      return t.forma_pagamento_na_retirada;
     default:
       return "Tipo de pagamento desconhecido";
   }

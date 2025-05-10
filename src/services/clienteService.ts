@@ -8,7 +8,7 @@ export type Address = {
   neighborhood: string;
   city: string;
   state: string;
-  zipCode: string;
+  cep: string;
   country: string;
 };
 
@@ -17,6 +17,7 @@ export type Cliente = {
   name: string;
   phoneNumber: string;
   email: string;
+  document?: string;
   addresses: Address[];
 };
 
@@ -24,6 +25,7 @@ type RawAccount = {
   id: string;
   name: string;
   email: string;
+  document?: string;
   phone_number: string;
   adresses?: RawAdress[]; // <- campo correto da API
 };
@@ -49,6 +51,7 @@ export const clienteService = {
       name: item.name,
       phoneNumber: item.phone_number,
       email: item.email,
+      document: item.document,
       addresses: item.adresses?.map((addr) => ({
         id: addr.id || "",
         street: addr.street || "",
@@ -56,7 +59,7 @@ export const clienteService = {
         neighborhood: addr.neighborhood || "",
         city: addr.city || "",
         state: addr.state || "",
-        zipCode: addr.cep || "",
+        cep: addr.cep || "",
         country: addr.country || "",
       })) || [],
     }));
@@ -68,6 +71,7 @@ export const clienteService = {
     const payload = {
       name: cliente.name,
       email: cliente.email,
+      document: cliente.document,
       phone_number: cliente.phoneNumber,
       adresses: cliente.addresses.map((addr) => ({
         adress_id: (  addr.id == "" ? null : addr.id),
@@ -76,7 +80,7 @@ export const clienteService = {
         neighborhood: addr.neighborhood,
         city: addr.city,
         state: addr.state,
-        cep: addr.zipCode,
+        cep: addr.cep,
         country: addr.country,
       })),
     };
@@ -89,6 +93,7 @@ console.log("payload", payload);
       name: saved.name,
       phoneNumber: saved.phone_number,
       email: saved.email,
+      document: saved.document,
       addresses: saved.adresses?.map((addr: RawAdress) => ({
         id: addr.id,
         street: addr.street,
@@ -96,7 +101,7 @@ console.log("payload", payload);
         neighborhood: addr.neighborhood,
         city: addr.city,
         state: addr.state,
-        zipCode: addr.cep,
+        cep: addr.cep,
         country: addr.country,
       })) || [],
     };
@@ -109,6 +114,7 @@ console.log("payload", payload);
     return {
       id: item.id,
       name: item.name,
+      document: item.document,
       phoneNumber: item.phone_number,
       email: item.email,
       addresses: item.adresses?.map((addr: RawAdress) => ({
@@ -118,7 +124,7 @@ console.log("payload", payload);
         neighborhood: addr.neighborhood,
         city: addr.city,
         state: addr.state,
-        zipCode: addr.cep,
+        cep: addr.cep,
         country: addr.country,
       })) || [],
     };
@@ -131,6 +137,7 @@ console.log("payload", payload);
     const payload = {
       name: dados.name,
       email: dados.email,
+      document: dados.document,
       phone_number: dados.phoneNumber,
       adresses: dados.addresses?.map((addr) => ({
         adress_id:(  addr.id == "" ? null : addr.id),
@@ -139,7 +146,7 @@ console.log("payload", payload);
         neighborhood: addr.neighborhood,
         city: addr.city,
         state: addr.state,
-        cep: addr.zipCode,
+        cep: addr.cep,
         country: addr.country,
       })),
     };
@@ -152,6 +159,7 @@ console.log("payload", payload);
       name: item.name,
       phoneNumber: item.phone_number,
       email: item.email,
+      document: item.document,
       addresses: item.adresses?.map((addr: RawAdress) => ({
         id: addr.id,
         street: addr.street,
@@ -159,7 +167,7 @@ console.log("payload", payload);
         neighborhood: addr.neighborhood,
         city: addr.city,
         state: addr.state,
-        zipCode: addr.cep,
+        cep: addr.cep,
         country: addr.country,
       })) || [],
     };

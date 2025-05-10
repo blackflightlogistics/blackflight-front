@@ -105,6 +105,7 @@ function EncomendaPagamento() {
     if (!id) return;
 
     carregar();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const valorBase = Number(encomenda?.total_value) || 0;
@@ -120,6 +121,7 @@ function EncomendaPagamento() {
     if (!encomenda) return;
 
     await orderService.atualizar(encomenda.id, {
+      payment_status: statusPagamento,
       from_account_id: encomenda.from_account_id,
       to_account_id: encomenda.to_account_id,
       status: encomenda.status || undefined,
@@ -137,6 +139,7 @@ function EncomendaPagamento() {
       total_value: encomenda.total_value || "0.0",
       removed_packages: pacotesRemovidos,
       added_packages: pacotesAdicionados,
+    
     });
   };
 
@@ -173,7 +176,7 @@ function EncomendaPagamento() {
               </p>
               <p className="text-sm text-gray-600">
                 {remetente.addresses[0].city} - {remetente.addresses[0].state} -{" "}
-                {remetente.addresses[0].zipCode}
+                {remetente.addresses[0].cep}
               </p>
             </section>
 
@@ -186,7 +189,7 @@ function EncomendaPagamento() {
               <p className="text-sm text-gray-600">
                 {destinatario.addresses[0].city} -{" "}
                 {destinatario.addresses[0].state} -{" "}
-                {destinatario.addresses[0].zipCode}
+                {destinatario.addresses[0].cep}
               </p>
             </section>
 
@@ -294,6 +297,8 @@ function EncomendaPagamento() {
                     if (!encomenda) return;
 
                     await orderService.atualizar(encomenda.id, {
+                      payment_status: statusPagamento,
+                      removed_packages: pacotesRemovidos,
                       from_account_id: encomenda.from_account_id,
                       to_account_id: encomenda.to_account_id,
                       status: encomenda.status || undefined,

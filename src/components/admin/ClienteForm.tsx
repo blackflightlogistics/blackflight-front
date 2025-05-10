@@ -11,7 +11,7 @@ export type ClienteFormData = {
   neighborhood: string;
   city: string;
   state: string;
-  zipCode: string;
+  cep: string;
   country: string;
 };
 
@@ -33,7 +33,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
     neighborhood: initialData?.neighborhood || "",
     city: initialData?.city || "",
     state: initialData?.state || "",
-    zipCode: initialData?.zipCode || "",
+    cep: initialData?.cep || "",
     country: initialData?.country || "",
   });
 
@@ -53,7 +53,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
       neighborhood: "",
       city: "",
       state: "",
-      zipCode: "",
+      cep: "",
       country: "Brazil",
     });
   };
@@ -127,10 +127,10 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
           className="p-2 border rounded"
         />
         <input
-          name="zipCode"
+          name="cep"
           placeholder={t.form_cep}
           required
-          value={form.zipCode}
+          value={form.cep}
           onChange={handleChange}
           className="p-2 border rounded"
         />
