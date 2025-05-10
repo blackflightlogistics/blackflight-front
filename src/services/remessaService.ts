@@ -15,6 +15,7 @@ export interface Shipment {
 export interface ShipmentOrder {
   id: string;
   from_account_id: string;
+  tracking_code: string | null;
   to_account_id: string;
   inserted_at: string;
   updated_at: string;

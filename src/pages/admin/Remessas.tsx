@@ -2,20 +2,21 @@ import { useEffect, useState } from "react";
 import Sidebar from "../../components/admin/Sidebar";
 import { remessaService, Shipment } from "../../services/remessaService";
 import { Link } from "react-router-dom";
+import { useLanguage } from "../../context/useLanguage";
 
 const Remessas = () => {
+  const { translations: t } = useLanguage();
   const [remessas, setRemessas] = useState<Shipment[]>([]);
   const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [buscaPais, setBuscaPais] = useState<string>("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [acoesAbertas, setAcoesAbertas] = useState<string | null>(null);
-  const [carregando, setCarregando] = useState(true); // ⬅️ novo estado de loading
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     const carregar = async () => {
       setCarregando(true);
       const remessasData = await remessaService.listar();
-      setRemessas(remessasData);
       setRemessas(remessasData);
       setCarregando(false);
     };
@@ -24,18 +25,11 @@ const Remessas = () => {
   }, []);
 
   const fecharRemessa = async (id: string) => {
-    // await remessaService.atualizarStatus(id, "fechada");
-    // const atualizadas = await remessaService.listar();
-    // setRemessas(atualizadas);
     console.log("Remessa fechada:", id);
   };
 
   const enviarRemessa = async (id: string) => {
-    // await remessaService.atualizarStatus(id, "enviada");
-    // const atualizadas = await remessaService.listar();
-    // setRemessas(atualizadas);
     console.log("Remessa enviada:", id);
-    // aqui falta o envio da remessa para o sistema de envio
     fecharRemessa(id);
   };
 
@@ -60,26 +54,23 @@ const Remessas = () => {
 
   return (
     <div className="h-screen overflow-hidden">
-      {/* Sidebar fixa */}
       <div className="md:fixed md:top-0 md:left-0 md:h-screen md:w-64 bg-black text-white z-10">
         <button
           className="md:hidden fixed top-4 left-4 z-50 bg-black text-white px-4 py-2 rounded"
           onClick={() => setSidebarAberta(true)}
         >
-          ☰ Menu
+          ☰ {t.menu}
         </button>
-
         <Sidebar
           mobileAberta={sidebarAberta}
           onFechar={() => setSidebarAberta(false)}
         />
       </div>
 
-      {/* Conteúdo principal */}
       <main className="md:ml-64 h-full overflow-y-auto bg-[#fcf8f5] pt-16 p-4 space-y-6">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <h1 className="text-2xl font-bold font-primary text-black">
-            Remessas
+            {t.sidebar_remessas}
           </h1>
 
           <div className="flex flex-wrap gap-4">
@@ -87,7 +78,7 @@ const Remessas = () => {
               to="/admin/remessas/nova"
               className="px-4 py-2 bg-orange text-white font-semibold rounded hover:opacity-90 transition text-sm"
             >
-              Nova Remessa
+              {t.gerar_etiquetas}
             </Link>
 
             <select
@@ -95,15 +86,15 @@ const Remessas = () => {
               value={statusFiltro}
               onChange={(e) => setStatusFiltro(e.target.value)}
             >
-              <option value="todos">Todos os status</option>
-              <option value="aberta">Abertas</option>
-              <option value="fechada">Fechadas</option>
-              <option value="enviada">Enviadas</option>
+              <option value="todos">{t.selecionar_todos}</option>
+              <option value="aberta">{t.status_em_preparacao}</option>
+              <option value="fechada">{t.status_aguardando_retirada}</option>
+              <option value="enviada">{t.status_entregue}</option>
             </select>
 
             <input
               type="text"
-              placeholder="Buscar país..."
+              placeholder={t.pais}
               className="border border-gray-300 bg-white p-2 rounded text-sm"
               value={buscaPais}
               onChange={(e) => setBuscaPais(e.target.value)}
@@ -115,9 +106,7 @@ const Remessas = () => {
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange border-t-transparent"></div>
           </div>
         ) : remessasFiltradas.length === 0 ? (
-          <p className="text-gray-600">
-            Nenhuma remessa encontrada com os filtros.
-          </p>
+          <p className="text-gray-600">{t.nenhuma_encomenda}</p>
         ) : (
           <ul className="space-y-4">
             {remessasFiltradas.map((r) => {
@@ -139,7 +128,7 @@ const Remessas = () => {
                         Status: <strong>{r.status}</strong>
                       </p>
                       <p className="text-sm text-gray-600">
-                        Criada em:{" "}
+                        {t.etiqueta_data_geracao}:{" "}
                         {new Date(r.inserted_at).toLocaleDateString()}
                       </p>
                     </div>
@@ -163,7 +152,7 @@ const Remessas = () => {
                         to={`/admin/remessas/${r.id}`}
                         className="px-4 py-1 bg-orange text-white font-semibold rounded hover:opacity-90 transition text-sm mt-1"
                       >
-                        Ver detalhes
+                        {t.detalhes}
                       </Link>
                     </div>
                   </div>
@@ -172,47 +161,39 @@ const Remessas = () => {
                     <div className="mt-3 space-y-2">
                       {encomendasDaRemessa.map((e) => (
                         <div>
-                          <strong>Dados da Encomenda</strong>
-
+                          <strong>{t.encomendas}</strong>
                           <div
                             key={e.id}
-                            className=" items-center justify-between text-sm border border-orange rounded p-2"
+                            className="items-center justify-between text-sm border border-orange rounded p-2"
                           >
                             <div>
-                              <div className="mt-2                                                                             ">
-                                <p className="text-sm text-gray-600">
-                                  Pais: <strong>{r.country}</strong>{" "}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                  Rementente:{" "}
-                                  <strong>
-                                    {e?.from_account?.name?.toLocaleLowerCase()}
-                                  </strong>{" "}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                  Destinatario:{" "}
-                                  <strong>
-                                    {e.to_account.name?.toLocaleLowerCase()}
-                                  </strong>{" "}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                  Codigo de rastreio:{" "}
-                                  <strong>Falta codigo de rastreio</strong>{" "}
-                                </p>
-                              </div>
-                            </div>
-                            <div>
-                            <div className="flex">
-                              <span className="font-bold">#{e.id}</span> – {" "}
-                              {e.packages.length} pacote(s) – {" "}
-                              {e.packages
-                                .reduce((s, p) => s + Number(p.weight), 0)
-                                .toFixed(2)}{" "}
-                              kg
-                            </div>
-                            <div className="text-gray-600">
-                             
-                            </div>
+                              <p className="text-sm text-gray-600">
+                                {t.pais}: <strong>{r.country}</strong>
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {t.remetente}:{" "}
+                                <strong>
+                                  {e?.from_account?.name?.toLocaleLowerCase()}
+                                </strong>
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {t.destinatario}:{" "}
+                                <strong>
+                                  {e.to_account.name?.toLocaleLowerCase()}
+                                </strong>
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {t.tracking_code}:{" "}
+                                <strong>{e.tracking_code}</strong>
+                              </p>
+                              <p className="flex">
+                                <span className="font-bold">#</span> –{" "}
+                                {e.packages.length} {t.pacotes}(s) –{" "}
+                                {e.packages
+                                  .reduce((s, p) => s + Number(p.weight), 0)
+                                  .toFixed(2)}{" "}
+                                kg
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -227,7 +208,7 @@ const Remessas = () => {
                         setAcoesAbertas((prev) => (prev === r.id ? null : r.id))
                       }
                     >
-                      Ações
+                      {t.mais_opcoes}
                     </button>
 
                     {acoesAbertas === r.id && (
@@ -259,7 +240,7 @@ const Remessas = () => {
                               className="block px-2 py-1 bg-orange text-white text-center font-semibold rounded hover:opacity-90 transition text-sm m-1"
                               onClick={() => setAcoesAbertas(null)}
                             >
-                              Gerar etiquetas
+                              {t.gerar_etiquetas}
                             </Link>
                           </li>
                         </ul>
