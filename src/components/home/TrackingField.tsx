@@ -1,5 +1,6 @@
 import { FiSearch } from "react-icons/fi";
 import { RefObject } from "react";
+import { useLanguage } from "../../context/useLanguage";
 
 interface TrackingFieldProps {
   codigoDigitado: string;
@@ -22,6 +23,7 @@ const TrackingField = ({
   loading,
   error,
 }: TrackingFieldProps) => {
+  const { translations: t } = useLanguage();
   return (
     <div
       className={`w-full transition-all duration-500 ${
@@ -35,7 +37,7 @@ const TrackingField = ({
         <div className="absolute -top-2 left-0 w-full h-4 bg-orange rounded-t-xl z-0" />
 
         <div className="relative bg-white rounded-xl shadow-md p-6 md:p-8 text-center z-10">
-          <h2 className="text-xl font-bold text-black mb-4">Rastreie sua Encomenda</h2>
+        <h2 className="text-xl font-bold text-black mb-4">{t.tracking_title}</h2>
 
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch gap-4 mb-6">
             <div className="flex items-center flex-1 border border-gray-300 rounded-md px-4 py-2 bg-gray-50">
@@ -45,7 +47,7 @@ const TrackingField = ({
                 name="codigo"
                 value={codigoDigitado}
                 onChange={(e) => setCodigoDigitado(e.target.value)}
-                placeholder="Digite o código de rastreamento"
+                placeholder={t.tracking_placeholder}
                 className="flex-1 bg-transparent outline-none text-sm text-gray-700"
               />
             </div>
@@ -59,8 +61,9 @@ const TrackingField = ({
                 {loading ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  "Rastrear"
+                  t.tracking_button  
                 )}
+                
               </button>
               {resultado && (
                 <button
@@ -68,7 +71,7 @@ const TrackingField = ({
                   onClick={limpar}
                   className="bg-orange/80 text-white font-semibold px-4 py-2 rounded-md hover:bg-orange transition"
                 >
-                  Limpar
+                  {t.tracking_clear_button}
                 </button>
               )}
             </div>
@@ -85,12 +88,12 @@ const TrackingField = ({
               <div className="flex items-center justify-between text-sm">
                 <div>
                   <span className="font-semibold">
-                    Código de Rastreamento:
+                  {t.tracking_code_label}
                   </span>{" "}
                   <span className="text-orange font-bold">BR123456789</span>
                   <br />
                   <span className="text-gray-600">
-                    Previsão de entrega: 24/04/2025
+                  {t.tracking_estimated_delivery}: 24/04/2025
                   </span>
                 </div>
                 <span className="text-blue-600 bg-blue-100 text-xs px-2 py-1 rounded-full">

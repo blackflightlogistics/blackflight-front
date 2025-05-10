@@ -1,4 +1,8 @@
+import { useLanguage } from "../../context/useLanguage";
+
 const Hero = () => {
+  const { translations: t } = useLanguage();
+
     return (
       <section id="hero">
         <div
@@ -14,11 +18,10 @@ const Hero = () => {
           <div className="absolute inset-16 flex items-end z-10">
             <div className="text-white p-6 md:p-8 max-w-[35rem]">
               <p className="font-primary text-3xl font-bold">
-                Soluções inteligentes para envio de pacotes
+              {t.hero_titulo}
               </p>
               <p className="font-secondary text-lg font-normal mb-4">
-                A forma mais simples, rápida e segura de enviar e rastrear
-                encomendas.
+              {t.hero_subtitulo}
               </p>
               <button
                 type="button"
@@ -28,7 +31,7 @@ const Hero = () => {
                     
                     className="bg-orange font-secondary text-sm text-white font-semibold px-4 py-2 rounded-md hover:opacity-90 transition"
                   >
-                    Contato via Whatsapp
+                    {t.hero_cta_whatsapp}
                   </button>
             </div>
           </div>

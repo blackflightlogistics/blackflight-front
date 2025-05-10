@@ -1,8 +1,12 @@
+import { useLanguage } from "../../context/useLanguage";
+
 interface WhoWeAreProps {
   resultado: boolean;
 }
 
 const WhoWeAre = ({ resultado }: WhoWeAreProps) => {
+  const { translations: t } = useLanguage();
+
   return (
     <section
       className={`bg-black text-white text-center px-6 ${
@@ -10,10 +14,10 @@ const WhoWeAre = ({ resultado }: WhoWeAreProps) => {
       } py-20`}
     >
       <h1 className="font-primary text-2xl font-bold text-center pb-8">
-        Quem somos?
+        {t.who_we_are_title}
       </h1>
       <p className="font-secondary text-lg font-normal text-center max-w-2xl mx-auto">
-        Somos uma empresa especializada em logística e transporte de pacotes, oferecendo soluções personalizadas para facilitar o envio e a gestão de encomendas para pessoas e empresas.
+        {t.who_we_are_description}
       </p>
     </section>
   );

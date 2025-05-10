@@ -34,12 +34,12 @@ const RemessaNova = () => {
   };
   const salvar = async () => {
     if (!pais.trim()) {
-      toast.error("Informe o país da remessa.");
+      toast.error(t.erro_pais);
       return;
     }
 
     if (selecionadas.length === 0) {
-      toast.error("Selecione ao menos uma encomenda.");
+      toast.error(t.erro_selecione_uma_encomenda);
       return;
     }
 
@@ -48,11 +48,11 @@ const RemessaNova = () => {
         country: pais,
         orders: [...selecionadas],
       });
-      toast.success("Remessa criada com sucesso!");
+      toast.success(t.sucesso_remessa_criada);
       navigate("/admin/remessas");
     } catch (error) {
       console.error("Erro ao criar remessa:", error);
-      toast.error("Erro ao criar remessa.");
+      toast.error(t.erro_criar_remessa);
     }
   };
 
