@@ -46,6 +46,7 @@ const RemessaNova = () => {
     try {
       await remessaService.adicionar({
         country: pais,
+        status:"em_preparacao",
         orders: [...selecionadas],
       });
       toast.success(t.sucesso_remessa_criada);

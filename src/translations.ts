@@ -193,7 +193,17 @@ export const translations = {
         status_atrasado: "Delayed",
         pedidos_mensais: "Monthly Orders",
         total_de_clientes: "Total Clients",
-        total_de_pedidos: "Total Orders"
+        total_de_pedidos: "Total Orders",
+        confirmar_checkin: "Confirm Check-in",
+        deseja_atualizar_status: "Do you want to update the status of",
+        marcar_como: "Mark as",
+        status_encomenda: "Order Status",
+        configuracoes_do_sistema: "System Settings",
+        preco_por_quilo: "Price per Kilogram (R$)",
+        percentual_seguro: "Insurance Percentage (%)",
+        valor_adicional_expresso: "Express Additional Value (R$)",
+        salvar_configuracao: "Save Configuration",
+        configuracao_salva_sucesso: "Configuration saved successfully!"
 
     },
     ES: {
@@ -390,7 +400,17 @@ export const translations = {
         status_atrasado: "Retrasado",
         pedidos_mensais: "Pedidos Mensuales",
         total_de_clientes: "Total de Clientes",
-        total_de_pedidos: "Total de Pedidos"
+        total_de_pedidos: "Total de Pedidos",
+        confirmar_checkin: "Confirmar Check-in",
+        deseja_atualizar_status: "¿Desea actualizar el estado de",
+        marcar_como: "Marcar como",
+        status_encomenda: "Estado del pedido",
+        configuracoes_do_sistema: "Configuración del Sistema",
+        preco_por_quilo: "Precio por Kilo (R$)",
+        percentual_seguro: "Porcentaje de Seguro (%)",
+        valor_adicional_expresso: "Valor adicional exprés (R$)",
+        salvar_configuracao: "Guardar Configuración",
+        configuracao_salva_sucesso: "¡Configuración guardada con éxito!"
     },
     FR: {
         login_title: "Accès Administratif",
@@ -578,17 +598,27 @@ export const translations = {
         footer_track_title: "Suivre votre commande",
         footer_track_subtext: "Entrez le code de suivi",
         footer_copyright: "© 2025 Black Flight Logistics. Tous droits réservés.",
-            ultimos_pedidos: "Dernières Commandes",
-            codigo: "Code",
-            origem: "Origine",
-            destino: "Destination",
-            data: "Date",
-            status_pendente: "En attente",
-            status_atrasado: "Retardé",
-            pedidos_mensais: "Commandes Mensuelles",
-            total_de_clientes: "Total de Clients",
-            total_de_pedidos: "Total de Commandes"
-          
+        ultimos_pedidos: "Dernières Commandes",
+        codigo: "Code",
+        origem: "Origine",
+        destino: "Destination",
+        data: "Date",
+        status_pendente: "En attente",
+        status_atrasado: "Retardé",
+        pedidos_mensais: "Commandes Mensuelles",
+        total_de_clientes: "Total de Clients",
+        total_de_pedidos: "Total de Commandes",
+        confirmar_checkin: "Confirmer l'enregistrement",
+        deseja_atualizar_status: "Souhaitez-vous mettre à jour le statut de",
+        marcar_como: "Marquer comme",
+        status_encomenda: "Statut de l'encomenda",
+        configuracoes_do_sistema: "Paramètres du Système",
+        preco_por_quilo: "Prix par Kilo (R$)",
+        percentual_seguro: "Pourcentage d'assurance (%)",
+        valor_adicional_expresso: "Frais supplémentaires express (R$)",
+        salvar_configuracao: "Enregistrer la Configuration",
+        configuracao_salva_sucesso: "Configuration enregistrée avec succès !"
+
 
     },
     PT: {
@@ -779,15 +809,25 @@ export const translations = {
         footer_copyright: "© 2025 Black Flight Logistics. Todos os direitos reservados.",
 
         ultimos_pedidos: "Últimos Pedidos",
-  codigo: "Código",
-  origem: "Origem",
-  destino: "Destino",
-  data: "Data",
-  status_pendente: "Pendente",
-  status_atrasado: "Atrasado",
-  pedidos_mensais: "Pedidos Mensais",
-  total_de_clientes: "Total de Clientes",
-  total_de_pedidos: "Total de Pedidos"
+        codigo: "Código",
+        origem: "Origem",
+        destino: "Destino",
+        data: "Data",
+        status_pendente: "Pendente",
+        status_atrasado: "Atrasado",
+        pedidos_mensais: "Pedidos Mensais",
+        total_de_clientes: "Total de Clientes",
+        total_de_pedidos: "Total de Pedidos",
+        confirmar_checkin: "Confirmar Check-in",
+        deseja_atualizar_status: "Deseja atualizar o status do",
+        marcar_como: "Marcar como",
+        status_encomenda: "Status da Encomenda",
+        configuracoes_do_sistema: "Configurações do Sistema",
+        preco_por_quilo: "Preço por Quilo (R$)",
+        percentual_seguro: "% de valor do Seguro",
+        valor_adicional_expresso: "Valor adicional expresso (R$)",
+        salvar_configuracao: "Salvar Configuração",
+        configuracao_salva_sucesso: "Configuração salva com sucesso!"
 
 
 

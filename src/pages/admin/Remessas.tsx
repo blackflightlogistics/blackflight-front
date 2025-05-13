@@ -145,7 +145,7 @@ const Remessas = () => {
                         >
                           {r.pesoTotal.toFixed(2)} kg
                         </p> */}
-                        aqui falta o peso apra mostrar o peso total da remessa
+                       {r.total_weight}
                       </div>
 
                       <Link

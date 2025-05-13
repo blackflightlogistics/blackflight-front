@@ -1,9 +1,8 @@
-// src/pages/admin/Configuracoes.tsx
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/admin/Sidebar";
 import { configService } from "../../services/configService";
 import { useLanguage } from "../../context/useLanguage";
-
+import DecimalMoneyInput from "../../components/form/DecimalMoneyInput";
 
 const Configuracoes = () => {
   const [precoPorQuilo, setPrecoPorQuilo] = useState("");
@@ -12,7 +11,7 @@ const Configuracoes = () => {
   const [mensagem, setMensagem] = useState("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [carregando, setCarregando] = useState(true);
-  const { changeLanguage, language,translations: t } = useLanguage();
+  const { changeLanguage, language, translations: t } = useLanguage();
 
   useEffect(() => {
     const carregarConfiguracoes = async () => {
@@ -31,7 +30,7 @@ const Configuracoes = () => {
       insurance_perc: precoSeguro,
       express_amount: adicionalExpresso,
     });
-    setMensagem("Configuração salva com sucesso!");
+    setMensagem(t.configuracao_salva_sucesso);
     setTimeout(() => setMensagem(""), 3000);
   };
 
@@ -52,47 +51,56 @@ const Configuracoes = () => {
         ☰ Menu
       </button>
 
-      <Sidebar mobileAberta={sidebarAberta} onFechar={() => setSidebarAberta(false)} />
+      <Sidebar
+        mobileAberta={sidebarAberta}
+        onFechar={() => setSidebarAberta(false)}
+      />
 
       <main className="flex-1 p-6 pt-20 bg-[#fcf7f1]  max-w-xxl space-y-6">
-        <h1 className="text-2xl font-bold font-primary">Configurações do Sistema</h1>
+        <h1 className="text-2xl font-bold font-primary">
+          {t.configuracoes_do_sistema}
+        </h1>
 
         <div className="space-y-4 bg-white p-4 max-w-xl rounded border border-orange">
           <div>
             <label className="block text-sm font-medium font-secondary mb-1">
-              Preço por Quilo (R$)
+              {t.preco_por_quilo}
             </label>
-            <input
-              type="text"
+
+            <DecimalMoneyInput
               value={precoPorQuilo}
-              onChange={(e) => setPrecoPorQuilo(e.target.value)}
-              className="p-2 border rounded w-full"
+              onChange={(val) => setPrecoPorQuilo(val)}
+              placeholder={t.valor_declarado}
+              decimalPlaces={2}
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium font-secondary mb-1">
-              % de valor do Seguro
+              {t.percentual_seguro}
             </label>
-            <input
-              type="text"
+
+            <DecimalMoneyInput
               value={precoSeguro}
-              onChange={(e) => setPrecoSeguro(e.target.value)}
-              className="p-2 border rounded w-full"
+              onChange={(val) => setPrecoSeguro(val)}
+              placeholder={t.valor_declarado}
+              decimalPlaces={2}
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium font-secondary mb-1">
-              Valor adicional expresso (R$)
+              {t.valor_adicional_expresso}
             </label>
-            <input
-              type="text"
+
+            <DecimalMoneyInput
               value={adicionalExpresso}
-              onChange={(e) => setAdicionalExpresso(e.target.value)}
-              className="p-2 border rounded w-full"
+              onChange={(val) => setAdicionalExpresso(val)}
+              placeholder={t.valor_declarado}
+              decimalPlaces={2}
             />
           </div>
+
           {/* Botões de idioma */}
           <div className="flex flex-col gap-2 mt-6 pl-2">
             <p>{t.selecione_o_idioma}</p>
@@ -107,7 +115,7 @@ const Configuracoes = () => {
             <button
               onClick={() => changeLanguage("FR")}
               className={`text-sm text-left ${
-                language === "FR" ? "text-orange font-semibold" : "text- black"
+                language === "FR" ? "text-orange font-semibold" : "text-black"
               } hover:text-orange`}
             >
               🇫🇷 Français
@@ -115,7 +123,7 @@ const Configuracoes = () => {
             <button
               onClick={() => changeLanguage("ES")}
               className={`text-sm text-left ${
-                language === "ES" ? "text-orange font-semibold" : "text- black"
+                language === "ES" ? "text-orange font-semibold" : "text-black"
               } hover:text-orange`}
             >
               🇪🇸 Español
@@ -123,7 +131,7 @@ const Configuracoes = () => {
             <button
               onClick={() => changeLanguage("PT")}
               className={`text-sm text-left ${
-                language === "PT" ? "text-orange font-semibold" : "text- black"
+                language === "PT" ? "text-orange font-semibold" : "text-black"
               } hover:text-orange`}
             >
               🇧🇷 Português
@@ -135,10 +143,12 @@ const Configuracoes = () => {
           onClick={salvar}
           className="bg-orange text-white px-4 py-2 rounded hover:opacity-90 font-secondary"
         >
-          Salvar Configuração
+          {t.salvar_configuracao}
         </button>
 
-        {mensagem && <p className="text-green-600 font-secondary">{mensagem}</p>}
+        {mensagem && (
+          <p className="text-green-600 font-secondary">{mensagem}</p>
+        )}
       </main>
     </div>
   );

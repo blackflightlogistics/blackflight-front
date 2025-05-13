@@ -5,9 +5,9 @@ import { TranslationsType } from "../context/languageUtils";
 
 export function isEncomendaStatus(status: string): status is EncomendaStatus {
   return [
-    "em preparação",
-    "em transito",
-    "aguardando retirada",
+    "em_preparacao",
+    "em_transito",
+    "aguardando_retirada",
     "entregue",
     "cancelada",
   ].includes(status);

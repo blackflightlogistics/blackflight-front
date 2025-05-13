@@ -307,7 +307,7 @@ function EtiquetaEncomenda() {
                   </div>
                 </section>
 
-                {(pacotesParaImprimir ?? []).length > 0 && (
+                {/* {(pacotesParaImprimir ?? []).length > 0 && (
                   <section className="border p-4 rounded bg-white shadow print:break-before-page">
                     <h2 className="text-lg font-semibold mb-4">
                       {t.etiqueta_codigos_pacotes}
@@ -326,7 +326,7 @@ function EtiquetaEncomenda() {
                       ))}
                     </div>
                   </section>
-                )}
+                )} */}
               </div>
             );
           })()

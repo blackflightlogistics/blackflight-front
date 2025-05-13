@@ -1,7 +1,12 @@
 // src/services/remessaService.ts
 
 import api from "../api/api";
-
+export type RemessaStatus =
+  | "em_preparacao"
+  | "em_transito"
+  | "aguardando_retirada"
+  | "entregue"
+  | "cancelada";
 
 export interface Shipment {
   id: string;
@@ -9,7 +14,13 @@ export interface Shipment {
   inserted_at: string;
   updated_at: string;
   status: string | null;
+  total_weight: string;
   orders: ShipmentOrder[];
+}
+export interface AtualizarRemessaPayload {
+  status: RemessaStatus;
+  added_orders: string[];
+  removed_orders: string[];
 }
 
 export interface ShipmentOrder {
@@ -48,6 +59,7 @@ export interface Account {
 }
 
 export interface NovaRemessaPayload {
+  status: string;
   country: string;
   orders: string[]; // IDs das encomendas
 }
@@ -65,5 +77,21 @@ export const remessaService = {
   buscarPorId: async (id: string): Promise<Shipment> => {
     const response = await api.get<Shipment>(`/shipments/${id}`);
     return response.data;
+  },
+  atualizar: async (id: string, dados: AtualizarRemessaPayload): Promise<Shipment> => {
+    const response = await api.put<Shipment>(`/shipments/${id}`, dados);
+    return response.data;
+  },
+  atualizarStatus: async (
+    id: string,
+    status: string,
+    added_orders: string[] = [],
+    removed_orders: string[] = []
+  ): Promise<void> => {
+    await api.put(`/shipments/${id}`, {
+      status,
+      added_orders,
+      removed_orders,
+    });
   },
 };

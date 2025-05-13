@@ -14,9 +14,7 @@ function Encomendas() {
   useEffect(() => {
     const carregar = async () => {
       setCarregando(true);
-      const [encomendasData] = await Promise.all([
-        orderService.listar(),
-      ]);
+      const [encomendasData] = await Promise.all([orderService.listar()]);
       setEncomendas(encomendasData);
       // setClientes(clientesData);
       setCarregando(false);
@@ -94,6 +92,12 @@ function Encomendas() {
                             </span>
                           </p>
                           <p>
+                            <strong>{t.status_encomenda}:</strong>{" "}
+                            <span className="text-black f">
+                              {pacoteStatusToString(e?.status ?? "", t)}
+                            </span>
+                          </p>
+                          <p>
                             <strong>{t.status_pagamento}</strong>{" "}
                             <span className="text-black">
                               {e.payment_status || t.em_aberto}
@@ -102,7 +106,8 @@ function Encomendas() {
                           <p>
                             <strong>{t.forma_pagamento}</strong>{" "}
                             <span className="text-black">
-                              {paymentTypeToString(e?.payment_type ?? "",t) ??""}
+                              {paymentTypeToString(e?.payment_type ?? "", t) ??
+                                ""}
                             </span>
                           </p>
                         </div>
