@@ -6,7 +6,7 @@ const ServicesSection = () => {
   const { translations: t } = useLanguage();
 
   return (
-    <section className="py-16 px-6">
+    <section id="servicos" className="py-16 px-6">
       <h2 className="font-primary text-2xl font-bold text-center pb-4">
         {t.services_title}
       </h2>

@@ -24,7 +24,7 @@ const FrequentlyQuestion = () => {
   };
 
   return (
-    <section className="py-6 px-6 bg-white">
+    <section id="faq" className="py-6 px-6 bg-white">
       <h2 className="text-center text-lg font-bold font-primary text-black mb-8">
         Frequently asked questions
       </h2>

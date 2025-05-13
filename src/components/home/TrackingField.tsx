@@ -25,7 +25,7 @@ const TrackingField = ({
 }: TrackingFieldProps) => {
   const { translations: t } = useLanguage();
   return (
-    <div
+    <div id="rastreamento"
       className={`w-full transition-all duration-500 ${
         resultado
           ? "relative translate-y-0 mt-8"

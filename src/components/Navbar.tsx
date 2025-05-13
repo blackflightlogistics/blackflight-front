@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FiX } from "react-icons/fi";
 import { useLanguage } from "../context/useLanguage";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { scrollToSection } from "../utils/scrollToSection";
 
 const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -43,9 +44,17 @@ const Navbar = () => {
           <p className="font-secondary text-sm font-medium text-orange">
             {t.inicio}
           </p>
-          <p className="font-secondary text-sm font-medium">{t.rastreio}</p>
-          <p className="font-secondary text-sm font-medium">{t.quem_somos}</p>
-          <p className="font-secondary text-sm font-medium">
+          <p 
+          onClick={() => scrollToSection("rastreamento")}
+          className="font-secondary text-sm font-medium cursor-pointer">{t.rastreio}</p>
+          <p
+          onClick={() => scrollToSection("quem-somos")}
+          
+          className="font-secondary text-sm font-medium cursor-pointer">{t.quem_somos}</p>
+
+          <p 
+          onClick={() => scrollToSection("servicos")}
+          className="font-secondary text-sm font-medium cursor-pointer">
             {t.nossos_servicos}
           </p>
         </div>

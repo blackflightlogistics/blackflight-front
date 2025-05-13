@@ -8,7 +8,7 @@ const WhoWeAre = ({ resultado }: WhoWeAreProps) => {
   const { translations: t } = useLanguage();
 
   return (
-    <section
+    <section id="quem-somos"
       className={`bg-black text-white text-center px-6 ${
         resultado ? "pt-12" : "pt-48"
       } py-20`}

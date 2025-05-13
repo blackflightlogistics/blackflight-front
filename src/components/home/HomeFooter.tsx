@@ -7,6 +7,7 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../../context/useLanguage";
+import { scrollToSection } from "../../utils/scrollToSection";
 
 interface HomeFooterProps {
   codigoDigitado: string;
@@ -67,9 +68,24 @@ const HomeFooter = ({
             </span>
           </h3>
           <ul className="space-y-2 text-sm font-normal font-secondary text-lightGrey">
-            <li>{t.footer_services_1}</li>
-            <li>{t.footer_services_2}</li>
-            <li>{t.footer_services_3}</li>
+            <li
+              onClick={() => scrollToSection("servicos")}
+              className="cursor-pointer hover:underline"
+            >
+              {t.footer_services_1}
+            </li>
+            <li
+              onClick={() => scrollToSection("servicos")}
+              className="cursor-pointer hover:underline"
+            >
+              {t.footer_services_2}
+            </li>
+            <li
+              onClick={() => scrollToSection("servicos")}
+              className="cursor-pointer hover:underline"
+            >
+              {t.footer_services_3}
+            </li>
           </ul>
         </div>
 
@@ -81,9 +97,25 @@ const HomeFooter = ({
             </span>
           </h3>
           <ul className="space-y-2 text-sm font-normal font-secondary text-lightGrey">
-            <li>{t.footer_links_1}</li>
-            <li>{t.footer_links_2}</li>
-            <li>{t.footer_links_3}</li>
+            <li
+              onClick={() => scrollToSection("rastreamento")}
+              className="cursor-pointer hover:underline"
+            >
+              {t.footer_links_1}
+            </li>
+            <li
+              onClick={() => scrollToSection("quem-somos")}
+              className="cursor-pointer hover:underline"
+            >
+              {t.footer_links_2}
+            </li>
+
+            <li
+              onClick={() => scrollToSection("servicos")}
+              className="cursor-pointer hover:underline"
+            >
+              {t.footer_links_3}
+            </li>
           </ul>
         </div>
 
