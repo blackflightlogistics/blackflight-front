@@ -184,7 +184,16 @@ export const translations = {
         footer_track_subtext: "Enter your tracking code",
         footer_copyright: "© 2025 Black Flight Logistics. All rights reserved.",
 
-
+        ultimos_pedidos: "Latest Orders",
+        codigo: "Code",
+        origem: "Origin",
+        destino: "Destination",
+        data: "Date",
+        status_pendente: "Pending",
+        status_atrasado: "Delayed",
+        pedidos_mensais: "Monthly Orders",
+        total_de_clientes: "Total Clients",
+        total_de_pedidos: "Total Orders"
 
     },
     ES: {
@@ -372,7 +381,16 @@ export const translations = {
         footer_track_title: "Rastrea tu pedido",
         footer_track_subtext: "Ingresa el código de seguimiento",
         footer_copyright: "© 2025 Black Flight Logistics. Todos los derechos reservados.",
-
+        ultimos_pedidos: "Últimos Pedidos",
+        codigo: "Código",
+        origem: "Origen",
+        destino: "Destino",
+        data: "Fecha",
+        status_pendente: "Pendiente",
+        status_atrasado: "Retrasado",
+        pedidos_mensais: "Pedidos Mensuales",
+        total_de_clientes: "Total de Clientes",
+        total_de_pedidos: "Total de Pedidos"
     },
     FR: {
         login_title: "Accès Administratif",
@@ -560,7 +578,17 @@ export const translations = {
         footer_track_title: "Suivre votre commande",
         footer_track_subtext: "Entrez le code de suivi",
         footer_copyright: "© 2025 Black Flight Logistics. Tous droits réservés.",
-
+            ultimos_pedidos: "Dernières Commandes",
+            codigo: "Code",
+            origem: "Origine",
+            destino: "Destination",
+            data: "Date",
+            status_pendente: "En attente",
+            status_atrasado: "Retardé",
+            pedidos_mensais: "Commandes Mensuelles",
+            total_de_clientes: "Total de Clients",
+            total_de_pedidos: "Total de Commandes"
+          
 
     },
     PT: {
@@ -749,6 +777,17 @@ export const translations = {
         footer_track_title: "Rastreie sua encomenda",
         footer_track_subtext: "Insira o código de rastreio",
         footer_copyright: "© 2025 Black Flight Logistics. Todos os direitos reservados.",
+
+        ultimos_pedidos: "Últimos Pedidos",
+  codigo: "Código",
+  origem: "Origem",
+  destino: "Destino",
+  data: "Data",
+  status_pendente: "Pendente",
+  status_atrasado: "Atrasado",
+  pedidos_mensais: "Pedidos Mensais",
+  total_de_clientes: "Total de Clientes",
+  total_de_pedidos: "Total de Pedidos"
 
 
 

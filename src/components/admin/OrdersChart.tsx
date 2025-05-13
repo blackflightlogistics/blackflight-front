@@ -1,22 +1,24 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { useLanguage } from "../../context/useLanguage";
 
-const data = [
-  { name: "Jan", pedidos: 400 },
-  { name: "Fev", pedidos: 300 },
-  { name: "Mar", pedidos: 500 },
-  { name: "Abr", pedidos: 350 },
-  { name: "Mai", pedidos: 600 },
-  { name: "Jun", pedidos: 450 },
-];
+interface OrdersChartProps {
+  data: { count: number; month_year: string }[];
+}
 
-const OrdersChart = () => {
+const OrdersChart = ({ data }: OrdersChartProps) => {
+  const { translations: t } = useLanguage();
+
+  const formattedData = data.map((item) => ({
+    name: item.month_year,
+    pedidos: item.count,
+  }));
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-lg font-primary font-bold mb-4">Pedidos Mensais</h3>
-
+      <h3 className="text-lg font-primary font-bold mb-4">{t.etiqueta_titulo}</h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
+          <LineChart data={formattedData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />

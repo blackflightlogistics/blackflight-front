@@ -1,79 +1,70 @@
-const pedidos = [
-    {
-      codigo: "E-1001",
-      status: "Em trânsito",
-      origem: "São Paulo - SP",
-      destino: "Rio de Janeiro - RJ",
-      data: "22/04/2025",
-    },
-    {
-      codigo: "E-1002",
-      status: "Entregue",
-      origem: "Campinas - SP",
-      destino: "Belo Horizonte - MG",
-      data: "21/04/2025",
-    },
-    {
-      codigo: "E-1003",
-      status: "Pendente",
-      origem: "Curitiba - PR",
-      destino: "São Paulo - SP",
-      data: "23/04/2025",
-    },
-    {
-      codigo: "E-1004",
-      status: "Atrasado",
-      origem: "Salvador - BA",
-      destino: "Fortaleza - CE",
-      data: "20/04/2025",
-    },
-  ];
-  
-  const statusColors = {
-    "Entregue": "bg-green-100 text-green-700",
-    "Em trânsito": "bg-blue-100 text-blue-700",
-    "Pendente": "bg-orange-100 text-orange-700",
-    "Atrasado": "bg-red-100 text-red-700",
-  };
-  
-  const OrdersTable = () => {
-    return (
-      <div className="bg-white rounded-lg shadow-md p-6 mt-10">
-        <h3 className="text-lg font-primary font-bold mb-4">Últimos Pedidos</h3>
-  
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
-            <thead>
-              <tr className="text-left text-gray-600">
-                <th className="p-2">Código</th>
-                <th className="p-2">Status</th>
-                <th className="p-2">Origem</th>
-                <th className="p-2">Destino</th>
-                <th className="p-2">Data</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pedidos.map((pedido, index) => (
+import { DashboardOrder } from "../../services/dashboardService";
+import { useLanguage } from "../../context/useLanguage";
+
+interface OrdersTableProps {
+  pedidos: DashboardOrder[];
+}
+
+const statusColors: Record<string, string> = {
+  entregue: "bg-green-100 text-green-700",
+  em_transito: "bg-blue-100 text-blue-700",
+  pendente: "bg-orange-100 text-orange-700",
+  em_preparacao: "bg-yellow-100 text-yellow-700",
+  atrasado: "bg-red-100 text-red-700",
+};
+
+const OrdersTable = ({ pedidos }: OrdersTableProps) => {
+  const { translations: t } = useLanguage();
+
+  return (
+    <div className="bg-white rounded-lg shadow-md p-6 mt-10">
+      <h3 className="text-lg font-primary font-bold mb-4">{t.ultimos_pedidos ?? "Últimos Pedidos"}</h3>
+
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-sm">
+          <thead>
+            <tr className="text-left text-gray-600">
+              <th className="p-2">{t.codigo ?? "Código"}</th>
+              <th className="p-2">{t.status ?? "Status"}</th>
+              <th className="p-2">{t.origem ?? "Origem"}</th>
+              <th className="p-2">{t.destino ?? "Destino"}</th>
+              <th className="p-2">{t.data ?? "Data"}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pedidos.map((pedido, index) => {
+              const statusKey = `status_${pedido.status}` as keyof typeof t;
+              const statusLabel = t[statusKey] || pedido.status.replace(/_/g, " ");
+
+              return (
                 <tr key={index} className="border-t">
-                  <td className="p-2 font-semibold">{pedido.codigo}</td>
+                  <td className="p-2 font-semibold">{pedido.tracking_code}</td>
                   <td className="p-2">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[pedido.status as keyof typeof statusColors]}`}
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        statusColors[pedido.status] || "bg-gray-200 text-gray-700"
+                      }`}
                     >
-                      {pedido.status}
+                      {statusLabel}
                     </span>
                   </td>
-                  <td className="p-2">{pedido.origem}</td>
-                  <td className="p-2">{pedido.destino}</td>
-                  <td className="p-2">{pedido.data}</td>
+                  <td className="p-2">
+                    {pedido.from_account.adresses[0]?.city} - {pedido.from_account.adresses[0]?.state}
+                  </td>
+                  <td className="p-2">
+                    {pedido.to_account.adresses[0]?.city} - {pedido.to_account.adresses[0]?.state}
+                  </td>
+                  <td className="p-2">
+                    {new Date(pedido.inserted_at).toLocaleDateString()}
+                  </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
-    );
-  };
-  
-  export default OrdersTable;
-  
+    </div>
+  );
+};
+
+export default OrdersTable;
