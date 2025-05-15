@@ -29,7 +29,7 @@ const HomeFooter = ({
         <div>
           <div className="mb-4">
             <Link to="/" className="text-xl font-bold text-black">
-              <img src="logo2.png" alt="logo" />
+              <img src="logo3.png" alt="logo" />
             </Link>
           </div>
           <div className="flex gap-4">
