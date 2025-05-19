@@ -1,7 +1,7 @@
 // src/utils/validadorStatus.ts
 
 import { EncomendaStatus, PacoteStatus } from "../services/encomendaService";
-import { TranslationsType } from "../context/languageUtils";
+import { getSavedLanguage, TranslationsType } from "../context/languageUtils";
 
 export function isEncomendaStatus(status: string): status is EncomendaStatus {
   return [
@@ -67,5 +67,26 @@ export function paymentStringToEnum(paymentType: string): string {
     default:
       return "Tipo de pagamento desconhecido";
   }
+}
+
+
+export function adicionarDiasEntrega(dataOriginalStr: string, expressa: boolean): string {
+  const dataOriginal = new Date(dataOriginalStr);
+  const diasParaAdicionar = expressa ? 3 : 10;
+
+  const dataFinal = new Date(dataOriginal);
+  dataFinal.setDate(dataFinal.getDate() + diasParaAdicionar);
+if(getSavedLanguage() === "PT"){ 
+  return dataFinal.toLocaleDateString("pt-BR"); // você pode ajustar o locale se quiser
+}else if(getSavedLanguage() === "FR"){
+  return dataFinal.toLocaleDateString("fr-FR"); // você pode ajustar o locale se quiser
+}else if(getSavedLanguage() === "ES"){
+  return dataFinal.toLocaleDateString("es-ES"); // você pode ajustar o locale se quiser
+}else if(getSavedLanguage() === "EN"){
+  return dataFinal.toLocaleDateString("en-US");
+ } // você pode ajustar o locale se quiser
+else {
+  return dataFinal.toLocaleDateString("en-US"); // você pode ajustar o locale se quiser 
+}
 }
 
