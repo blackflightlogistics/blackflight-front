@@ -39,7 +39,7 @@ function EtiquetaEncomenda() {
   }, [id]);
   const formatarEndereco = (cliente: Cliente) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const endereco = (cliente.addresses || (cliente as any).adresses)?.[0];
+    const endereco = (cliente.adresses || (cliente as any).adresses)?.[0];
 
     return {
       street: endereco?.street || "-",

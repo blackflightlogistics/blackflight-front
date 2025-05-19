@@ -16,7 +16,7 @@ export type EncomendaStatus =
   | "entregue"
   | "cancelada";
 
-  export type EncomendaPagamentoStatus =
+export type EncomendaPagamentoStatus =
   | "pago"
   | "parcial"
   | "pendente"
@@ -35,7 +35,7 @@ export interface Account {
   city: string;
   state: string;
   number: string;
-   addresses: Address[];
+  adresses: Address[];
 }
 
 export interface Package {
@@ -76,6 +76,7 @@ export interface Order {
   zip_code: string;
   cep: string;
   tracking_code: string | null;
+  security_code: string | null;
 }
 
 export interface CreateOrderPayload {
@@ -132,7 +133,7 @@ export const orderService = {
     const params = forShipment
       ? { filter: JSON.stringify({ for_shipment: "true" }) }
       : {};
-  
+
     const response = await api.get<{ data: Order[] }>("/orders", { params });
     return response.data.data;
   },

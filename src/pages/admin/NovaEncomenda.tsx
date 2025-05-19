@@ -183,7 +183,7 @@ function NovaEncomenda() {
               setRemetenteId(id);
               setShowRemetenteEndereco(false);
               const cliente = clientes.find((c) => c.id === id);
-              const endereco = cliente?.addresses?.[0];
+              const endereco = cliente?.adresses?.[0];
               if (endereco) {
                 const enderecoLower = {
                   street: endereco.street.toLowerCase(),
@@ -229,7 +229,7 @@ function NovaEncomenda() {
             <div className="space-y-2 bg-white p-4 border border-orange rounded">
               {clientes
                 .find((c) => c.id === remetenteId)
-                ?.addresses.map((addr, idx) => (
+                ?.adresses.map((addr, idx) => (
                   <div
                     key={idx}
                     className="p-2 border rounded hover:bg-orange-100 cursor-pointer"
@@ -290,8 +290,8 @@ function NovaEncomenda() {
                     if (!cliente) return;
                     await clienteService.atualizar(remetenteId, {
                       ...cliente,
-                      addresses: [
-                        ...cliente.addresses,
+                      adresses: [
+                        ...cliente.adresses,
                         enderecoEditavelRemetente,
                       ],
                     });
@@ -324,8 +324,8 @@ function NovaEncomenda() {
                 const novo = await clienteService.adicionar({
                   name: form.name,
                   email: form.email,
-                  phoneNumber: form.phoneNumber,
-                  addresses: [endereco],
+                  phone_number: form.phone_number,
+                  adresses: [endereco],
                 });
                 const novaLista = await clienteService.listar();
                 setClientes(novaLista);
@@ -348,7 +348,7 @@ function NovaEncomenda() {
               setShowDestinatarioEndereco(false);
               setExibindoListaEnderecosDestinatario(false);
               const cliente = clientes.find((c) => c.id === id);
-              const endereco = cliente?.addresses?.[0];
+              const endereco = cliente?.adresses?.[0];
               if (endereco) {
                 const enderecoLower = {
                   street: endereco.street.toLowerCase(),
@@ -398,7 +398,7 @@ function NovaEncomenda() {
             <div className="space-y-2 bg-white p-4 border border-orange rounded">
               {clientes
                 .find((c) => c.id === destinatarioId)
-                ?.addresses.map((addr, idx) => (
+                ?.adresses.map((addr, idx) => (
                   <div
                     key={idx}
                     className="p-2 border rounded hover:bg-orange-100 cursor-pointer"
@@ -463,7 +463,7 @@ function NovaEncomenda() {
                     if (!cliente) return;
                     await clienteService.atualizar(destinatarioId, {
                       ...cliente,
-                      addresses: [...cliente.addresses, enderecoEditavel],
+                      adresses: [...cliente.adresses, enderecoEditavel],
                     });
                     const novaLista = await clienteService.listar();
                     setClientes(novaLista);
@@ -493,8 +493,8 @@ function NovaEncomenda() {
                 const novo = await clienteService.adicionar({
                   name: form.name,
                   email: form.email,
-                  phoneNumber: form.phoneNumber,
-                  addresses: [endereco],
+                  phone_number: form.phone_number,
+                  adresses: [endereco],
                 });
                 const novaLista = await clienteService.listar();
                 setClientes(novaLista);

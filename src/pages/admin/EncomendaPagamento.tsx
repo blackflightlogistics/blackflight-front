@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
-import { clienteService, Cliente } from "../../services/clienteService";
+import { Cliente } from "../../services/clienteService";
 import {
   orderService,
   Order,
   FormaPagamento,
   PacoteStatus,
 } from "../../services/encomendaService";
-import { formatarLinkWhatsapp } from "../../utils/formatarLinkWhatsapp";
+import {
+  formatarLinkWhatsapp,
+  whatsappDestinatarioLink,
+  whatsappRemetenteLink,
+} from "../../utils/formatarLinkWhatsapp";
 import { useLanguage } from "../../context/useLanguage";
 import DecimalMoneyInput from "../../components/form/DecimalMoneyInput";
 function EncomendaPagamento() {
@@ -90,22 +94,15 @@ function EncomendaPagamento() {
     setDesconto(encomendaEncontrada.descount || "");
     setPacotesSelecionados(encomendaEncontrada.packages.map((p) => p.id));
 
-    const remetente = await clienteService.buscarPorId(
-      encomendaEncontrada.from_account_id
-    );
-    const destinatario = await clienteService.buscarPorId(
-      encomendaEncontrada.to_account_id
-    );
-
-    setRemetente(remetente);
-    setDestinatario(destinatario);
+    setRemetente(encomendaEncontrada.from_account);
+    setDestinatario(encomendaEncontrada.to_account);
     setCarregando(false);
   };
   useEffect(() => {
     if (!id) return;
 
     carregar();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const valorBase = Number(encomenda?.total_value) || 0;
@@ -139,7 +136,6 @@ function EncomendaPagamento() {
       total_value: encomenda.total_value || "0.0",
       removed_packages: pacotesRemovidos,
       added_packages: pacotesAdicionados,
-    
     });
   };
 
@@ -172,11 +168,16 @@ function EncomendaPagamento() {
               <h2 className="text-lg font-semibold">{t.remetente}</h2>
               <p>
                 {remetente.name.toLocaleLowerCase()} - {remetente.email} -{" "}
-                {formatarLinkWhatsapp(remetente.phoneNumber, { icon: true })}
+                {whatsappRemetenteLink(
+                  remetente.phone_number,
+                  encomenda.tracking_code ?? "entre em contato"
+                )}
               </p>
+
               <p className="text-sm text-gray-600">
-                {remetente.addresses[0].city} - {remetente.addresses[0].state} -{" "}
-                {remetente.addresses[0].cep}
+                {remetente.adresses?.[0]?.city || "-"} -{" "}
+                {remetente.adresses?.[0]?.state || "-"} -{" "}
+                {remetente.adresses?.[0]?.cep || "-"}
               </p>
             </section>
 
@@ -184,12 +185,16 @@ function EncomendaPagamento() {
               <h2 className="text-lg font-semibold">{t.destinatario}</h2>
               <p>
                 {destinatario.name.toLowerCase()} - {destinatario.email} -{" "}
-                {formatarLinkWhatsapp(destinatario.phoneNumber, { icon: true })}
+                {whatsappDestinatarioLink(
+                  destinatario.phone_number,
+                  encomenda.tracking_code ?? "entre em contato",
+                  encomenda.security_code ?? "entre em contato"
+                )}
               </p>
               <p className="text-sm text-gray-600">
-                {destinatario.addresses[0].city} -{" "}
-                {destinatario.addresses[0].state} -{" "}
-                {destinatario.addresses[0].cep}
+                {destinatario.adresses?.[0]?.city || "-"} -{" "}
+                {destinatario.adresses?.[0]?.state || "-"} -{" "}
+                {destinatario.adresses?.[0]?.cep || "-"}
               </p>
             </section>
 
@@ -358,14 +363,13 @@ function EncomendaPagamento() {
                   {t.valor_pago_agora}
                 </label>
                 <div className="max-w-sm">
-                <DecimalMoneyInput
+                  <DecimalMoneyInput
                     value={valorPagoInput}
                     onChange={(val) => setValorPagoInput(val)}
                     placeholder={t.valor_pago_agora}
                     decimalPlaces={2}
                   />
                 </div>
-               
               </div>
             )}
 
@@ -381,14 +385,14 @@ function EncomendaPagamento() {
                   <label className="block text-sm font-medium mb-1">
                     {t.desconto_label}
                   </label>
-                <div className="max-w-sm">
-                <DecimalMoneyInput
-                    value={desconto}
-                    onChange={(val) => setDesconto(val)}
-                    placeholder={t.desconto_label}
-                    decimalPlaces={2}
-                  />
-                </div>
+                  <div className="max-w-sm">
+                    <DecimalMoneyInput
+                      value={desconto}
+                      onChange={(val) => setDesconto(val)}
+                      placeholder={t.desconto_label}
+                      decimalPlaces={2}
+                    />
+                  </div>
                 </div>
               )}
             </div>

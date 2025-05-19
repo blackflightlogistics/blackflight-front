@@ -28,7 +28,7 @@ const ClienteSelect = ({
       (c) =>
         c.name.toLowerCase().includes(q) ||
         c.email.toLowerCase().includes(q) ||
-        c.phoneNumber.toLowerCase().includes(q)
+        c.phone_number.toLowerCase().includes(q)
     );
   }, [query, clientes]);
   const [comboboxAberto, setComboboxAberto] = useState(true);
@@ -85,7 +85,7 @@ const ClienteSelect = ({
                     >
                       <div className="font-semibold">{cliente.name.toLocaleLowerCase()}</div>
                       <div className="text-xs text-gray-500">
-                        {cliente.email} | {cliente.phoneNumber}
+                        {cliente.email} | {cliente.phone_number}
                       </div>
                     </Combobox.Option>
                   ))

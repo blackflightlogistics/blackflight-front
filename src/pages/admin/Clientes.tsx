@@ -38,9 +38,9 @@ function Clientes() {
 
     await clienteService.adicionar({
       name: form.name,
-      phoneNumber: form.phoneNumber,
+      phone_number: form.phone_number,
       email: form.email,
-      addresses: [endereco],
+      adresses: [endereco],
     });
 
     setFormVisible(false);
@@ -90,18 +90,18 @@ function Clientes() {
                 <p>
                   <span className="font-bold">{t.nome}:</span> {cliente.name}
                   <span className="font-bold ml-4">{t.contato}: </span>
-                  {formatarLinkWhatsapp(cliente.phoneNumber, { icon: true })}
+                  {formatarLinkWhatsapp(cliente.phone_number, { icon: true })}
                 </p>
                 <p className="mt-2">
                   <span className="font-bold">E-mail:</span> {cliente.email}
                 </p>
                 <div className="mt-2 space-y-1">
                   <span className="font-bold">{t.enderecos}:</span>
-                  {cliente.addresses.length === 0 ? (
+                  {cliente.adresses.length === 0 ? (
                     <p className="text-gray-600">{t.nenhum_endereco}</p>
                   ) : (
                     <ul className="ml-4 list-disc">
-                      {cliente.addresses.map((endereco, idx) => (
+                      {cliente.adresses.map((endereco, idx) => (
                         <li key={idx}>
                           {endereco.number} - {endereco.street} - {endereco.neighborhood} - 
                           {endereco.city} - {endereco.state} - {endereco.country} {endereco.cep}

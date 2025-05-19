@@ -15,10 +15,10 @@ export type Address = {
 export type Cliente = {
   id: string;
   name: string;
-  phoneNumber: string;
+  phone_number: string;
   email: string;
   document?: string;
-  addresses: Address[];
+  adresses: Address[];
 };
 
 type RawAccount = {
@@ -49,10 +49,10 @@ export const clienteService = {
     return data.map((item) => ({
       id: item.id,
       name: item.name,
-      phoneNumber: item.phone_number,
+      phone_number: item.phone_number,
       email: item.email,
       document: item.document,
-      addresses: item.adresses?.map((addr) => ({
+      adresses: item.adresses?.map((addr) => ({
         id: addr.id || "",
         street: addr.street || "",
         number: addr.number || "",
@@ -72,8 +72,8 @@ export const clienteService = {
       name: cliente.name,
       email: cliente.email,
       document: cliente.document,
-      phone_number: cliente.phoneNumber,
-      adresses: cliente.addresses.map((addr) => ({
+      phone_number: cliente.phone_number,
+      adresses: cliente.adresses.map((addr) => ({
         adress_id: (  addr.id == "" ? null : addr.id),
         street: addr.street,
         number: addr.number,
@@ -91,10 +91,10 @@ console.log("payload", payload);
     return {
       id: saved.id,
       name: saved.name,
-      phoneNumber: saved.phone_number,
+      phone_number: saved.phone_number,
       email: saved.email,
       document: saved.document,
-      addresses: saved.adresses?.map((addr: RawAdress) => ({
+      adresses: saved.adresses?.map((addr: RawAdress) => ({
         id: addr.id,
         street: addr.street,
         number: addr.number,
@@ -115,9 +115,9 @@ console.log("payload", payload);
       id: item.id,
       name: item.name,
       document: item.document,
-      phoneNumber: item.phone_number,
+      phone_number: item.phone_number,
       email: item.email,
-      addresses: item.adresses?.map((addr: RawAdress) => ({
+      adresses: item.adresses?.map((addr: RawAdress) => ({
         street: addr.street,
         id: addr.id,
         number: addr.number,
@@ -138,8 +138,8 @@ console.log("payload", payload);
       name: dados.name,
       email: dados.email,
       document: dados.document,
-      phone_number: dados.phoneNumber,
-      adresses: dados.addresses?.map((addr) => ({
+      phone_number: dados.phone_number,
+      adresses: dados.adresses?.map((addr) => ({
         adress_id:(  addr.id == "" ? null : addr.id),
         street: addr.street,
         number: addr.number,
@@ -157,10 +157,10 @@ console.log("payload", payload);
     return {
       id: item.id,
       name: item.name,
-      phoneNumber: item.phone_number,
+      phone_number: item.phone_number,
       email: item.email,
       document: item.document,
-      addresses: item.adresses?.map((addr: RawAdress) => ({
+      adresses: item.adresses?.map((addr: RawAdress) => ({
         id: addr.id,
         street: addr.street,
         number: addr.number,

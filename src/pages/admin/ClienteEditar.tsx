@@ -46,14 +46,14 @@ function ClienteEditar() {
   const handleSalvarEndereco = () => {
     if (!cliente || !enderecoTemp) return;
 
-    const novosEnderecos = [...cliente.addresses];
+    const novosEnderecos = [...cliente.adresses];
     if (editandoEnderecoIndex !== null) {
       novosEnderecos[editandoEnderecoIndex] = enderecoTemp;
     } else {
       novosEnderecos.push(enderecoTemp);
     }
 
-    setCliente({ ...cliente, addresses: novosEnderecos });
+    setCliente({ ...cliente, adresses: novosEnderecos });
     setEditandoEnderecoIndex(null);
     setEnderecoTemp(null);
     setModoEnderecoVisivel(false);
@@ -64,10 +64,10 @@ function ClienteEditar() {
     const confirm = window.confirm(t.confirmar_remover_endereco);
     if (!confirm) return;
 
-    const novosEnderecos = cliente.addresses.filter((_, i) => i !== index);
+    const novosEnderecos = cliente.adresses.filter((_, i) => i !== index);
     const atualizado = await clienteService.atualizar(cliente.id, {
       ...cliente,
-      addresses: novosEnderecos,
+      adresses: novosEnderecos,
     });
 
     setCliente(atualizado);
@@ -76,7 +76,7 @@ function ClienteEditar() {
   const handleEditarEndereco = (index: number) => {
     if (!cliente) return;
     setEditandoEnderecoIndex(index);
-    setEnderecoTemp(cliente.addresses[index]);
+    setEnderecoTemp(cliente.adresses[index]);
     setModoEnderecoVisivel(true);
   };
 
@@ -141,9 +141,9 @@ function ClienteEditar() {
                 />
                 <input
                   type="text"
-                  value={cliente.phoneNumber}
+                  value={cliente.phone_number}
                   onChange={(e) =>
-                    setCliente({ ...cliente, phoneNumber: e.target.value })
+                    setCliente({ ...cliente, phone_number: e.target.value })
                   }
                   placeholder={t.form_telefone}
                   className="p-2 border rounded"
@@ -154,7 +154,7 @@ function ClienteEditar() {
             <div className="space-y-2">
               <h2 className="font-bold font-primary text-lg">{t.enderecos}</h2>
 
-              {cliente.addresses.map((addr, index) => (
+              {cliente.adresses.map((addr, index) => (
                 <div
                   key={index}
                   className="border border-orange rounded p-4 bg-white"

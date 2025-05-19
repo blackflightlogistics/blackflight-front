@@ -4,7 +4,7 @@ import { useLanguage } from "../../context/useLanguage";
 export type ClienteFormData = {
   id?: string;
   name: string;
-  phoneNumber: string;
+  phone_number: string;
   email: string;
   street: string;
   number: string;
@@ -26,7 +26,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
 
   const [form, setForm] = useState<ClienteFormData>({
     name: initialData?.name || "",
-    phoneNumber: initialData?.phoneNumber || "",
+    phone_number: initialData?.phone_number || "",
     email: initialData?.email || "",
     street: initialData?.street || "",
     number: initialData?.number || "",
@@ -46,7 +46,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
     onSubmit(form);
     setForm({
       name: "",
-      phoneNumber: "",
+      phone_number: "",
       email: "",
       street: "",
       number: "",
@@ -70,10 +70,10 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
           className="p-2 border rounded"
         />
         <input
-          name="phoneNumber"
+          name="phone_number"
           placeholder={t.form_telefone}
           required
-          value={form.phoneNumber}
+          value={form.phone_number}
           onChange={handleChange}
           className="p-2 border rounded"
         />
