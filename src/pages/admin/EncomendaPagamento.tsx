@@ -9,7 +9,7 @@ import {
   PacoteStatus,
 } from "../../services/encomendaService";
 import {
-  formatarLinkWhatsapp,
+  
   whatsappDestinatarioLink,
   whatsappRemetenteLink,
 } from "../../utils/formatarLinkWhatsapp";
