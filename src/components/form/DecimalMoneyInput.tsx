@@ -1,5 +1,4 @@
-// src/components/form/DecimalMoneyInput.tsx
-import { useState, useEffect } from "react";
+import { useRef } from "react";
 
 interface DecimalMoneyInputProps {
   value: string;
@@ -8,7 +7,7 @@ interface DecimalMoneyInputProps {
   id?: string;
   placeholder?: string;
   className?: string;
-  decimalPlaces?: number; // 1 para peso, 2 para dinheiro
+  decimalPlaces?: number;
 }
 
 export default function DecimalMoneyInput({
@@ -20,23 +19,18 @@ export default function DecimalMoneyInput({
   className = "",
   decimalPlaces = 2,
 }: DecimalMoneyInputProps) {
-  const [raw, setRaw] = useState("");
-
-  useEffect(() => {
-    const cleaned = value.replace(/\D/g, "");
-    setRaw(cleaned);
-  }, [value]);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const onlyDigits = e.target.value.replace(/\D/g, "");
-    setRaw(onlyDigits);
-    onChange(formatValue(onlyDigits));
+    const divisor = Math.pow(10, decimalPlaces);
+    const formatted = (parseInt(onlyDigits || "0", 10) / divisor).toFixed(decimalPlaces);
+    onChange(formatted);
   };
 
-  const formatValue = (digits: string) => {
-    const divisor = Math.pow(10, decimalPlaces);
-    const num = (parseInt(digits || "0", 10) / divisor).toFixed(decimalPlaces);
-    return num;
+  const formatDisplay = (val: string) => {
+    const num = parseFloat(val.replace(",", "."));
+    return isNaN(num) ? "" : num.toFixed(decimalPlaces);
   };
 
   return (
@@ -50,11 +44,12 @@ export default function DecimalMoneyInput({
         </label>
       )}
       <input
+        ref={inputRef}
         id={id}
         type="text"
-        inputMode="numeric"
-        pattern="\d*"
-        value={raw === "" ? "" : formatValue(raw)} // ⬅️ Aqui está a mudança
+        inputMode="decimal"
+        pattern="[0-9]*"
+        value={formatDisplay(value)}
         onChange={handleChange}
         className={`p-2 border rounded w-full ${className}`}
         placeholder={placeholder}

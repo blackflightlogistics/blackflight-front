@@ -3,6 +3,7 @@ import Sidebar from "../../components/admin/Sidebar";
 import QrScanner from "qr-scanner";
 import {
   EncomendaPagamentoStatus,
+  Order,
   orderService,
 } from "../../services/encomendaService";
 import ConfirmacaoCheckinModal from "../../components/admin/ConfirmacaoCheckinModal";
@@ -10,6 +11,7 @@ import { isEncomendaStatus, isPacoteStatus } from "../../utils/utils";
 import { useLanguage } from "../../context/useLanguage";
 import { remessaService } from "../../services/remessaService";
 import { toast } from "react-toastify";
+import PagamentoPendenteModal from "../../components/admin/PagamentoPendenteModal";
 
 function Leitor() {
   const { translations: t } = useLanguage();
@@ -22,6 +24,10 @@ function Leitor() {
   );
   const [modalCodigo, setModalCodigo] = useState<string>("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
+  const [modalPagamentoAberto, setModalPagamentoAberto] = useState(false);
+  const [valorTotal, setValorTotal] = useState(0);
+  const [valorPago, setValorPago] = useState(0);
+  const [encomendaAtual, setEncomendaAtual] = useState<Order | null>(null);
 
   useEffect(() => {
     if (!videoRef || !cameraAtiva) return;
@@ -63,13 +69,12 @@ function Leitor() {
         toast.success(t.status_encomenda_atualizado);
       } catch (err) {
         console.error("Erro ao atualizar status da remessa:", err);
-
-        toast.success("Erro ao atualizar status da remessa.");
+        toast.error("Erro ao atualizar status da remessa.");
       } finally {
         setCameraAtiva(true);
       }
     } else {
-      toast.success(t.alerta_codigo_invalido);
+      toast.error(t.alerta_codigo_invalido);
       setCameraAtiva(true);
     }
   };
@@ -78,9 +83,9 @@ function Leitor() {
     if (modalTipo === "encomenda" && isEncomendaStatus(status)) {
       const id = modalCodigo.replace("E-", "");
       const encomenda = await orderService.buscarPorId(id);
-  
+
       encomenda.status = status;
-  
+
       // Atualiza pacotes com base no status da encomenda
       switch (status) {
         case "em_preparacao":
@@ -92,42 +97,26 @@ function Leitor() {
             status,
           }));
           break;
-  
+
         case "cancelada":
           // Só pacotes não entregues são cancelados
           encomenda.packages = encomenda.packages.map((p) =>
             p.status !== "entregue" ? { ...p, status: "cancelada" } : p
           );
           break;
-  
+
         case "entregue":
           // Não altera os pacotes, pois podem ser entregues individualmente
           break;
       }
-  
-      await orderService.atualizar(encomenda.id, {
-        from_account_id: encomenda.from_account.id,
-        to_account_id: encomenda.to_account.id,
-        status: encomenda.status,
-        is_express: encomenda.is_express,
-        scheduled_date: encomenda.scheduled_date || undefined,
-        city: encomenda.city,
-        state: encomenda.state,
-        country: encomenda.country,
-        number: encomenda.number,
-        additional_info: encomenda.additional_info,
-        cep: encomenda.cep,
-        paid_now: encomenda.paid_now || "0",
-        descount: encomenda.descount || "0",
-        payment_type: encomenda.payment_type || "a_vista",
-        payment_status: (encomenda.payment_status ||
-          "pendente") as EncomendaPagamentoStatus,
-        total_value: encomenda.total_value || "0",
-        added_packages: [],
-        removed_packages: [],
-      });
 
-      toast.success(t.status_encomenda_atualizado);
+      if (["pendente", "parcial"].includes(encomenda.payment_status || "")) {
+        setEncomendaAtual(encomenda);
+        setValorTotal(Number(encomenda.total_value || "0"));
+        setValorPago(Number(encomenda.paid_now || "0"));
+        setModalPagamentoAberto(true);
+        return; // interrompe aqui para aguardar confirmação no modal
+      }
     }
 
     if (modalTipo === "pacote" && isPacoteStatus(status)) {
@@ -145,10 +134,55 @@ function Leitor() {
       // await orderService.atualizar(encomenda); // Ative se quiser persistir
     }
 
+    limparEstado();
+  };
+
+  const confirmarPagamentoPendente = async (valorRestante: number) => {
+    if (!encomendaAtual) return;
+
+    encomendaAtual.paid_now = (valorPago + valorRestante).toString();
+    encomendaAtual.payment_status = "pago";
+
+    await salvarEncomendaAtualizada(encomendaAtual);
+    setModalPagamentoAberto(false);
+    limparEstado();
+  };
+  const salvarEncomendaAtualizada = async (encomenda: Order) => {
+    try{await orderService.atualizar(encomenda.id, {
+      from_account_id: encomenda.from_account.id,
+      to_account_id: encomenda.to_account.id,
+      status: encomenda.status || "",
+      is_express: encomenda.is_express,
+      scheduled_date: encomenda.scheduled_date || undefined,
+      city: encomenda.city,
+      state: encomenda.state,
+      country: encomenda.country,
+      number: encomenda.number,
+      additional_info: encomenda.additional_info,
+      cep: encomenda.cep,
+      paid_now: encomenda.paid_now || "0",
+      descount: encomenda.descount || "0",
+      payment_type: encomenda.payment_type || "a_vista",
+      payment_status: (encomenda.payment_status ||
+        "pendente") as EncomendaPagamentoStatus,
+      total_value: encomenda.total_value || "0",
+      added_packages: [],
+      removed_packages: [],
+    });
+    toast.success(t.status_encomenda_atualizado);
+    } catch (error) {
+      console.error("Erro ao atualizar encomenda:", error);
+      toast.error("Erro ao atualizar encomenda");
+    }
+    
+  };
+
+  const limparEstado = () => {
     setModalAberto(false);
     setModalTipo(null);
     setModalCodigo("");
     setCodigoLido("");
+    setEncomendaAtual(null);
     setCameraAtiva(true);
   };
 
@@ -207,6 +241,16 @@ function Leitor() {
           setCameraAtiva(true);
         }}
         onConfirmar={atualizarStatus}
+      />
+      <PagamentoPendenteModal
+        aberto={modalPagamentoAberto}
+        valorTotal={valorTotal}
+        valorPago={valorPago}
+        onFechar={() => {
+          setModalPagamentoAberto(false);
+          setCameraAtiva(true);
+        }}
+        onConfirmar={confirmarPagamentoPendente}
       />
     </div>
   );

@@ -203,7 +203,12 @@ export const translations = {
         percentual_seguro: "Insurance Percentage (%)",
         valor_adicional_expresso: "Express Additional Value (R$)",
         salvar_configuracao: "Save Configuration",
-        configuracao_salva_sucesso: "Configuration saved successfully!"
+        configuracao_salva_sucesso: "Configuration saved successfully!",
+        pagamento_pendente_titulo: "Pending Payment",
+        pagamento_valor_total: "Total amount",
+        pagamento_valor_pago: "Paid amount",
+        pagamento_informar_faltante: "Is there a missing amount?",
+        confirmar: "Confirm",
 
     },
     ES: {
@@ -410,7 +415,12 @@ export const translations = {
         percentual_seguro: "Porcentaje de Seguro (%)",
         valor_adicional_expresso: "Valor adicional exprés (R$)",
         salvar_configuracao: "Guardar Configuración",
-        configuracao_salva_sucesso: "¡Configuración guardada con éxito!"
+        configuracao_salva_sucesso: "¡Configuración guardada con éxito!",
+        pagamento_pendente_titulo: "Confirmación de Pago",
+        pagamento_valor_total: "Valor Total",
+        pagamento_valor_pago: "Valor Pagado",
+        pagamento_informar_faltante: "¿Falta algún valor?",
+        confirmar: "Confirmar",
     },
     FR: {
         login_title: "Accès Administratif",
@@ -577,7 +587,6 @@ export const translations = {
         tracking_timeline_message: "En transit vers la destination",
         who_we_are_title: "Qui sommes-nous ?",
         who_we_are_description: "Nous sommes une entreprise spécialisée dans la logistique et le transport de colis, offrant des solutions personnalisées pour faciliter l’envoi et la gestion des livraisons pour les particuliers et les entreprises.",
-
         services_title: "Nos Services",
         services_subtitle: "Nous offrons des solutions logistiques complètes adaptées aux besoins spécifiques de votre entreprise, avec qualité et efficacité.",
         services_card_1_title: "Expédition de Colis",
@@ -586,7 +595,6 @@ export const translations = {
         services_card_2_description: "Solutions rapides pour les livraisons urgentes, avec couverture nationale et internationale pour toutes tailles de colis.",
         services_card_3_title: "Service Personnalisé",
         services_card_3_description: "Importation et exportation de cargaisons en conteneurs, avec accompagnement complet en commerce international.",
-
         footer_services_title: "Services",
         footer_services_1: "Expédition de colis",
         footer_services_2: "Suivi en ligne",
@@ -617,7 +625,12 @@ export const translations = {
         percentual_seguro: "Pourcentage d'assurance (%)",
         valor_adicional_expresso: "Frais supplémentaires express (R$)",
         salvar_configuracao: "Enregistrer la Configuration",
-        configuracao_salva_sucesso: "Configuration enregistrée avec succès !"
+        configuracao_salva_sucesso: "Configuration enregistrée avec succès !",
+        pagamento_pendente_titulo: "Paiement en attente",
+        pagamento_valor_total: "Montant total",
+        pagamento_valor_pago: "Montant déjà payé",
+        pagamento_informar_faltante: "Veuillez indiquer le montant restant à payer",
+        confirmar: "Confirmer",
 
 
     },
@@ -827,7 +840,12 @@ export const translations = {
         percentual_seguro: "% de valor do Seguro",
         valor_adicional_expresso: "Valor adicional expresso (R$)",
         salvar_configuracao: "Salvar Configuração",
-        configuracao_salva_sucesso: "Configuração salva com sucesso!"
+        configuracao_salva_sucesso: "Configuração salva com sucesso!",
+        pagamento_pendente_titulo: "Pagamento pendente",
+        pagamento_valor_total: "Valor total",
+        pagamento_valor_pago: "Valor já pago",
+        pagamento_informar_faltante: "Informe o valor restante",
+        confirmar: "Confirmar",
 
 
 
