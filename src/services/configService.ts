@@ -9,12 +9,16 @@ export type Settings = {
   insurancePerc: string;    // Ex: "0,03"
   insertedAt: string;
   updatedAt: string;
+  cambio_tax: string;      // Ex: "5,0"
+  dollar_value: string;     // Ex: "5,0"
 };
 
 export type SettingsPayload = {
   amount_per_kg: string;
   express_amount: string;
   insurance_perc: string;
+  cambio_tax: string;
+  dollar_value: string;
 };
 
 export const configService = {
@@ -30,6 +34,8 @@ export const configService = {
       insurancePerc: data.insurance_perc,
       insertedAt: data.inserted_at,
       updatedAt: data.updated_at,
+      cambio_tax: data.cambio_tax,
+      dollar_value: data.dollar_value,
     };
   },
 

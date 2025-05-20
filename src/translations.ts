@@ -209,6 +209,8 @@ export const translations = {
         pagamento_valor_pago: "Paid amount",
         pagamento_informar_faltante: "Is there a missing amount?",
         confirmar: "Confirm",
+        taxa_cambio: "Exchange Rate",
+        dollar_value: "Dollar Value",
 
     },
     ES: {
@@ -421,6 +423,8 @@ export const translations = {
         pagamento_valor_pago: "Valor Pagado",
         pagamento_informar_faltante: "¿Falta algún valor?",
         confirmar: "Confirmar",
+        taxa_cambio: "Taxa de Cambio",
+        dollar_value: "Dollar Value",
     },
     FR: {
         login_title: "Accès Administratif",
@@ -631,7 +635,8 @@ export const translations = {
         pagamento_valor_pago: "Montant déjà payé",
         pagamento_informar_faltante: "Veuillez indiquer le montant restant à payer",
         confirmar: "Confirmer",
-
+        taxa_cambio: "Taxe de change",
+        dollar_value: "Valeur du dollar",
 
     },
     PT: {
@@ -846,6 +851,8 @@ export const translations = {
         pagamento_valor_pago: "Valor já pago",
         pagamento_informar_faltante: "Informe o valor restante",
         confirmar: "Confirmar",
+        taxa_cambio: "Taxa de câmbio",
+        dollar_value: "Cotação do dólar",
 
 
 
