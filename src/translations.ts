@@ -211,6 +211,9 @@ export const translations = {
         confirmar: "Confirm",
         taxa_cambio: "Exchange Rate",
         dollar_value: "Dollar Value",
+        caf_value: "CAF Value",
+        moeda: "Payment Currency",
+        erro_salvar_configuracao: "Error saving configuration",
 
     },
     ES: {
@@ -425,6 +428,9 @@ export const translations = {
         confirmar: "Confirmar",
         taxa_cambio: "Taxa de Cambio",
         dollar_value: "Dollar Value",
+        caf_value: "CAF Value",
+        moeda: "Moeda de Pagamento",
+        erro_salvar_configuracao: "Error al guardar la configuración",
     },
     FR: {
         login_title: "Accès Administratif",
@@ -637,7 +643,9 @@ export const translations = {
         confirmar: "Confirmer",
         taxa_cambio: "Taxe de change",
         dollar_value: "Valeur du dollar",
-
+        caf_value: "Valeur CAF",
+        moeda: "Devise de paiement",
+        erro_salvar_configuracao: "Erreur lors de l'enregistrement de la configuration",
     },
     PT: {
         login_title: "Acesso administrativo",
@@ -853,6 +861,9 @@ export const translations = {
         confirmar: "Confirmar",
         taxa_cambio: "Taxa de câmbio",
         dollar_value: "Cotação do dólar",
+        caf_value: "Valor do CAF",
+        moeda: "Moeda de pagamento",
+        erro_salvar_configuracao: "Erro ao salvar configuração",
 
 
 

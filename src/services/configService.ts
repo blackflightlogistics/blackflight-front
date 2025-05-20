@@ -10,7 +10,8 @@ export type Settings = {
   insertedAt: string;
   updatedAt: string;
   cambio_tax: string;      // Ex: "5,0"
-  dollar_value: string;     // Ex: "5,0"
+  dollar_value: string;  
+  caf_value: string;   // Ex: "5,0"
 };
 
 export type SettingsPayload = {
@@ -19,6 +20,7 @@ export type SettingsPayload = {
   insurance_perc: string;
   cambio_tax: string;
   dollar_value: string;
+  cfa: string;
 };
 
 export const configService = {
@@ -36,6 +38,7 @@ export const configService = {
       updatedAt: data.updated_at,
       cambio_tax: data.cambio_tax,
       dollar_value: data.dollar_value,
+      caf_value: data.cfa
     };
   },
 

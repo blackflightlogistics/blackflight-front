@@ -12,6 +12,7 @@ import { useLanguage } from "../../context/useLanguage";
 import { remessaService } from "../../services/remessaService";
 import { toast } from "react-toastify";
 import PagamentoPendenteModal from "../../components/admin/PagamentoPendenteModal";
+import { configService } from "../../services/configService";
 
 function Leitor() {
   const { translations: t } = useLanguage();
@@ -28,6 +29,9 @@ function Leitor() {
   const [valorTotal, setValorTotal] = useState(0);
   const [valorPago, setValorPago] = useState(0);
   const [encomendaAtual, setEncomendaAtual] = useState<Order | null>(null);
+  const [dollarValue, setDollarValue] = useState(0);
+  const [cafValue, setCafValue] = useState(0);
+  const [cambioTax, setCambioTax] = useState(0);
 
   useEffect(() => {
     if (!videoRef || !cameraAtiva) return;
@@ -52,6 +56,15 @@ function Leitor() {
       scanner.stop();
     };
   }, [videoRef, cameraAtiva]);
+  useEffect(() => {
+    const carregarConfiguracoes = async () => {
+      const config = await configService.buscar();
+      setDollarValue(Number(config.dollar_value));
+      setCambioTax(Number(config.cambio_tax));
+      setCafValue(Number(config.caf_value));
+    };
+    carregarConfiguracoes();
+  }, []);
 
   const processarCodigo = async (codigo: string) => {
     if (codigo.startsWith("E-")) {
@@ -148,33 +161,33 @@ function Leitor() {
     limparEstado();
   };
   const salvarEncomendaAtualizada = async (encomenda: Order) => {
-    try{await orderService.atualizar(encomenda.id, {
-      from_account_id: encomenda.from_account.id,
-      to_account_id: encomenda.to_account.id,
-      status: encomenda.status || "",
-      is_express: encomenda.is_express,
-      scheduled_date: encomenda.scheduled_date || undefined,
-      city: encomenda.city,
-      state: encomenda.state,
-      country: encomenda.country,
-      number: encomenda.number,
-      additional_info: encomenda.additional_info,
-      cep: encomenda.cep,
-      paid_now: encomenda.paid_now || "0",
-      descount: encomenda.descount || "0",
-      payment_type: encomenda.payment_type || "a_vista",
-      payment_status: (encomenda.payment_status ||
-        "pendente") as EncomendaPagamentoStatus,
-      total_value: encomenda.total_value || "0",
-      added_packages: [],
-      removed_packages: [],
-    });
-    toast.success(t.status_encomenda_atualizado);
+    try {
+      await orderService.atualizar(encomenda.id, {
+        from_account_id: encomenda.from_account.id,
+        to_account_id: encomenda.to_account.id,
+        status: encomenda.status || "",
+        is_express: encomenda.is_express,
+        scheduled_date: encomenda.scheduled_date || undefined,
+        city: encomenda.city,
+        state: encomenda.state,
+        country: encomenda.country,
+        number: encomenda.number,
+        additional_info: encomenda.additional_info,
+        cep: encomenda.cep,
+        paid_now: encomenda.paid_now || "0",
+        descount: encomenda.descount || "0",
+        payment_type: encomenda.payment_type || "a_vista",
+        payment_status: (encomenda.payment_status ||
+          "pendente") as EncomendaPagamentoStatus,
+        total_value: encomenda.total_value || "0",
+        added_packages: [],
+        removed_packages: [],
+      });
+      toast.success(t.status_encomenda_atualizado);
     } catch (error) {
       console.error("Erro ao atualizar encomenda:", error);
       toast.error("Erro ao atualizar encomenda");
     }
-    
   };
 
   const limparEstado = () => {
@@ -246,6 +259,9 @@ function Leitor() {
         aberto={modalPagamentoAberto}
         valorTotal={valorTotal}
         valorPago={valorPago}
+        dollarValue={dollarValue}
+        cambioTax={cambioTax}
+        cafValue={cafValue}
         onFechar={() => {
           setModalPagamentoAberto(false);
           setCameraAtiva(true);

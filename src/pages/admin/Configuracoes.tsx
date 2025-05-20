@@ -3,6 +3,7 @@ import Sidebar from "../../components/admin/Sidebar";
 import { configService } from "../../services/configService";
 import { useLanguage } from "../../context/useLanguage";
 import DecimalMoneyInput from "../../components/form/DecimalMoneyInput";
+import { toast } from "react-toastify";
 
 const Configuracoes = () => {
   const [precoPorQuilo, setPrecoPorQuilo] = useState("");
@@ -10,8 +11,8 @@ const Configuracoes = () => {
   const [adicionalExpresso, setAdicionalExpresso] = useState("");
   const [valorDolar, setValorDolar] = useState("");
   const [cambioTaxa, setCambioTaxa] = useState("");
+  const [cafValue, setCafValue] = useState("");
 
-  const [mensagem, setMensagem] = useState("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [carregando, setCarregando] = useState(true);
   const { changeLanguage, language, translations: t } = useLanguage();
@@ -24,21 +25,27 @@ const Configuracoes = () => {
       setAdicionalExpresso(config.expressAmount);
       setCambioTaxa(config.cambio_tax);
       setValorDolar(config.dollar_value);
+      setCafValue(config.caf_value);
       setCarregando(false);
     };
     carregarConfiguracoes();
   }, []);
 
   const salvar = async () => {
-    await configService.atualizar({
+try{
+      await configService.atualizar({
       amount_per_kg: precoPorQuilo,
       insurance_perc: precoSeguro,
       express_amount: adicionalExpresso,
       cambio_tax: cambioTaxa,
       dollar_value: valorDolar,
+      cfa: cafValue,
     });
-    setMensagem(t.configuracao_salva_sucesso);
-    setTimeout(() => setMensagem(""), 3000);
+    toast.success(t.configuracao_salva_sucesso);
+} catch (error) {
+  console.error("Erro ao salvar configuração:", error);
+    toast.error(t.erro_salvar_configuracao);
+}
   };
 
   if (carregando) {
@@ -136,6 +143,18 @@ const Configuracoes = () => {
                   decimalPlaces={2}
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium font-secondary mb-1">
+                  {t.caf_value}
+                </label>
+
+                <DecimalMoneyInput
+                  value={cafValue}
+                  onChange={(val) => setCafValue(val)}
+                  placeholder={t.caf_value}
+                  decimalPlaces={2}
+                />
+              </div>
 
               {/* Botões de idioma */}
               <div className="flex flex-col gap-2 mt-6 pl-2">
@@ -192,9 +211,7 @@ const Configuracoes = () => {
               </button>
             </div>
 
-            {mensagem && (
-              <p className="text-green-600 font-secondary">{mensagem}</p>
-            )}
+            
           </>
         )}
       </main>
