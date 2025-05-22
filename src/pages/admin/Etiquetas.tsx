@@ -27,7 +27,7 @@ function EtiquetaEncomenda() {
   const pacotesParaImprimir = encomenda?.packages.filter((p) =>
     pacotesSelecionados.includes(p.id)
   );
-
+const etiquetaRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!id) return;
     setCarregando(true);
@@ -50,6 +50,37 @@ function EtiquetaEncomenda() {
       country: endereco?.country || "-",
     };
   };
+const imprimirEtiqueta = () => {
+  if (!etiquetaRef.current) return;
+
+  const conteudo = etiquetaRef.current.innerHTML;
+  const janela = window.open("", "_blank");
+
+  if (!janela) return;
+
+  janela.document.write(`
+    <html>
+      <head>
+        <title>${t.etiqueta_titulo}</title>
+        <style>
+          * {
+            font-family: monospace;
+          }
+          body {
+            margin: 20px;
+          }
+        </style>
+      </head>
+      <body>
+        ${conteudo}
+      </body>
+    </html>
+  `);
+  janela.document.close();
+  janela.focus();
+  janela.print();
+  janela.close();
+};
 
   const exportarPDF = async () => {
     if (!pdfRef.current) return;
@@ -189,7 +220,7 @@ function EtiquetaEncomenda() {
               {t.etiqueta_exportar_pdf}
             </button>
             <button
-              onClick={() => window.print()}
+               onClick={imprimirEtiqueta}
               className="px-4 py-2 bg-black text-white rounded hover:opacity-80 text-sm font-secondary"
             >
               {t.etiqueta_imprimir}
@@ -257,7 +288,7 @@ function EtiquetaEncomenda() {
           <QRCodeComLogo value={`E-${encomenda.id}`} size={128} />
           <p className="text-sm text-gray-600 mt-2">ID: E-{encomenda.id}</p>
         </section> */}
-                <section className="border p-4 rounded bg-white shadow text-sm font-mono space-y-2 w-full max-w-[600px] mx-auto">
+                <section  ref={etiquetaRef} className="print-area border p-4 rounded bg-white shadow text-sm font-mono space-y-2 w-full max-w-[600px] mx-auto">
                   <div className=" justify-between">
                     <div>
                       <p>

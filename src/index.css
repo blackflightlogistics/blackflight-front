@@ -5,21 +5,29 @@
 @tailwind utilities;
 
 @media print {
-  aside,
-  button,
-  nav {
+  @page {
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Oculta elementos extras como título, URL e numeração */
+  .print-hidden,
+  .no-print,
+  nav,
+  header,
+  footer {
     display: none !important;
   }
 
-  .print\\:break-before-page {
-    break-before: page;
-  }
-
-  .print\\:h-auto {
-    height: auto !important;
-  }
-
-  .print\\:overflow-visible {
-    overflow: visible !important;
+  /* Força apenas a área da etiqueta a aparecer centralizada */
+  .print-area {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
   }
 }
+
