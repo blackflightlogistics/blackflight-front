@@ -5,35 +5,44 @@ import autoTable from "jspdf-autotable";
 import html2canvas from "html2canvas";
 import Sidebar from "../../components/admin/Sidebar";
 import { orderService, Order } from "../../services/encomendaService";
-import QRCodeComLogo from "../../components/shared/QRCodeComLogo";
+
 import { useLanguage } from "../../context/useLanguage";
 import { Cliente } from "../../services/clienteService";
-import { pacoteStatusToString } from "../../utils/utils";
+import {
+  apresentaDataFormatada,
+  pacoteStatusToString,
+} from "../../utils/utils";
+import { gerarQrBase64PNG } from "../../components/shared/QRCodeComLogo";
+import EtiquetaEncomendaComponente from "./EtiquetaEncomendaComponente";
 
 function EtiquetaEncomenda() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const { translations: t } = useLanguage();
-
+  const [qrBase64, setQrBase64] = useState<string>("");
   const [encomenda, setEncomenda] = useState<Order | null>(null);
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [dataGeracao, setDataGeracao] = useState<string>("");
   const pdfRef = useRef<HTMLDivElement | null>(null);
   const [carregando, setCarregando] = useState(true);
-
+  const [logoBase64, setLogoBase64] = useState("");
   const pacotesSelecionados: string[] =
     location.state?.pacotesSelecionados ?? [];
   const pacotesParaImprimir = encomenda?.packages.filter((p) =>
     pacotesSelecionados.includes(p.id)
   );
-const etiquetaRef = useRef<HTMLDivElement>(null);
+  const etiquetaRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!id) return;
     setCarregando(true);
-    orderService.buscarPorId(id).then((dados) => {
+    orderService.buscarPorId(id).then(async (dados) => {
       setEncomenda(dados);
       setDataGeracao(dados.inserted_at.split("T")[0]);
+      const qr = await gerarQrBase64PNG(`E-${dados.id}`);
+      const logo = await carregarImagemComoBase64("/minimal_logo_black.png");
+      setQrBase64(qr);
+      setLogoBase64(logo);
       setCarregando(false);
     });
   }, [id]);
@@ -50,37 +59,146 @@ const etiquetaRef = useRef<HTMLDivElement>(null);
       country: endereco?.country || "-",
     };
   };
-const imprimirEtiqueta = () => {
-  if (!etiquetaRef.current) return;
+  const carregarImagemComoBase64 = (caminho: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      fetch(caminho)
+        .then((res) => res.blob())
+        .then((blob) => {
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        })
+        .catch(reject);
+    });
+  };
+  const imprimirEtiqueta = () => {
+    if (!qrBase64) return;
 
-  const conteudo = etiquetaRef.current.innerHTML;
-  const janela = window.open("", "_blank");
+    const janela = window.open("", "_blank");
+    if (!janela) return;
 
-  if (!janela) return;
-
-  janela.document.write(`
+    janela.document.write(`
     <html>
       <head>
-        <title>${t.etiqueta_titulo}</title>
+        <title>Etiqueta</title>
         <style>
-          * {
-            font-family: monospace;
+          @page {
+            size: 100mm 150mm;
+            margin: 0;
+          }
+          html, body {
+            width: 100mm;
+            height: 150mm;
+            margin: 0;
+            padding: 0;
           }
           body {
-            margin: 20px;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            padding: 10mm;
+            box-sizing: border-box;
+          }
+          .topo {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+          }
+          .linha {
+            display: flex;
+            justify-content: space-between;
+          }
+          .center {
+            text-align: center;
+          }
+          .qr {
+            margin: 12px 0;
+            text-align: center;
+          }
+          .bold {
+            font-weight: bold;
+          }
+          hr {
+            margin: 12px 0;
+          }
+          .rodape {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 13px;
+          }
+          .rodape img {
+            width: 50px;
+            margin-bottom: 8px;
           }
         </style>
       </head>
       <body>
-        ${conteudo}
+        <div class="topo">
+          <div class="linha">
+            <div>
+              <span class="bold">${t.remetente}</span><br/>
+              ${encomenda?.from_account.name}<br/>
+               <span class="bold">${t.pais_origem}</span><br/>
+              ${encomenda?.from_account.adresses[0].country}
+            </div>
+            <div style="text-align: left;">
+              <span class="bold">${t.destinatario}</span><br/>
+              ${encomenda?.to_account.name}<br/>
+                <span class="bold">${t.pais_destino}</span><br/>
+              ${encomenda?.to_account.adresses[0].country}
+            </div>
+          </div>
+
+          <div class="qr">
+            <img src="${qrBase64}" width="120" height="120" />
+            <div><small>ID: E-${encomenda?.id}</small></div>
+          </div>
+
+          <hr />
+
+          <div class="linha">
+            <div><span class="bold">${t.peso}:</span> ${Number(
+      encomenda?.total_weight
+    ).toFixed(2)} kg
+            
+             <div><span class="bold">${t.encomenda_expressa}</span> ${
+      encomenda?.is_express ? t.sim : t.nao
+    }</div><br/>
+            </div><br/>
+
+           
+            <div><span class="bold">Data:</span> ${apresentaDataFormatada(
+              dataGeracao
+            )}</div>
+          </div>
+        </div>
+
+        <div class="rodape">
+  <img src="${logoBase64}" alt="Logo" />
+  <p>${t.endereco_centro_distribuicao}</p>
+  <p><strong>FRANCE – 11 CITÉ RIVERIN, PARIS</strong></p>
+</div>
       </body>
     </html>
   `);
-  janela.document.close();
-  janela.focus();
-  janela.print();
-  janela.close();
-};
+
+    janela.document.close();
+
+    const img = janela.document.querySelector("img");
+    if (img && !img.complete) {
+      img.onload = () => {
+        janela.focus();
+        janela.print();
+        janela.close();
+      };
+    } else {
+      janela.focus();
+      janela.print();
+      janela.close();
+    }
+  };
 
   const exportarPDF = async () => {
     if (!pdfRef.current) return;
@@ -220,7 +338,7 @@ const imprimirEtiqueta = () => {
               {t.etiqueta_exportar_pdf}
             </button>
             <button
-               onClick={imprimirEtiqueta}
+              onClick={imprimirEtiqueta}
               className="px-4 py-2 bg-black text-white rounded hover:opacity-80 text-sm font-secondary"
             >
               {t.etiqueta_imprimir}
@@ -281,64 +399,20 @@ const imprimirEtiqueta = () => {
                   </p>
                 </section>
 
-                {/* <section className="border p-6 rounded bg-white shadow flex flex-col items-center justify-center">
-          <h2 className="text-lg font-semibold mb-4">
-            {t.etiqueta_codigo_encomenda}
-          </h2>
-          <QRCodeComLogo value={`E-${encomenda.id}`} size={128} />
-          <p className="text-sm text-gray-600 mt-2">ID: E-{encomenda.id}</p>
-        </section> */}
-                <section  ref={etiquetaRef} className="print-area border p-4 rounded bg-white shadow text-sm font-mono space-y-2 w-full max-w-[600px] mx-auto">
-                  <div className=" justify-between">
-                    <div>
-                      <p>
-                        <strong>{t.destinatario}</strong>:{" "}
-                        {encomenda.to_account.name}
-                      </p>
-                      <p>
-                        {endTo.street}, {endTo.number}
-                      </p>
-                      <p>
-                        {endTo.city} - {endTo.state} - {endTo.cep}
-                      </p>
-                      <p>{endTo.country}</p>
-                    </div>
-
-                    <div className="flex flex-col items-center">
-                      <QRCodeComLogo value={`E-${encomenda.id}`} size={80} />
-                      <p className="mt-1 text-center">ID: E-{encomenda.id}</p>
-                    </div>
-                  </div>
-
-                  <hr className="my-2 border-gray-300" />
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <p>
-                      <strong>Peso total</strong>:{" "}
-                      {encomenda.packages
-                        .reduce((acc, p) => acc + parseFloat(p.weight), 0)
-                        .toFixed(2)}{" "}
-                      kg
-                    </p>
-                    <p>
-                      <strong>Data</strong>: {dataGeracao}
-                    </p>
-                    <p>
-                      <strong>Remetente</strong>: {encomenda.from_account.name}
-                    </p>
-                    <p>
-                      <strong>País</strong>: {endTo.country}
-                    </p>
-                  </div>
-
-                  <div className="text-center border-t pt-2 border-gray-300">
-                    <p className="text-xs text-gray-500">
-                      https://www.seusite.com/rastreio/E-{encomenda.id}
-                    </p>
-                  </div>
+                <section
+                  ref={etiquetaRef}
+                  className="print-area  border p-4 rounded bg-white shadow text-sm font-mono space-y-2 w-full max-w-[600px] mx-auto"
+                >
+                  <EtiquetaEncomendaComponente
+                    encomenda={encomenda}
+                    logoBase64={logoBase64}
+                    qrBase64={qrBase64}
+                    dataGeracao={dataGeracao}
+                  />
                 </section>
 
-                {/* {(pacotesParaImprimir ?? []).length > 0 && (
+                {/* seção de impressão de etiquetas para pacotes 
+                 {(pacotesParaImprimir ?? []).length > 0 && (
                   <section className="border p-4 rounded bg-white shadow print:break-before-page">
                     <h2 className="text-lg font-semibold mb-4">
                       {t.etiqueta_codigos_pacotes}

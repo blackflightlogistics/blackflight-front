@@ -6,28 +6,31 @@
 
 @media print {
   @page {
+    size: 100mm 150mm;
     margin: 0;
   }
 
-  body {
+  html, body {
+    width: 100mm;
+    height: 150mm;
     margin: 0;
     padding: 0;
   }
 
-  /* Oculta elementos extras como título, URL e numeração */
-  .print-hidden,
-  .no-print,
-  nav,
-  header,
-  footer {
+  .print-area {
+    width: 100mm;
+    height: 150mm;
+    padding: 0;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: monospace;
+  }
+
+  .print-hidden, .no-print, nav, header, footer {
     display: none !important;
   }
-
-  /* Força apenas a área da etiqueta a aparecer centralizada */
-  .print-area {
-    width: 100%;
-    margin: 0 auto;
-    padding: 0;
-  }
 }
+
 

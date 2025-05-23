@@ -2,7 +2,7 @@ import { useLanguage } from "../../context/useLanguage";
 
 interface Props {
   aberto: boolean;
-  tipo: "encomenda" | "pacote";
+  tipo: "encomenda" | "pacote" | "remessa";
   codigo: string;
   onFechar: () => void;
   onConfirmar: (status: string) => void;
@@ -28,12 +28,16 @@ const ConfirmacaoCheckinModal = ({
           "entregue",
           "cancelada",
         ]
-      : [
+      : tipo === "remessa"
+      ? [
           "em_preparacao",
           "em_transito",
           "aguardando_retirada",
-          "entregue",
           "cancelada",
+        ]
+      : [
+          "em_preparacao",
+          
         ];
 
   const formatarStatus = (status: string) => {

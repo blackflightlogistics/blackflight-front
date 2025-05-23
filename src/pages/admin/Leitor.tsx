@@ -20,9 +20,9 @@ function Leitor() {
   const [codigoLido, setCodigoLido] = useState<string>("");
   const [cameraAtiva, setCameraAtiva] = useState(true);
   const [modalAberto, setModalAberto] = useState(false);
-  const [modalTipo, setModalTipo] = useState<"encomenda" | "pacote" | null>(
-    null
-  );
+  const [modalTipo, setModalTipo] = useState<
+    "encomenda" | "pacote" | "remessa" | null
+  >(null);
   const [modalCodigo, setModalCodigo] = useState<string>("");
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [modalPagamentoAberto, setModalPagamentoAberto] = useState(false);
@@ -76,16 +76,9 @@ function Leitor() {
       setModalCodigo(codigo);
       setModalAberto(true);
     } else if (codigo.startsWith("R-")) {
-      const id = codigo.replace("R-", "");
-      try {
-        await remessaService.atualizarStatus(id, codigo);
-        toast.success(t.status_encomenda_atualizado);
-      } catch (err) {
-        console.error("Erro ao atualizar status da remessa:", err);
-        toast.error("Erro ao atualizar status da remessa.");
-      } finally {
-        setCameraAtiva(true);
-      }
+      setModalTipo("remessa");
+      setModalCodigo(codigo);
+      setModalAberto(true);
     } else {
       toast.error(t.alerta_codigo_invalido);
       setCameraAtiva(true);
@@ -145,6 +138,19 @@ function Leitor() {
       );
 
       // await orderService.atualizar(encomenda); // Ative se quiser persistir
+    }
+    if (modalTipo === "remessa") {
+      const id = modalCodigo.replace("R-", "");
+      try {
+        await remessaService.atualizarStatus(id, modalCodigo);
+        toast.success(t.status_remessa_atualizado);
+      } catch (err) {
+        console.error("Erro ao atualizar status da remessa:", err);
+        toast.error("Erro ao atualizar status da remessa.");
+      } finally {
+        limparEstado();
+      }
+      return;
     }
 
     limparEstado();

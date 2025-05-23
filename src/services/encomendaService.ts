@@ -77,6 +77,7 @@ export interface Order {
   cep: string;
   tracking_code: string | null;
   security_code: string | null;
+  total_weight: string | null;
 }
 
 export interface CreateOrderPayload {

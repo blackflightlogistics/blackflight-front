@@ -90,3 +90,23 @@ else {
 }
 }
 
+export function apresentaDataFormatada(dataOriginalStr: string, ): string {
+  const dataOriginal = new Date(dataOriginalStr);
+  
+
+  const dataFinal = new Date(dataOriginal);
+  dataFinal.setDate(dataFinal.getDate());
+if(getSavedLanguage() === "PT"){ 
+  return dataFinal.toLocaleDateString("pt-BR"); // você pode ajustar o locale se quiser
+}else if(getSavedLanguage() === "FR"){
+  return dataFinal.toLocaleDateString("fr-FR"); // você pode ajustar o locale se quiser
+}else if(getSavedLanguage() === "ES"){
+  return dataFinal.toLocaleDateString("es-ES"); // você pode ajustar o locale se quiser
+}else if(getSavedLanguage() === "EN"){
+  return dataFinal.toLocaleDateString("en-US");
+ } // você pode ajustar o locale se quiser
+else {
+  return dataFinal.toLocaleDateString("en-US"); // você pode ajustar o locale se quiser 
+}
+}
+
