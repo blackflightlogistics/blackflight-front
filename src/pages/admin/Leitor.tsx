@@ -13,6 +13,7 @@ import { remessaService } from "../../services/remessaService";
 import { toast } from "react-toastify";
 import PagamentoPendenteModal from "../../components/admin/PagamentoPendenteModal";
 import { configService } from "../../services/configService";
+import ConfirmarCodigoModal from "./ConfirmarCodigoModal";
 
 function Leitor() {
   const { translations: t } = useLanguage();
@@ -32,6 +33,7 @@ function Leitor() {
   const [dollarValue, setDollarValue] = useState(0);
   const [cafValue, setCafValue] = useState(0);
   const [cambioTax, setCambioTax] = useState(0);
+  const [securityCodeModalAberto, setSecurityCodeModalAberto] = useState(false);
 
   useEffect(() => {
     if (!videoRef || !cameraAtiva) return;
@@ -84,12 +86,33 @@ function Leitor() {
       setCameraAtiva(true);
     }
   };
+  const confirmarSecurityCode = async (codigo: string) => {
+    if (!encomendaAtual) return;
+    if (!codigo.trim()) {
+      toast.warn(t.codigo_vazio); // Adicione a chave de tradução se quiser
+      return;
+    }
+    if (codigo !== encomendaAtual.security_code) {
+      toast.error(t.codigo_incorreto);
+      return;
+    }
+
+    // Atualiza status e segue fluxo
+    encomendaAtual.status = "entregue";
+    await salvarEncomendaAtualizada(encomendaAtual);
+    setSecurityCodeModalAberto(false);
+    limparEstado();
+  };
 
   const atualizarStatus = async (status: string) => {
     if (modalTipo === "encomenda" && isEncomendaStatus(status)) {
       const id = modalCodigo.replace("E-", "");
       const encomenda = await orderService.buscarPorId(id);
-
+      if (status === "entregue") {
+        setEncomendaAtual(encomenda); // salva temporariamente
+        setSecurityCodeModalAberto(true); // abre modal
+        return; // interrompe fluxo
+      }
       encomenda.status = status;
 
       // Atualiza pacotes com base no status da encomenda
@@ -109,10 +132,6 @@ function Leitor() {
           encomenda.packages = encomenda.packages.map((p) =>
             p.status !== "entregue" ? { ...p, status: "cancelada" } : p
           );
-          break;
-
-        case "entregue":
-          // Não altera os pacotes, pois podem ser entregues individualmente
           break;
       }
 
@@ -273,6 +292,13 @@ function Leitor() {
           setCameraAtiva(true);
         }}
         onConfirmar={confirmarPagamentoPendente}
+      />
+      <ConfirmarCodigoModal
+        aberto={securityCodeModalAberto}
+        onFechar={() => {
+          setSecurityCodeModalAberto(false);
+        }}
+        onConfirmar={confirmarSecurityCode}
       />
     </div>
   );

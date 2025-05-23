@@ -220,6 +220,11 @@ export const translations = {
         sim: "Yes",
         nao: "No",
         status_remessa_atualizado: "Shipment status updated successfully.",
+        confirmar_entrega: "Confirm Delivery",
+        digite_codigo_seguranca: "Enter security code",
+        codigo_incorreto: "Incorrect code",
+        codigo_vazio: "Empty code",
+
 
     },
     ES: {
@@ -443,6 +448,10 @@ export const translations = {
         sim: "Si",
         nao: "Não",
         status_remessa_atualizado: "Estado de la remesa actualizado con éxito.",
+        confirmar_entrega: "Confirmar Entrega",
+        digite_codigo_seguranca: "Digite o código de segurança",
+        codigo_incorreto: "Código incorreto",
+        codigo_vazio: "Código vazio",
     },
     FR: {
         login_title: "Accès Administratif",
@@ -664,6 +673,10 @@ export const translations = {
         sim: "Oui",
         nao: "Non",
         status_remessa_atualizado: "Statut de la remise mis à jour avec succès !",
+        confirmar_entrega: "Confirmer la livraison",
+        digite_codigo_seguranca: "Veuillez entrer le code de sécurité",
+        codigo_incorreto: "Code incorrect",
+        codigo_vazio: "Aucun code trouvé",
     },
     PT: {
         login_title: "Acesso administrativo",
@@ -888,9 +901,10 @@ export const translations = {
         sim: "Sim",
         nao: "Não",
         status_remessa_atualizado: "Status da remessa atualizado com sucesso!",
-
-
-
+        confirmar_entrega: "Confirmar entrega",
+        digite_codigo_seguranca: "Digite o código de segurança",
+        codigo_incorreto: "Código incorreto",
+        codigo_vazio: "Código vazio",
 
 
 
