@@ -14,6 +14,10 @@ import { toast } from "react-toastify";
 import PagamentoPendenteModal from "../../components/admin/PagamentoPendenteModal";
 import { configService } from "../../services/configService";
 import ConfirmarCodigoModal from "./ConfirmarCodigoModal";
+import {
+  TrackingResponse,
+  trackingService,
+} from "../../services/trackingService";
 
 function Leitor() {
   const { translations: t } = useLanguage();
@@ -34,6 +38,11 @@ function Leitor() {
   const [cafValue, setCafValue] = useState(0);
   const [cambioTax, setCambioTax] = useState(0);
   const [securityCodeModalAberto, setSecurityCodeModalAberto] = useState(false);
+  const [codigoDigitado, setCodigoDigitado] = useState("");
+  const [resultadosBusca, setResultadosBusca] = useState<TrackingResponse[]>(
+    []
+  );
+  const [buscando, setBuscando] = useState(false);
 
   useEffect(() => {
     if (!videoRef || !cameraAtiva) return;
@@ -67,6 +76,35 @@ function Leitor() {
     };
     carregarConfiguracoes();
   }, []);
+  const buscarPorCodigoManual = async () => {
+    if (!codigoDigitado.trim()) return;
+
+    const prefixo = codigoDigitado[0];
+    const codigoSemPrefixo = codigoDigitado.slice(2);
+
+    if (!["E", "P", "R"].includes(prefixo) || codigoDigitado[1] !== "-") {
+      toast.error("Código inválido. Deve começar com E-, P- ou R-");
+      return;
+    }
+
+    setBuscando(true);
+    try {
+      const resultados = await trackingService.buscarPorPedacoDeCodigo(
+        codigoSemPrefixo
+      );
+      if (resultados?.length) {
+        setResultadosBusca(resultados);
+      } else {
+        toast.info("Nenhum resultado encontrado.");
+        setResultadosBusca([]);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar código:", error);
+      toast.error("Erro ao buscar código.");
+    } finally {
+      setBuscando(false);
+    }
+  };
 
   const processarCodigo = async (codigo: string) => {
     if (codigo.startsWith("E-")) {
@@ -102,6 +140,23 @@ function Leitor() {
     await salvarEncomendaAtualizada(encomendaAtual);
     setSecurityCodeModalAberto(false);
     limparEstado();
+  };
+  const abrirModalPorTipo = (trackingCode: string) => {
+    if (trackingCode.startsWith("E-")) {
+      setModalTipo("encomenda");
+      setModalCodigo(trackingCode);
+      setModalAberto(true);
+    } else if (trackingCode.startsWith("P-")) {
+      setModalTipo("pacote");
+      setModalCodigo(trackingCode);
+      setModalAberto(true);
+    } else if (trackingCode.startsWith("R-")) {
+      setModalTipo("remessa");
+      setModalCodigo(trackingCode);
+      setModalAberto(true);
+    } else {
+      toast.error("Código inválido.");
+    }
   };
 
   const atualizarStatus = async (status: string) => {
@@ -220,6 +275,7 @@ function Leitor() {
     setModalTipo(null);
     setModalCodigo("");
     setCodigoLido("");
+    setResultadosBusca([]);
     setEncomendaAtual(null);
     setCameraAtiva(true);
   };
@@ -243,28 +299,86 @@ function Leitor() {
         <h1 className="text-2xl font-bold font-primary mb-6">
           {t.leitor_titulo}
         </h1>
-
-        <div className="max-w-md mx-auto bg-white p-6 rounded-xl border border-orange shadow space-y-4">
-          {cameraAtiva ? (
-            <video
-              ref={setVideoRef}
-              className="w-full rounded-md shadow border border-gray-300"
+        <div className="flex flex-col items-center">
+          <div className="max-w-md mx-auto bg-white p-6 rounded-xl border border-orange shadow space-y-4">
+            {cameraAtiva ? (
+              <>
+                <video
+                  ref={setVideoRef}
+                  className="w-full rounded-md shadow border border-gray-300"
+                />
+              </>
+            ) : (
+              <div className="flex flex-col items-center space-y-4">
+                <p className="text-green-600 font-secondary text-sm">
+                  <span className="font-bold">{t.codigo_lido}:</span>{" "}
+                  <span className="break-all">{codigoLido}</span>
+                </p>
+                <button
+                  onClick={() => {
+                    setCodigoLido("");
+                    setCameraAtiva(true);
+                  }}
+                  className="px-4 py-2 bg-orange text-white rounded-md hover:opacity-90 text-sm font-secondary"
+                >
+                  {t.ler_outro_codigo}
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col items-center space-y-4 mt-6 w-full max-w-md">
+            <p className="text-sm font-secondary">
+              {t.nao_conseguiu_ler_codigo}
+            </p>
+            <input
+              type="text"
+              placeholder="Digite o código ex: E-123456"
+              value={codigoDigitado}
+              onChange={(e) => setCodigoDigitado(e.target.value)}
+              className="border border-gray-300 px-3 py-2 rounded w-full"
             />
-          ) : (
-            <div className="flex flex-col items-center space-y-4">
-              <p className="text-green-600 font-secondary text-sm">
-                <span className="font-bold">{t.codigo_lido}:</span>{" "}
-                <span className="break-all">{codigoLido}</span>
-              </p>
-              <button
-                onClick={() => {
-                  setCodigoLido("");
-                  setCameraAtiva(true);
-                }}
-                className="px-4 py-2 bg-orange text-white rounded-md hover:opacity-90 text-sm font-secondary"
-              >
-                {t.ler_outro_codigo}
-              </button>
+            <button
+              onClick={buscarPorCodigoManual}
+              className="px-4 py-2 bg-orange text-white rounded hover:opacity-90 text-sm font-secondary w-full"
+            >
+              {buscando ? t.buscando : t.buscar}
+            </button>
+          </div>
+
+          {resultadosBusca.length > 0 && (
+            <div className="mt-6 w-full max-w-md space-y-4">
+              <h2 className="text-lg font-semibold">
+                {t.resultados_encontrados || "Resultados encontrados:"}
+              </h2>
+              {resultadosBusca.map((item) => (
+                <div
+                  key={item.tracking_code}
+                  onClick={() => abrirModalPorTipo(`E-${item.id}`)} // ou P- ou R- se quiser personalizar
+                  className="border rounded p-4 bg-white shadow hover:bg-gray-50 cursor-pointer transition"
+                >
+                  <p>
+                    <strong>{t.remetente || "Remetente"}:</strong>{" "}
+                    {item.from_account.name}
+                  </p>
+                  <p>
+                    <strong>{t.destinatario || "Destinatário"}:</strong>{" "}
+                    {item.to_account.name}
+                  </p>
+                  <p>
+                    <strong>{t.pais_origem || "País Origem"}:</strong>{" "}
+                    {item.from_account.adresses[0]?.country} -{" "}
+                    {item.from_account.adresses[0]?.city}
+                  </p>
+                  <p>
+                    <strong>{t.pais_destino || "País Destino"}:</strong>{" "}
+                    {item.to_account.adresses[0]?.country} -{" "}
+                    {item.to_account.adresses[0]?.city}
+                  </p>
+                  <p>
+                    <strong>{t.peso || "Peso"}:</strong> {item.total_weight} kg
+                  </p>
+                </div>
+              ))}
             </div>
           )}
         </div>

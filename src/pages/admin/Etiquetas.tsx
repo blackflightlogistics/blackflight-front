@@ -5,10 +5,12 @@ import autoTable from "jspdf-autotable";
 import html2canvas from "html2canvas";
 import Sidebar from "../../components/admin/Sidebar";
 import { orderService, Order } from "../../services/encomendaService";
+import { Country, State } from "country-state-city";
 
 import { useLanguage } from "../../context/useLanguage";
 import { Cliente } from "../../services/clienteService";
 import {
+  adicionarDiasEntrega,
   apresentaDataFormatada,
   pacoteStatusToString,
 } from "../../utils/utils";
@@ -72,8 +74,35 @@ function EtiquetaEncomenda() {
         .catch(reject);
     });
   };
+
+  const getCountryAbbr = (countryName: string) => {
+    const country = Country.getAllCountries().find(
+      (c) => c.name.toLowerCase() === countryName.toLowerCase()
+    );
+    return country?.isoCode || countryName;
+  };
+
+  const getStateAbbr = (countryName: string, stateName: string) => {
+    const country = Country.getAllCountries().find(
+      (c) => c.name.toLowerCase() === countryName.toLowerCase()
+    );
+    if (!country) return stateName;
+
+    const state = State.getStatesOfCountry(country.isoCode).find(
+      (s) => s.name.toLowerCase() === stateName.toLowerCase()
+    );
+    return state?.isoCode || stateName;
+  };
+
   const imprimirEtiqueta = () => {
-    if (!qrBase64) return;
+    if (!encomenda || !qrBase64 || !logoBase64) return;
+
+    const pesoTotal = encomenda.packages
+      .reduce((acc, p) => acc + parseFloat(p.weight), 0)
+      .toFixed(2);
+
+    const from = encomenda.from_account.adresses[0];
+    const to = encomenda.to_account.adresses[0];
 
     const janela = window.open("", "_blank");
     if (!janela) return;
@@ -124,7 +153,7 @@ function EtiquetaEncomenda() {
             margin: 12px 0;
           }
           .rodape {
-            margin-top: 40px;
+            margin-top: 10px;
             text-align: center;
             font-size: 13px;
           }
@@ -138,48 +167,61 @@ function EtiquetaEncomenda() {
         <div class="topo">
           <div class="linha">
             <div>
-              <span class="bold">${t.remetente}</span><br/>
-              ${encomenda?.from_account.name}<br/>
-               <span class="bold">${t.pais_origem}</span><br/>
-              ${encomenda?.from_account.adresses[0].country}
+              <span class="bold">${t.remetente}:</span><br/>
+              ${encomenda.from_account.name}<br/>
+              <span class="bold">${t.pais_origem}:</span><br/>
+              ${getCountryAbbr(from.country)} - ${getStateAbbr(
+      from.country,
+      from.city
+    )}
             </div>
             <div style="text-align: left;">
-              <span class="bold">${t.destinatario}</span><br/>
-              ${encomenda?.to_account.name}<br/>
-                <span class="bold">${t.pais_destino}</span><br/>
-              ${encomenda?.to_account.adresses[0].country}
+              <span class="bold">${t.destinatario}:</span><br/>
+              ${encomenda.to_account.name}<br/>
+              <span class="bold">${t.pais_destino}:</span><br/>
+              ${getCountryAbbr(to.country)} - ${getStateAbbr(
+      to.country,
+      to.city
+    )}
             </div>
           </div>
 
-          <div class="qr">
-            <img src="${qrBase64}" width="120" height="120" />
-            <div><small>ID: E-${encomenda?.id}</small></div>
+          <div class="center">
+            <img src="${logoBase64}" alt="Logo" width="50" />
           </div>
 
           <hr />
 
           <div class="linha">
-            <div><span class="bold">${t.peso}:</span> ${Number(
-      encomenda?.total_weight
-    ).toFixed(2)} kg
-            
-             <div><span class="bold">${t.encomenda_expressa}</span> ${
-      encomenda?.is_express ? t.sim : t.nao
-    }</div><br/>
-            </div><br/>
-
-           
-            <div><span class="bold">Data:</span> ${apresentaDataFormatada(
-              dataGeracao
-            )}</div>
+            <div>
+              <span class="bold">${t.peso}:</span> ${pesoTotal} kg<br/>
+              <span class="bold">${t.encomenda_expressa}:</span> ${
+      encomenda.is_express ? `${t.express}` : `${t.standard}`
+    }
+            </div>
+            <div>
+              <span class="bold">${t.data}:</span> ${apresentaDataFormatada(
+      dataGeracao
+    )}<br/>
+     <span class="bold">${t.tracking_estimated_delivery}</span> ${adicionarDiasEntrega(
+      dataGeracao,encomenda.is_express
+    )}
+            </div>
           </div>
         </div>
 
         <div class="rodape">
-  <img src="${logoBase64}" alt="Logo" />
-  <p>${t.endereco_centro_distribuicao}</p>
-  <p><strong>FRANCE – 11 CITÉ RIVERIN, PARIS</strong></p>
-</div>
+          <div class="qr">
+          <img src="${qrBase64}" style="width: 100px; height: 100px; display: block; margin: 0 auto;" />
+
+
+
+            <div><small>ID: E-${encomenda.id.split("-")[0]}</small></div>
+          </div>
+          <p>${t.endereco_centro_distribuicao}:</p>
+          <p><strong>FRANCE – 11 CITÉ RIVERIN, PARIS</strong></p>
+          <p>WWW.SEU-SITE.COM</p>
+        </div>
       </body>
     </html>
   `);

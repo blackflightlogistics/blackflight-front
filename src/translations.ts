@@ -224,7 +224,13 @@ export const translations = {
         digite_codigo_seguranca: "Enter security code",
         codigo_incorreto: "Incorrect code",
         codigo_vazio: "Empty code",
-
+        standard: "Standard",
+        express: "Express",
+        resultados_encontrados: "Results found",
+        buscando: "Searching...",
+        buscar: "Search",
+        insira_codigo: "Enter Code",
+        nao_conseguiu_ler_codigo: "Couldn't read code?",
 
     },
     ES: {
@@ -452,6 +458,13 @@ export const translations = {
         digite_codigo_seguranca: "Digite o código de segurança",
         codigo_incorreto: "Código incorreto",
         codigo_vazio: "Código vazio",
+        standard: "Standard",
+        express: "Express",
+        resultados_encontrados: "Resultados encontrados",
+        buscando: "Buscando...",
+        buscar: "Buscar",
+        insira_codigo: "Insira o Código",
+        nao_conseguiu_ler_codigo: "No se pudo leer el código",
     },
     FR: {
         login_title: "Accès Administratif",
@@ -677,6 +690,13 @@ export const translations = {
         digite_codigo_seguranca: "Veuillez entrer le code de sécurité",
         codigo_incorreto: "Code incorrect",
         codigo_vazio: "Aucun code trouvé",
+        standard: "Standard",
+        express: "Express",
+        resultados_encontrados: "Resultats trouvés",
+        buscando: "Recherche en cours...",
+        buscar: "Rechercher",
+        insira_codigo: "Veuillez entrer le code",
+        nao_conseguiu_ler_codigo: "Impossible de lire le code",
     },
     PT: {
         login_title: "Acesso administrativo",
@@ -905,7 +925,13 @@ export const translations = {
         digite_codigo_seguranca: "Digite o código de segurança",
         codigo_incorreto: "Código incorreto",
         codigo_vazio: "Código vazio",
-
+        standard: "Padrão",
+        express: "Expresso",
+        resultados_encontrados: "Resultados encontrados",
+        buscando: "Buscando...",
+        buscar: "Buscar",
+        insira_codigo: "Insira o Código",
+        nao_conseguiu_ler_codigo: "Não conseguiu ler o código?",
 
 
     }

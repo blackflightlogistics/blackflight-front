@@ -20,6 +20,7 @@ export type TrackingStatus = {
 
 export type TrackingResponse = {
     tracking_code: string;
+    id: string;
     inserted_at: string;
     status: string;
     total_weight: string;
@@ -52,6 +53,19 @@ export const trackingService = {
             });
 
             const data = response.data?.data?.[0];
+            return data || null;
+        } catch (error) {
+            console.error("Erro ao buscar rastreamento:", error);
+            return null;
+        }
+    },
+    buscarPorPedacoDeCodigo: async (codigo: string): Promise<[TrackingResponse] | null> => {
+        try {
+            const response = await api.get(`/orders/public/order/${codigo}`, {
+
+            });
+
+            const data = response.data?.data;
             return data || null;
         } catch (error) {
             console.error("Erro ao buscar rastreamento:", error);

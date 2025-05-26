@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLanguage } from "../../context/useLanguage";
+import { Country, State, City } from "country-state-city";
+import { ICountry, IState, ICity } from "country-state-city";
 
 export type ClienteFormData = {
   id?: string;
@@ -37,7 +39,36 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
     country: initialData?.country || "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [countries, setCountries] = useState<ICountry[]>([]);
+  const [states, setStates] = useState<IState[]>([]);
+  const [cities, setCities] = useState<ICity[]>([]);
+
+  useEffect(() => {
+    setCountries(Country.getAllCountries());
+  }, []);
+
+  useEffect(() => {
+    if (form.country) {
+      const selectedCountry = countries.find((c) => c.name === form.country);
+      if (selectedCountry) {
+        setStates(State.getStatesOfCountry(selectedCountry.isoCode));
+        setForm((prev) => ({ ...prev, state: "", city: "" }));
+      }
+    }
+  }, [form.country,countries]);
+
+  useEffect(() => {
+    if (form.country && form.state) {
+      const selectedCountry = countries.find((c) => c.name === form.country);
+      const selectedState = states.find((s) => s.name === form.state);
+      if (selectedCountry && selectedState) {
+        setCities(City.getCitiesOfState(selectedCountry.isoCode, selectedState.isoCode));
+        setForm((prev) => ({ ...prev, city: "" }));
+      }
+    }
+}, [form.state, form.country, countries, states]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -54,7 +85,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
       city: "",
       state: "",
       cep: "",
-      country: "Brazil",
+      country: "",
     });
   };
 
@@ -110,35 +141,53 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
           onChange={handleChange}
           className="p-2 border rounded"
         />
-        <input
-          name="city"
-          placeholder={t.form_cidade}
-          required
-          value={form.city}
+        <select
+          name="country"
+          value={form.country}
           onChange={handleChange}
           className="p-2 border rounded"
-        />
-        <input
-          name="state"
-          placeholder={t.form_estado}
           required
+        >
+          <option value="">{t.form_pais}</option>
+          {countries.map((c) => (
+            <option key={c.isoCode} value={c.name}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <select
+          name="state"
           value={form.state}
           onChange={handleChange}
           className="p-2 border rounded"
-        />
+          required
+        >
+          <option value="">{t.form_estado}</option>
+          {states.map((s) => (
+            <option key={s.isoCode} value={s.name}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+        <select
+          name="city"
+          value={form.city}
+          onChange={handleChange}
+          className="p-2 border rounded"
+          required
+        >
+          <option value="">{t.form_cidade}</option>
+          {cities.map((c) => (
+            <option key={c.name} value={c.name}>
+              {c.name}
+            </option>
+          ))}
+        </select>
         <input
           name="cep"
           placeholder={t.form_cep}
           required
           value={form.cep}
-          onChange={handleChange}
-          className="p-2 border rounded"
-        />
-        <input
-          name="country"
-          placeholder={t.form_pais}
-          required
-          value={form.country}
           onChange={handleChange}
           className="p-2 border rounded"
         />
