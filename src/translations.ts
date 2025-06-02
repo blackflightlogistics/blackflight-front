@@ -231,6 +231,12 @@ export const translations = {
         buscar: "Search",
         insira_codigo: "Enter Code",
         nao_conseguiu_ler_codigo: "Couldn't read code?",
+        etiqueta_id_remeassa: "Shipment ID",
+        etiqueta_destino: "Destination",
+        remessas_encontradas: "Shipments found",
+        codigo_rastreamento: "Tracking Code",
+        peso_total: "Total Weight (kg)",
+        quantidade_encomendas: "Number of Orders",
 
     },
     ES: {
@@ -465,6 +471,12 @@ export const translations = {
         buscar: "Buscar",
         insira_codigo: "Insira o Código",
         nao_conseguiu_ler_codigo: "No se pudo leer el código",
+        etiqueta_id_remeassa: "Etiqueta de Remessa",
+        etiqueta_destino: "Destino",
+        remessas_encontradas: "Remesas encontradas",
+        codigo_rastreamento: "Tracking Code",
+        peso_total: "Total Weight (kg)",
+        quantidade_encomendas: "Number of Orders",
     },
     FR: {
         login_title: "Accès Administratif",
@@ -697,6 +709,12 @@ export const translations = {
         buscar: "Rechercher",
         insira_codigo: "Veuillez entrer le code",
         nao_conseguiu_ler_codigo: "Impossible de lire le code",
+        etiqueta_id_remeassa: "ID de l'expédition",
+        etiqueta_destino: "ID de destination",
+        remessas_encontradas: "Expéditions trouvées",
+        codigo_rastreamento: "Code de suivi",
+        peso_total: "Poids total (kg)",
+        quantidade_encomendas: "Nombre de commandes",
     },
     PT: {
         login_title: "Acesso administrativo",
@@ -932,6 +950,12 @@ export const translations = {
         buscar: "Buscar",
         insira_codigo: "Insira o Código",
         nao_conseguiu_ler_codigo: "Não conseguiu ler o código?",
+        etiqueta_id_remeassa: "Etiqueta de Remessa",
+        etiqueta_destino: "Etiqueta de Destino",
+        remessas_encontradas: "Remessas encontradas",
+        codigo_rastreamento: "Código de Rastreamento",
+        peso_total: "Peso Total (kg)",
+        quantidade_encomendas: "Quantidade de Encomendas",
 
 
     }

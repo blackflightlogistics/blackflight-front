@@ -98,7 +98,7 @@ const EtiquetaEncomendaComponente: React.FC<EtiquetaProps> = ({
       <div className="mt-10 text-center text-[13px] ">
         <div className="flex flex-col items-center">
           <img src={qrBase64} width={120} height={120} alt="QR Code" />
-          <p>ID: E-{encomenda?.id}</p>
+          <p>ID: E-{encomenda?.id.split("-")[0]}</p>
         </div>
 
         <p>{t.endereco_centro_distribuicao}:</p>

@@ -15,6 +15,7 @@ import PagamentoPendenteModal from "../../components/admin/PagamentoPendenteModa
 import { configService } from "../../services/configService";
 import ConfirmarCodigoModal from "./ConfirmarCodigoModal";
 import {
+  TrackingRemessaResponse,
   TrackingResponse,
   trackingService,
 } from "../../services/trackingService";
@@ -42,6 +43,10 @@ function Leitor() {
   const [resultadosBusca, setResultadosBusca] = useState<TrackingResponse[]>(
     []
   );
+  const [remessasBusca, setRemessasBusca] = useState<TrackingRemessaResponse[]>(
+    []
+  );
+
   const [buscando, setBuscando] = useState(false);
 
   useEffect(() => {
@@ -89,14 +94,26 @@ function Leitor() {
 
     setBuscando(true);
     try {
-      const resultados = await trackingService.buscarPorPedacoDeCodigo(
-        codigoSemPrefixo
-      );
-      if (resultados?.length) {
-        setResultadosBusca(resultados);
-      } else {
-        toast.info("Nenhum resultado encontrado.");
-        setResultadosBusca([]);
+      if (prefixo === "E") {
+        const resultados = await trackingService.buscarPorPedacoDeCodigoOrder(
+          codigoSemPrefixo
+        );
+        if (resultados?.length) {
+          setResultadosBusca(resultados);
+        } else {
+          toast.info("Nenhum resultado encontrado.");
+          setResultadosBusca([]);
+        }
+      } else if (prefixo === "R") {
+        const resultados = await trackingService.buscarRemessaPorCodigo(
+          codigoSemPrefixo
+        );
+        if (resultados?.length) {
+          setRemessasBusca(resultados);
+        } else {
+          toast.info("Nenhuma remessa encontrada.");
+          setRemessasBusca([]);
+        }
       }
     } catch (error) {
       console.error("Erro ao buscar código:", error);
@@ -276,6 +293,7 @@ function Leitor() {
     setModalCodigo("");
     setCodigoLido("");
     setResultadosBusca([]);
+    setRemessasBusca([]);
     setEncomendaAtual(null);
     setCameraAtiva(true);
   };
@@ -376,6 +394,39 @@ function Leitor() {
                   </p>
                   <p>
                     <strong>{t.peso || "Peso"}:</strong> {item.total_weight} kg
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {remessasBusca.length > 0 && (
+            <div className="mt-6 w-full max-w-md space-y-4">
+              <h2 className="text-lg font-semibold">
+                {t.remessas_encontradas || "Remessas encontradas:"}
+              </h2>
+              {remessasBusca.map((remessa) => (
+                <div
+                  key={remessa.tracking_code}
+                  onClick={() => abrirModalPorTipo(`R-${remessa.id}`)}
+                  className="border rounded p-4 bg-white shadow hover:bg-gray-50 cursor-pointer transition"
+                >
+                  <p>
+                    <strong>
+                      {t.codigo_rastreamento || "Código de rastreio"}:
+                    </strong>{" "}
+                    {remessa.tracking_code}
+                  </p>
+                  <p>
+                    <strong>{t.peso_total || "Peso Total"}:</strong>{" "}
+                    {remessa.total_weight} kg
+                  </p>
+                  <p>
+                    <strong>{t.quantidade_encomendas || "Encomendas"}:</strong>{" "}
+                    {remessa.orders.length}
+                  </p>
+                  <p>
+                    <strong>{t.status || "Status"}:</strong> {remessa.status}
                   </p>
                 </div>
               ))}

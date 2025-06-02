@@ -4,7 +4,7 @@ import { useLanguage } from "../../context/useLanguage";
 
 interface EtiquetaRemessaProps {
   remessa: {
-    id: number | string;
+    id:  string;
     country: string;
     total_weight: number | string;
     inserted_at: string;
@@ -41,27 +41,33 @@ const EtiquetaRemessaComponente: React.FC<EtiquetaRemessaProps> = ({
         </div>
 
         <div className="my-3 text-center flex flex-col items-center">
-          <img src={qrBase64} width={120} height={120} alt="QR Code" />
-          <div>
-            <small>ID: R-{remessa.id}</small>
-          </div>
+        <img src={logoBase64} alt="Logo" className="w-[50px] mx-auto mb-2" />
+
+         
         </div>
 
         <hr className="my-3" />
 
         <div className="flex justify-between">
           <div>
-            <span className="font-bold">{t.peso}:</span> {remessa.total_weight}kg 
+            <span className="font-bold">{t.peso}:</span> {remessa.total_weight}
+            kg
           </div>
           <div>
-            <span className="font-bold"> {t.data}:</span> {apresentaDataFormatada(dataFormatada)}
+            <span className="font-bold"> {t.data}:</span>{" "}
+            {apresentaDataFormatada(dataFormatada)}
           </div>
         </div>
       </div>
 
-      <div className="mt-10 text-center text-[13px]">
-        <img src={logoBase64} alt="Logo" className="w-[50px] mx-auto mb-2" />
+      <div className="mt-10 text-center text-[13px] flex flex-col items-center">
+          <img src={qrBase64} width={120} height={120} alt="QR Code" />
+           <div>
+            <small>ID: R-{remessa.id.split("-")[0]}</small>
+          </div>
+
         <p>{t.endereco_centro_distribuicao}:</p>
+        <p>WWW.SEU-SITE.COM</p>
         <p className="font-bold">FRANCE – 11 CITÉ RIVERIN, PARIS</p>
       </div>
     </div>

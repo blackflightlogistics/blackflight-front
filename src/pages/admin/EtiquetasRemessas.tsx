@@ -8,6 +8,7 @@ import { useLanguage } from "../../context/useLanguage";
 // import QRCodeComLogo from "../../components/shared/QRCodeComLogo";
 import { gerarQrBase64PNG } from "../../components/shared/QRCodeComLogo";
 import EtiquetaRemessaComponente from "./EtiquetaRemessaComponente";
+import { apresentaDataFormatada } from "../../utils/utils";
 
 function EtiquetaRemessa() {
   const { id } = useParams();
@@ -19,6 +20,7 @@ function EtiquetaRemessa() {
   const pdfRef = useRef<HTMLDivElement | null>(null);
   const [qrBase64, setQrBase64] = useState<string>("");
   const [logoBase64, setLogoBase64] = useState<string>("");
+  const [dataGeracao, setDataGeracao] = useState<string>("");
 
   useEffect(() => {
     if (!id) return;
@@ -26,6 +28,7 @@ function EtiquetaRemessa() {
       setRemessa(dados);
       const qr = await gerarQrBase64PNG(`R-${dados.id}`);
       const logo = await carregarImagemComoBase64("/minimal_logo_black.png");
+      setDataGeracao(dados.inserted_at.split("T")[0]);
       setQrBase64(qr);
       setLogoBase64(logo);
     });
@@ -37,98 +40,102 @@ function EtiquetaRemessa() {
     if (!janela) return;
 
     janela.document.write(`
-  <html>
-    <head>
-      <title>Etiqueta</title>
-      <style>
-        @page {
-          size: 100mm 150mm;
-          margin: 0;
-        }
-        html, body {
-          width: 100mm;
-          height: 150mm;
-          margin: 0;
-          padding: 0;
-        }
-        body {
-          font-family: monospace;
-          display: flex;
-          flex-direction: column;
-          padding: 10mm;
-          box-sizing: border-box;
-        }
-        .topo {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-        .linha {
-          display: flex;
-          justify-content: space-between;
-        }
-        .center {
-          text-align: center;
-        }
-        .qr {
-          margin: 12px 0;
-          text-align: center;
-        }
-        .bold {
-          font-weight: bold;
-        }
-        hr {
-          margin: 12px 0;
-        }
-        .rodape {
-          margin-top: 40px;
-          text-align: center;
-          font-size: 13px;
-        }
-        .rodape img {
-          width: 50px;
-          margin-bottom: 8px;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="topo">
-        <div class="linha">
-          <div>
-            <span class="bold">REMESSA:</span><br/>
-            R-${remessa.id}
+   <html>
+        <head>
+          <title>Etiqueta</title>
+          <style>
+            @page {
+              size: 100mm 150mm;
+              margin: 0;
+            }
+            html, body {
+              width: 100mm;
+              height: 150mm;
+              margin: 0;
+              padding: 0;
+            }
+            body {
+              font-family: monospace;
+              display: flex;
+              flex-direction: column;
+              padding: 10mm;
+              box-sizing: border-box;
+            }
+            .topo {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+            }
+            .linha {
+              display: flex;
+              justify-content: space-between;
+            }
+            .center {
+              text-align: center;
+            }
+            .qr {
+              text-align: center;
+            }
+            .bold {
+              font-weight: bold;
+            }
+            hr {
+              margin: 12px 0;
+            }
+            .rodape {
+              text-align: center;
+              font-size: 13px;
+            }
+            .rodape img {
+              width: 50px;
+              margin-bottom: 8px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="topo">
+            <div class="linha">
+              <div>
+                <div className="text-left">
+                  <span className="font-bold">${t.destino}</span>
+                  <br />
+                   ${remessa.country}
+                </div>
+              </div>
+             
+            </div>
+  
+            <div class="center">
+              <img src="${logoBase64}" alt="Logo" width="50" />
+            </div>
+  
+            <hr />
+  
+            <div class="linha">
+             
+              <div>
+                <span class="bold">${t.data}:</span> ${apresentaDataFormatada(
+                  dataGeracao
+                )}<br/>
+      
+              </div>
+            </div>
           </div>
-          <div style="text-align: right;">
-            <span class="bold">DESTINO:</span><br/>
-            ${remessa.country}
+  
+          <div class="rodape">
+            <div class="qr">
+            <img src="${qrBase64}" style="width: 100px; height: 100px; display: block; margin: 0 auto;" />
+  
+  
+  
+              <div><p>ID: R-${remessa.id.split("-")[0]}</p></div>
+            </div>
+            <p>${t.endereco_centro_distribuicao}:</p>
+            <p><strong>FRANCE – 11 CITÉ RIVERIN, PARIS</strong></p>
+            <p>WWW.SEU-SITE.COM</p>
           </div>
-        </div>
-
-        <div class="qr">
-          <img src="${qrBase64}" width="120" height="120" />
-          <div><small>ID: R-${remessa.id}</small></div>
-        </div>
-
-        <hr />
-
-        <div class="linha">
-            <div><span class="bold">Peso total:</span> ${remessa?.total_weight}
-               kg</div>
-               <div><span class="bold">Data:</span> ${
-                 remessa.inserted_at.split("T")[0]
-               }
-          </div>
-        </div>
-      </div>
-
-      <div class="rodape">
-        <img src="${logoBase64}" alt="Logo" />
-        <p>Centro de distribuição:</p>
-        <p><strong>FRANCE – 11 CITÉ RIVERIN, PARIS</strong></p>
-      </div>
-    </body>
-  </html>
+        </body>
+      </html>
   `);
 
     janela.document.close();
@@ -230,10 +237,13 @@ function EtiquetaRemessa() {
           </p>
           <p className="text-sm text-gray-700">
             <strong>{"ID da Remessa"}:</strong> R-
-            {remessa.id}
+            {remessa.id.split("-")[0]}
           </p>
         </section>
-        <div ref={pdfRef} className="space-y-6 flex items-center justify-center">
+        <div
+          ref={pdfRef}
+          className="space-y-6 flex items-center justify-center"
+        >
           <section className="border p-6 max-w-[600px]  rounded bg-white shadow flex flex-col items-center justify-center">
             <EtiquetaRemessaComponente
               remessa={remessa}

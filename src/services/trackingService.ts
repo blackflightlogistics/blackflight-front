@@ -9,7 +9,17 @@ export type TrackingPackage = {
     declared_value: string;
     computed_value: string;
 };
-
+export type TrackingRemessaResponse = {
+  id: string;
+  tracking_code: string;
+  total_weight: string;
+  inserted_at: string;
+  updated_at: string;
+  status: string;
+  scheduled_date: string | null;
+  country: string;
+  orders: TrackingResponse[];
+};
 export type TrackingStatus = {
     status: string;
     inserted_at: string;
@@ -59,7 +69,7 @@ export const trackingService = {
             return null;
         }
     },
-    buscarPorPedacoDeCodigo: async (codigo: string): Promise<[TrackingResponse] | null> => {
+    buscarPorPedacoDeCodigoOrder: async (codigo: string): Promise<[TrackingResponse] | null> => {
         try {
             const response = await api.get(`/orders/public/order/${codigo}`, {
 
@@ -72,4 +82,14 @@ export const trackingService = {
             return null;
         }
     },
+     buscarRemessaPorCodigo: async (codigo: string): Promise<TrackingRemessaResponse[] | null> => {
+    try {
+      const response = await api.get(`/shipments/public/shipment/${codigo}`);
+      const data = response.data?.data;
+      return data || null;
+    } catch (error) {
+      console.error("Erro ao buscar remessa:", error);
+      return null;
+    }
+  },
 };

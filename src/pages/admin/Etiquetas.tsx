@@ -453,7 +453,7 @@ function EtiquetaEncomenda() {
                   />
                 </section>
 
-                {/* seção de impressão de etiquetas para pacotes 
+                {/* seção de impressão de etiquetas para pacotes  sera mantida comentada
                  {(pacotesParaImprimir ?? []).length > 0 && (
                   <section className="border p-4 rounded bg-white shadow print:break-before-page">
                     <h2 className="text-lg font-semibold mb-4">
