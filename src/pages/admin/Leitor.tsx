@@ -7,7 +7,7 @@ import {
   orderService,
 } from "../../services/encomendaService";
 import ConfirmacaoCheckinModal from "../../components/admin/ConfirmacaoCheckinModal";
-import { isEncomendaStatus, isPacoteStatus } from "../../utils/utils";
+import { isEncomendaStatus, isPacoteStatus, pacoteStatusToString } from "../../utils/utils";
 import { useLanguage } from "../../context/useLanguage";
 import { remessaService } from "../../services/remessaService";
 import { toast } from "react-toastify";
@@ -233,7 +233,7 @@ function Leitor() {
     if (modalTipo === "remessa") {
       const id = modalCodigo.replace("R-", "");
       try {
-        await remessaService.atualizarStatus(id, modalCodigo);
+        await remessaService.atualizarStatus(id, status);
         toast.success(t.status_remessa_atualizado);
       } catch (err) {
         console.error("Erro ao atualizar status da remessa:", err);
@@ -426,7 +426,7 @@ function Leitor() {
                     {remessa.orders.length}
                   </p>
                   <p>
-                    <strong>{t.status || "Status"}:</strong> {remessa.status}
+                    <strong>{t.status || "Status"}:</strong> {pacoteStatusToString(remessa.status, t) }
                   </p>
                 </div>
               ))}
