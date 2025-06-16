@@ -1,6 +1,8 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaChevronRight } from "react-icons/fa";
 import { useLanguage } from "../../context/useLanguage";
+import { useState } from "react";
+
 
 interface SidebarProps {
   mobileAberta?: boolean;
@@ -38,9 +40,23 @@ const SidebarContent = ({
   isActive: (path: string) => boolean;
 }) => {
   const { changeLanguage, language, translations: t } = useLanguage();
+  const navigate = useNavigate();
+
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [password, setPassword] = useState("");
+
+  const handleSubmitPassword = () => {
+    if (password === "1234") {
+      setShowPasswordModal(false);
+      setPassword("");
+      navigate("/admin-full");
+    } else {
+      alert("Senha incorreta!");
+    }
+  };
 
   return (
-    <div className="flex flex-col justify-between h-full">
+    <div className="flex flex-col justify-between h-full relative">
       {/* Parte de cima */}
       <div>
         {/* Logo */}
@@ -53,6 +69,20 @@ const SidebarContent = ({
         {/* Links principais */}
         <nav className="flex flex-col gap-6">
           <SidebarLink to="/admin" label={t.sidebar_dashboard} active={isActive("/admin")} />
+          
+          {/* Link protegido por senha */}
+          <button
+            onClick={() => setShowPasswordModal(true)}
+            className={`flex items-center justify-between px-2 text-sm font-secondary ${
+              isActive("/admin-full") ? "text-orange font-semibold" : "text-white"
+            } hover:text-orange transition w-full text-left`}
+          >
+            <span>{t.sidebar_dashboard_completo}</span>
+            <FaChevronRight
+              className={`text-xs ${isActive("/admin-full") ? "text-orange" : "text-white"}`}
+            />
+          </button>
+
           <SidebarLink to="/admin/clientes" label={t.sidebar_clientes} active={isActive("/admin/clientes")} />
           <SidebarLink to="/admin/encomendas" label={t.sidebar_encomendas} active={isActive("/admin/encomendas")} />
           <SidebarLink to="/admin/remessas" label={t.sidebar_remessas} active={isActive("/admin/remessas")} />
@@ -104,6 +134,35 @@ const SidebarContent = ({
           active={isActive("/admin/configuracoes")}
         />
       </div>
+
+      {/* Modal de senha */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded shadow-lg flex flex-col gap-4 w-80">
+            <h2 className="text-lg text-orange font-bold">{t.digite_senha}</h2>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="border text-orange px-3 py-2 rounded"
+            />
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setShowPasswordModal(false)}
+                className="px-4 py-2 text-orange  rounded"
+              >
+                {t.cancelar}
+              </button>
+              <button
+                onClick={handleSubmitPassword}
+                className="px-4 py-2  text-orange rounded"
+              >
+                {t.confirmar}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

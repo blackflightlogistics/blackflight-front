@@ -25,6 +25,7 @@ const OrdersTable = ({ pedidos }: OrdersTableProps) => {
           <thead>
             <tr className="text-left text-gray-600">
               <th className="p-2">{t.codigo ?? "Código"}</th>
+              <th className="p-2">{t.valor_total ?? "valor"}</th>
               <th className="p-2">{t.status ?? "Status"}</th>
               <th className="p-2">{t.origem ?? "Origem"}</th>
               <th className="p-2">{t.destino ?? "Destino"}</th>
@@ -40,6 +41,14 @@ const OrdersTable = ({ pedidos }: OrdersTableProps) => {
                 <tr key={index} className="border-t">
                   <td className="p-2 font-semibold">{pedido.tracking_code}</td>
                   <td className="p-2">
+                    {pedido.total_value
+                      ? parseFloat(pedido.total_value).toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })
+                      : "N/A"}
+                  </td>
+                  <td className="p-2">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
                         statusColors[pedido.status] || "bg-gray-200 text-gray-700"
@@ -49,10 +58,10 @@ const OrdersTable = ({ pedidos }: OrdersTableProps) => {
                     </span>
                   </td>
                   <td className="p-2">
-                    {pedido.from_account.adresses[0]?.city} - {pedido.from_account.adresses[0]?.state}
+                    {pedido.from_account.adresses[0]?.city.toLocaleLowerCase()} - {pedido.from_account.adresses[0]?.state.toLocaleLowerCase()}
                   </td>
                   <td className="p-2">
-                    {pedido.to_account.adresses[0]?.city} - {pedido.to_account.adresses[0]?.state}
+                    {pedido.to_account.adresses[0]?.city.toLocaleLowerCase()} - {pedido.to_account.adresses[0]?.state.toLocaleLowerCase()}
                   </td>
                   <td className="p-2">
                     {new Date(pedido.inserted_at).toLocaleDateString()}

@@ -1,26 +1,55 @@
-// import { FaUser, FaDollarSign, FaClock, FaShoppingCart } from "react-icons/fa";
-import { FaUser, FaShoppingCart } from "react-icons/fa";
 import { useLanguage } from "../../context/useLanguage";
+import { Avatar, Typography } from "@mui/material";
+import PeopleIcon from "@mui/icons-material/People";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
 
 interface DashboardCardsProps {
   totalOrders: number;
   totalAccounts: number;
+  faturamentoTotal: number;
+  entregasNoPrazo?: number; // Opcional, se quiser mostrar
 }
 
-const DashboardCards = ({ totalOrders, totalAccounts }: DashboardCardsProps) => {
+const DashboardCards = ({
+  totalOrders,
+  totalAccounts,
+  faturamentoTotal,
+  entregasNoPrazo, // Exemplo fixo, pode ser dinâmico
+}: DashboardCardsProps) => {
   const { translations: t } = useLanguage();
 
   const cards = [
     {
-      title: t.sidebar_clientes, // Ex: "Clientes"
+      title: t.total_de_clientes, // Ex: "Clientes"
       value: totalAccounts.toLocaleString(),
-      icon: <FaUser className="text-orange" />,
+      icon: <PeopleIcon />,
+
       positive: true,
     },
     {
-      title: t.sidebar_encomendas, // Ex: "Encomendas"
+      title: t.total_de_encomendas,
       value: totalOrders.toLocaleString(),
-      icon: <FaShoppingCart className="text-orange" />,
+      icon: <LocalMallIcon />,
+
+      positive: true,
+    },
+    {
+      title: t.faturamento_total,
+      value: faturamentoTotal.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "EUR",
+      }),
+      icon: <AttachMoneyIcon />,
+
+      positive: false,
+    },
+    {
+      title: t.entregues_no_prazo,
+      value: entregasNoPrazo, // Exemplo fixo, pode ser dinâmico
+      icon: <AccessTimeIcon />,
+
       positive: true,
     },
   ];
@@ -33,10 +62,16 @@ const DashboardCards = ({ totalOrders, totalAccounts }: DashboardCardsProps) => 
           className="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between"
         >
           <div className="flex justify-between items-center mb-2">
-            <h4 className="text-xs font-secondary text-gray-500">{card.title}</h4>
-            <div className="bg-orange/10 p-2 rounded-full">{card.icon}</div>
+            <h4 className="text-xs font-secondary text-gray-500">
+              {card.title}
+            </h4>
+            <Avatar sx={{ bgcolor: "#FFE7D5", width: 28, height: 28 }}>
+              {card.icon}
+            </Avatar>
           </div>
-          <div className="text-xl font-bold font-primary text-black">{card.value}</div>
+          <Typography variant="h5" gutterBottom>
+            <div className="text-xl  font-primary text-black">{card.value}</div>
+          </Typography>
         </div>
       ))}
     </div>
