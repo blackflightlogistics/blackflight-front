@@ -21,6 +21,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { LanguageProvider } from "./context/LanguageProvider";
 import EtiquetaRemessa from "./pages/admin/EtiquetasRemessas";
+import DashboardSampleInfo from "./pages/admin/DashboardSampleInfo";
 
 function App() {
   return (
@@ -38,6 +39,13 @@ function App() {
             {/* Área privada /admin */}
             <Route
               path="/admin"
+              element={
+                <PrivateRoute>
+                  <DashboardSampleInfo />
+                </PrivateRoute>
+              }
+            /><Route
+              path="/admin-full"
               element={
                 <PrivateRoute>
                   <Dashboard />

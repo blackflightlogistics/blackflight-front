@@ -14,7 +14,7 @@ import CountryDonutChart from "./CountryDonutChart";
 import RoutesMap from "./RoutesMap";
 import OrdersCharts from "../../components/admin/OrdersChart copy";
 
-const Dashboard = () => {
+const DashboardSampleInfo = () => {
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [dados, setDados] = useState<DashboardData | null>(null);
   const { translations: t } = useLanguage();
@@ -79,4 +79,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardSampleInfo;
