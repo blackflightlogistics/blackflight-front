@@ -7,7 +7,11 @@ import {
   orderService,
 } from "../../services/encomendaService";
 import ConfirmacaoCheckinModal from "../../components/admin/ConfirmacaoCheckinModal";
-import { isEncomendaStatus, isPacoteStatus, pacoteStatusToString } from "../../utils/utils";
+import {
+  isEncomendaStatus,
+  isPacoteStatus,
+  pacoteStatusToString,
+} from "../../utils/utils";
 import { useLanguage } from "../../context/useLanguage";
 import { remessaService } from "../../services/remessaService";
 import { toast } from "react-toastify";
@@ -55,6 +59,7 @@ function Leitor() {
     const scanner = new QrScanner(
       videoRef,
       (result) => {
+        scanner.stop();
         const codigo = result.data.trim();
         setCodigoLido(codigo);
         setCameraAtiva(false);
@@ -144,7 +149,7 @@ function Leitor() {
   const confirmarSecurityCode = async (codigo: string) => {
     if (!encomendaAtual) return;
     if (!codigo.trim()) {
-      toast.warn(t.codigo_vazio); // Adicione a chave de tradução se quiser
+      toast.warn(t.codigo_vazio);
       return;
     }
     if (codigo !== encomendaAtual.security_code) {
@@ -152,7 +157,6 @@ function Leitor() {
       return;
     }
 
-    // Atualiza status e segue fluxo
     encomendaAtual.status = "entregue";
     await salvarEncomendaAtualizada(encomendaAtual);
     setSecurityCodeModalAberto(false);
@@ -175,25 +179,43 @@ function Leitor() {
       toast.error("Código inválido.");
     }
   };
-
-  const atualizarStatus = async (status: string) => { 
-    console.log('o status recebido é:', status);
+  const atualizarStatus = async (status: string) => {
     if (modalTipo === "encomenda" && isEncomendaStatus(status)) {
       const id = modalCodigo.replace("E-", "");
-      const encomenda = await orderService.buscarPorId(id);
-      if (status === "entregue") {
-        setEncomendaAtual(encomenda); // salva temporariamente
-        setSecurityCodeModalAberto(true); // abre modal
-        return; // interrompe fluxo
-      }
-      encomenda.status = status;
+      let encomenda;
 
-      // Atualiza pacotes com base no status da encomenda
+      try {
+        encomenda = await orderService.buscarPorId(id);
+      } catch (error) {
+        console.error("Erro ao buscar encomenda:", error);
+        toast.error("Erro ao buscar a encomenda.");
+        return;
+      }
+
+      // Se for "entregue", abre o modal de código de segurança antes de salvar
+      if (status === "entregue") {
+        setEncomendaAtual(encomenda);
+        setSecurityCodeModalAberto(true);
+        return;
+      }
+
+      // Se houver pendência de pagamento, segura o fluxo antes de salvar
+      if (["pendente", "parcial"].includes(encomenda.payment_status || "")) {
+        setEncomendaAtual({
+          ...encomenda,
+          status, // Salva o status temporariamente em memória
+        });
+        setValorTotal(Number(encomenda.total_value || "0"));
+        setValorPago(Number(encomenda.paid_now || "0"));
+        setModalPagamentoAberto(true);
+        return;
+      }
+
+      // Atualiza pacotes conforme o novo status
       switch (status) {
         case "em_preparacao":
         case "em_transito":
         case "aguardando_retirada":
-          // Todos os pacotes herdam o novo status
           encomenda.packages = encomenda.packages.map((p) => ({
             ...p,
             status,
@@ -201,20 +223,16 @@ function Leitor() {
           break;
 
         case "cancelada":
-          // Só pacotes não entregues são cancelados
           encomenda.packages = encomenda.packages.map((p) =>
             p.status !== "entregue" ? { ...p, status: "cancelada" } : p
           );
           break;
       }
 
-      if (["pendente", "parcial"].includes(encomenda.payment_status || "")) {
-        setEncomendaAtual(encomenda);
-        setValorTotal(Number(encomenda.total_value || "0"));
-        setValorPago(Number(encomenda.paid_now || "0"));
-        setModalPagamentoAberto(true);
-        return; // interrompe aqui para aguardar confirmação no modal
-      }
+      encomenda.status = status;
+      await salvarEncomendaAtualizada(encomenda);
+      limparEstado();
+      return; 
     }
 
     if (modalTipo === "pacote" && isPacoteStatus(status)) {
@@ -229,7 +247,8 @@ function Leitor() {
         p.id === pacoteId ? { ...p, status } : p
       );
 
-      // await orderService.atualizar(encomenda); // Ative se quiser persistir
+      // Salvar se quiser persistir
+      // await orderService.atualizar(encomenda.id, encomenda);
     }
     if (modalTipo === "remessa") {
       const id = modalCodigo.replace("R-", "");
@@ -297,6 +316,8 @@ function Leitor() {
     setRemessasBusca([]);
     setEncomendaAtual(null);
     setCameraAtiva(true);
+    setSecurityCodeModalAberto(false);
+    setModalPagamentoAberto(false);
   };
 
   return (
@@ -427,7 +448,8 @@ function Leitor() {
                     {remessa.orders.length}
                   </p>
                   <p>
-                    <strong>{t.status || "Status"}:</strong> {pacoteStatusToString(remessa.status, t) }
+                    <strong>{t.status || "Status"}:</strong>{" "}
+                    {pacoteStatusToString(remessa.status, t)}
                   </p>
                 </div>
               ))}
