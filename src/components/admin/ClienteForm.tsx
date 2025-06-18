@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "../../context/useLanguage";
 import { Country, State, City } from "country-state-city";
 import { ICountry, IState, ICity } from "country-state-city";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 export type ClienteFormData = {
   id?: string;
@@ -55,7 +57,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         setForm((prev) => ({ ...prev, state: "", city: "" }));
       }
     }
-  }, [form.country,countries]);
+  }, [form.country, countries]);
 
   useEffect(() => {
     if (form.country && form.state) {
@@ -66,7 +68,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         setForm((prev) => ({ ...prev, city: "" }));
       }
     }
-}, [form.state, form.country, countries, states]);
+  }, [form.state, form.country, countries, states]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -100,14 +102,20 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
           onChange={handleChange}
           className="p-2 border rounded"
         />
-        <input
-          name="phone_number"
-          placeholder={t.form_telefone}
-          required
+
+        {/* TELEFONE COM PHONE INPUT */}
+        <PhoneInput
+          country={"br"}
           value={form.phone_number}
-          onChange={handleChange}
-          className="p-2 border rounded"
+          onChange={(value) => setForm((prev) => ({ ...prev, phone_number: value }))}
+          inputProps={{
+            name: "phone_number",
+            required: true,
+          }}
+          enableSearch
+          inputClass="p-2 border rounded w-full"
         />
+
         <input
           name="email"
           placeholder={t.form_email}

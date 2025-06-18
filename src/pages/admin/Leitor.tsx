@@ -176,7 +176,8 @@ function Leitor() {
     }
   };
 
-  const atualizarStatus = async (status: string) => {
+  const atualizarStatus = async (status: string) => { 
+    console.log('o status recebido é:', status);
     if (modalTipo === "encomenda" && isEncomendaStatus(status)) {
       const id = modalCodigo.replace("E-", "");
       const encomenda = await orderService.buscarPorId(id);
