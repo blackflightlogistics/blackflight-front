@@ -246,6 +246,10 @@ export const translations = {
         formas_de_pagamentos: "Payment Methods",
         pedidos_por_pais: "Orders by Country",
         digite_senha: "Please enter your password",
+        aviso_clientes_titulo: "Attention Clients",
+        aviso_clientes_texto: "Choose who you want to notify about the status change",
+        aviso_clientes_remetente: "Sender Notification",
+        aviso_clientes_destinatario: "Client Notification",
 
     },
     ES: {
@@ -495,6 +499,10 @@ export const translations = {
         formas_de_pagamentos: "Formas de Pago",
         pedidos_por_pais: "Pedidos por País",
         digite_senha: "Ingrese la contraseña",
+        aviso_clientes_titulo: "Aviso a Clientes",
+        aviso_clientes_texto: "Elige a quién quieres notificar sobre el cambio de estado de la encomienda.",
+        aviso_clientes_remetente: "Remitente",
+        aviso_clientes_destinatario: "Destinatario",
     },
     FR: {
         login_title: "Accès Administratif",
@@ -742,6 +750,10 @@ export const translations = {
         formas_de_pagamentos: "Modes de paiement",
         pedidos_por_pais: "Commandes par pays",
         digite_senha: "Veuillez entrer votre mot de passe",
+        aviso_clientes_titulo: "Avis aux clients",
+        aviso_clientes_texto: "Choisissez qui vous souhaitez notifier du changement de statut :",
+        aviso_clientes_remetente: "Expéditeur",
+        aviso_clientes_destinatario: "Destinataire",
     },
     PT: {
         login_title: "Acesso administrativo",
@@ -984,14 +996,18 @@ export const translations = {
         codigo_rastreamento: "Código de Rastreamento",
         peso_total: "Peso Total (kg)",
         quantidade_encomendas: "Quantidade de Encomendas",
-        total_de_encomendas:"Total de Encomendas",
-        faturamento_total:"Faturamento Total",
+        total_de_encomendas: "Total de Encomendas",
+        faturamento_total: "Faturamento Total",
         entregues_no_prazo: "Entregues no Prazo",
         pedidos_por_mes: "Pedidos por Mês",
-        mapa_de_rotas:"Mapa de Rotas",
-        formas_de_pagamentos:"Formas de Pagamento",
+        mapa_de_rotas: "Mapa de Rotas",
+        formas_de_pagamentos: "Formas de Pagamento",
         pedidos_por_pais: "Pedidos por País",
         digite_senha: "Digite a senha",
+        aviso_clientes_titulo: "Avise os clientes da alteração",
+        aviso_clientes_texto: "Escolha quem você deseja notificar sobre a alteração de status:",
+        aviso_clientes_remetente: "Avisar Remetente",
+        aviso_clientes_destinatario: "Avisar Destinatário",
 
 
 

@@ -57,3 +57,41 @@ export function whatsappDestinatarioLink(numero: string, tracking_code: string, 
   const mensagem = `Sua encomenda está a caminho. Seu código de rastreio é ${tracking_code}. Para retirar sua encomenda, tenha em mãos um documento com foto e o código de segurança ${security_code}.`;
   return gerarLinkWhatsapp(numero, mensagem);
 }
+
+export function gerarMensagemWhatsappPorStatus(
+  status: string,
+  destinatario: "remetente" | "destinatario",
+  trackingCode: string,
+  securityCode?: string
+): string {
+  const mensagens: Record<string, { remetente: string; destinatario: string }> = {
+    em_preparacao: {
+      remetente: `Your order with tracking code ${trackingCode} is now in preparation.`,
+      destinatario: `Your order with tracking code ${trackingCode} is now being prepared.`,
+    },
+    em_transito: {
+      remetente: `Your order with tracking code ${trackingCode} has been shipped.`,
+      destinatario: `Your order with tracking code ${trackingCode} is on its way.`,
+    },
+    aguardando_retirada: {
+      remetente: `Your order with tracking code ${trackingCode} is awaiting pickup at our location.`,
+      destinatario: `Your order with tracking code ${trackingCode} is ready for pickup. Please bring an ID and the security code ${securityCode}.`,
+    },
+    cancelada: {
+      remetente: `Your order with tracking code ${trackingCode} has been cancelled.`,
+      destinatario: `We regret to inform you that your order with tracking code ${trackingCode} has been cancelled.`,
+    },
+    entregue: {
+      remetente: `Your order with tracking code ${trackingCode} has been successfully delivered.`,
+      destinatario: `Your order with tracking code ${trackingCode} has been delivered. Thank you for your preference!`,
+    },
+  };
+
+  const template = mensagens[status];
+
+  if (!template) {
+    return `Your order with tracking code ${trackingCode} has been updated.`;
+  }
+
+  return destinatario === "remetente" ? template.remetente : template.destinatario;
+}

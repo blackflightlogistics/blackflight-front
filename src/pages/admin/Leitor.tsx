@@ -23,6 +23,7 @@ import {
   TrackingResponse,
   trackingService,
 } from "../../services/trackingService";
+import AvisoClienteModal from "../../components/admin/AvisoClienteModal";
 
 function Leitor() {
   const { translations: t } = useLanguage();
@@ -50,6 +51,7 @@ function Leitor() {
   const [remessasBusca, setRemessasBusca] = useState<TrackingRemessaResponse[]>(
     []
   );
+  const [modalAvisoAberto, setModalAvisoAberto] = useState(false);
 
   const [buscando, setBuscando] = useState(false);
 
@@ -156,11 +158,17 @@ function Leitor() {
       toast.error(t.codigo_incorreto);
       return;
     }
-
-    encomendaAtual.status = "entregue";
-    await salvarEncomendaAtualizada(encomendaAtual);
     setSecurityCodeModalAberto(false);
-    limparEstado();
+    encomendaAtual.status = "entregue";
+    if (["pendente", "parcial"].includes(encomendaAtual.payment_status || "")) {
+      setValorTotal(Number(encomendaAtual.total_value || "0"));
+      setValorPago(Number(encomendaAtual.paid_now || "0"));
+      setModalPagamentoAberto(true);
+      return;
+    }
+    await salvarEncomendaAtualizada(encomendaAtual);
+    setEncomendaAtual(encomendaAtual);
+    setModalAvisoAberto(true);
   };
   const abrirModalPorTipo = (trackingCode: string) => {
     if (trackingCode.startsWith("E-")) {
@@ -231,8 +239,15 @@ function Leitor() {
 
       encomenda.status = status;
       await salvarEncomendaAtualizada(encomenda);
-      limparEstado();
-      return; 
+
+      // Só abre o modal de aviso se NÃO for "entregue"
+      if (status.toString() !== "entregue") {
+        setEncomendaAtual(encomenda);
+        setModalAvisoAberto(true);
+      } else {
+        limparEstado();
+      }
+      return;
     }
 
     if (modalTipo === "pacote" && isPacoteStatus(status)) {
@@ -275,7 +290,7 @@ function Leitor() {
 
     await salvarEncomendaAtualizada(encomendaAtual);
     setModalPagamentoAberto(false);
-    limparEstado();
+    setModalAvisoAberto(true);
   };
   const salvarEncomendaAtualizada = async (encomenda: Order) => {
     try {
@@ -487,6 +502,14 @@ function Leitor() {
           setSecurityCodeModalAberto(false);
         }}
         onConfirmar={confirmarSecurityCode}
+      />
+      <AvisoClienteModal
+        aberto={modalAvisoAberto}
+        onFechar={() => {
+          setModalAvisoAberto(false);
+          limparEstado();
+        }}
+        encomenda={encomendaAtual || null}
       />
     </div>
   );
