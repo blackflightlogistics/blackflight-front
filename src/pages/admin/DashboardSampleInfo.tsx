@@ -50,6 +50,8 @@ const DashboardSampleInfo = () => {
               totalAccounts={dados.total_accounts}
               faturamentoTotal={dados.get_total_revenue}
               entregasNoPrazo={dados.count_orders_delivered_on_time}
+              isSimple={true}
+
             />
             <div className="my-6 flex gap-6">
               <div className="flex-1 basis-2/3">

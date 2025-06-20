@@ -208,7 +208,7 @@ function Leitor() {
       }
 
       // Se houver pendência de pagamento, segura o fluxo antes de salvar
-      if (["pendente", "parcial"].includes(encomenda.payment_status || "")) {
+      if (["pendente", "parcial"].includes(encomenda.payment_status || "") && status.toString() === "entregue") {
         setEncomendaAtual({
           ...encomenda,
           status, // Salva o status temporariamente em memória
