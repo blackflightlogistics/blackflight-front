@@ -10,6 +10,7 @@ interface DashboardCardsProps {
   totalAccounts: number;
   faturamentoTotal: number;
   entregasNoPrazo?: number; // Opcional, se quiser mostrar
+  isSimple?: boolean; // Se for um layout simples
 }
 
 const DashboardCards = ({
@@ -17,42 +18,62 @@ const DashboardCards = ({
   totalAccounts,
   faturamentoTotal,
   entregasNoPrazo, // Exemplo fixo, pode ser dinâmico
+  isSimple = false, // Se for um layout simples
 }: DashboardCardsProps) => {
   const { translations: t } = useLanguage();
 
-  const cards = [
-    {
-      title: t.total_de_clientes, // Ex: "Clientes"
-      value: totalAccounts.toLocaleString(),
-      icon: <PeopleIcon />,
+  const cards = isSimple
+    ? [
+       
+        {
+          title: t.total_de_encomendas,
+          value: totalOrders.toLocaleString(),
+          icon: <LocalMallIcon />,
 
-      positive: true,
-    },
-    {
-      title: t.total_de_encomendas,
-      value: totalOrders.toLocaleString(),
-      icon: <LocalMallIcon />,
+          positive: true,
+        },
+        
+        {
+          title: t.entregues_no_prazo,
+          value: entregasNoPrazo, // Exemplo fixo, pode ser dinâmico
+          icon: <AccessTimeIcon />,
 
-      positive: true,
-    },
-    {
-      title: t.faturamento_total,
-      value: faturamentoTotal.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "EUR",
-      }),
-      icon: <AttachMoneyIcon />,
+          positive: true,
+        },
+      ]
+    : [
+        {
+          title: t.total_de_clientes, // Ex: "Clientes"
+          value: totalAccounts.toLocaleString(),
+          icon: <PeopleIcon />,
 
-      positive: false,
-    },
-    {
-      title: t.entregues_no_prazo,
-      value: entregasNoPrazo, // Exemplo fixo, pode ser dinâmico
-      icon: <AccessTimeIcon />,
+          positive: true,
+        },
+        {
+          title: t.total_de_encomendas,
+          value: totalOrders.toLocaleString(),
+          icon: <LocalMallIcon />,
 
-      positive: true,
-    },
-  ];
+          positive: true,
+        },
+        {
+          title: t.faturamento_total,
+          value: faturamentoTotal.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "EUR",
+          }),
+          icon: <AttachMoneyIcon />,
+
+          positive: false,
+        },
+        {
+          title: t.entregues_no_prazo,
+          value: entregasNoPrazo, // Exemplo fixo, pode ser dinâmico
+          icon: <AccessTimeIcon />,
+
+          positive: true,
+        },
+      ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -63,14 +84,16 @@ const DashboardCards = ({
         >
           <div className="flex justify-between items-center mb-2">
             <h4 className="text-xs font-secondary text-gray-500">
-              {card.title}
+              {card?.title}
             </h4>
             <Avatar sx={{ bgcolor: "#FFE7D5", width: 28, height: 28 }}>
-              {card.icon}
+              {card?.icon}
             </Avatar>
           </div>
           <Typography variant="h5" gutterBottom>
-            <div className="text-xl  font-primary text-black">{card.value}</div>
+            <div className="text-xl  font-primary text-black">
+              {card?.value}
+            </div>
           </Typography>
         </div>
       ))}
