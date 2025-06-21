@@ -13,8 +13,9 @@ export function formatarLinkWhatsapp(numero: string, options?: Options): JSX.Ele
 
   if (cleaned.length < 10) return <span>{numero}</span>;
 
-  const possuiCodigoPais = cleaned.length > 11;
-  const codigoPais = possuiCodigoPais ? cleaned.slice(0, cleaned.length - 11) : "55";
+  // const possuiCodigoPais = cleaned.length > 11;
+
+  const codigoPais = cleaned.slice(0, cleaned.length - 11) ;
   const ddd = cleaned.slice(-11, -9);
   const telefone = cleaned.slice(-9);
 
@@ -24,7 +25,7 @@ export function formatarLinkWhatsapp(numero: string, options?: Options): JSX.Ele
   return (
     <a href={url} target="_blank" rel="noopener noreferrer" className="text-green-600 inline-flex items-center gap-2">
       {options?.icon && <FaWhatsapp />}
-      {`(${ddd}) ${telefone.slice(0, 5)}-${telefone.slice(5)}`}
+      {numero}
     </a>
   );
 }

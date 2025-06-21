@@ -8,6 +8,7 @@ import {
   Address,
 } from "../../services/clienteService";
 import { useLanguage } from "../../context/useLanguage";
+import PhoneInput from "react-phone-input-2";
 
 function ClienteEditar() {
   const { id } = useParams<{ id: string }>();
@@ -104,7 +105,9 @@ function ClienteEditar() {
 
       <main className="flex-1 overflow-y-auto p-6 pt-20 bg-[#fcf7f1] space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold font-primary">{t.editar_cliente}</h1>
+          <h1 className="text-2xl font-bold font-primary">
+            {t.editar_cliente}
+          </h1>
           <button
             onClick={() => navigate("/admin/clientes")}
             className="bg-orange text-white px-4 py-2 rounded hover:opacity-90 font-secondary text-sm"
@@ -120,7 +123,7 @@ function ClienteEditar() {
         ) : (
           <>
             <div className="space-y-4 bg-white p-4 rounded border border-orange">
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid md:grid-cols-2 gap-4">
                 <input
                   type="text"
                   value={cliente.name}
@@ -139,14 +142,17 @@ function ClienteEditar() {
                   placeholder={t.form_email}
                   className="p-2 border rounded"
                 />
-                <input
-                  type="text"
+                <PhoneInput
+                  country={"br"}
                   value={cliente.phone_number}
-                  onChange={(e) =>
-                    setCliente({ ...cliente, phone_number: e.target.value })
-                  }
-                  placeholder={t.form_telefone}
-                  className="p-2 border rounded"
+                  onChange={(e) => setCliente({ ...cliente, phone_number: e })}
+                  inputProps={{
+                    name: "phone_number",
+                    required: true,
+                  }}
+                  enableSearch
+                  inputClass="p-2 border rounded w-100"
+                  containerStyle={{ width: "300px" }}
                 />
               </div>
             </div>
