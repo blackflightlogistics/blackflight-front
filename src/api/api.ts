@@ -2,7 +2,7 @@ import axios from "axios";
 import { getToken, clearAuth } from "../utils/storage";
 
 const api = axios.create({
-  baseURL: "https://black-fligth.fly.dev/api/v1",
+  baseURL: "https://black-fligth-prod.fly.dev/api/v1",
 });
 
 // Intercepta cada request para adicionar o token

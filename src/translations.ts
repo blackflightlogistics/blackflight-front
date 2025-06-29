@@ -250,6 +250,7 @@ export const translations = {
         aviso_clientes_texto: "Choose who you want to notify about the status change",
         aviso_clientes_remetente: "Sender Notification",
         aviso_clientes_destinatario: "Client Notification",
+        sem_dados: "No data available",
 
     },
     ES: {
@@ -503,6 +504,7 @@ export const translations = {
         aviso_clientes_texto: "Elige a quién quieres notificar sobre el cambio de estado de la encomienda.",
         aviso_clientes_remetente: "Remitente",
         aviso_clientes_destinatario: "Destinatario",
+        sem_dados: "No hay datos disponibles",
     },
     FR: {
         login_title: "Accès Administratif",
@@ -754,6 +756,7 @@ export const translations = {
         aviso_clientes_texto: "Choisissez qui vous souhaitez notifier du changement de statut :",
         aviso_clientes_remetente: "Expéditeur",
         aviso_clientes_destinatario: "Destinataire",
+        sem_dados: "Aucun résultat trouvé",
     },
     PT: {
         login_title: "Acesso administrativo",
@@ -1008,6 +1011,7 @@ export const translations = {
         aviso_clientes_texto: "Escolha quem você deseja notificar sobre a alteração de status:",
         aviso_clientes_remetente: "Avisar Remetente",
         aviso_clientes_destinatario: "Avisar Destinatário",
+        sem_dados:"Sem dados disponíveis",
 
 
 

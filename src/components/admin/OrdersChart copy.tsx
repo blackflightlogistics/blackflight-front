@@ -9,7 +9,15 @@ interface OrdersChartProps {
 const OrdersCharts = ({ data }: OrdersChartProps) => {
   const { translations: t } = useLanguage();
   if (!data || data.length === 0) {
-    return null; // Ou um loading placeholder
+    return (
+      <Card variant="outlined">
+        <CardContent>
+          <Typography variant="subtitle1" gutterBottom>
+            {t.sem_dados}
+          </Typography>
+        </CardContent>
+      </Card>
+    ); // Ou um loading placeholder
   }
 
   const mesesFormatados = data.map((item) => {
