@@ -23,9 +23,9 @@ const Configuracoes = () => {
       setPrecoPorQuilo(config.amountPerKg);
       setPrecoSeguro(config.insurancePerc);
       setAdicionalExpresso(config.expressAmount);
-      setCambioTaxa(config.cambio_tax);
-      setValorDolar(config.dollar_value);
-      setCafValue(config.caf_value);
+      setCambioTaxa(config.cambio_tax ?? "0.00");
+      setValorDolar(config.dollar_value?? "0.00");
+      setCafValue(config.caf_value?? "0.00");
       setCarregando(false);
     };
     carregarConfiguracoes();
