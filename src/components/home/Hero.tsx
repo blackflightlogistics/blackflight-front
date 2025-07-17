@@ -17,19 +17,19 @@ const Hero = () => {
           {/* Conteúdo acima do overlay */}
           <div className="absolute inset-16 flex items-end z-10">
             <div className="text-white p-6 md:p-8 max-w-[35rem]">
-              <p className="font-primary text-3xl font-bold">
+              <p className="font-primary text-xl sm:text-3xl font-bold">
               {t.hero_titulo}
               </p>
-              <p className="font-secondary text-lg font-normal mb-4">
+              <p className="font-secondary text-sm sm:text-lg font-normal mb-1 sm:mb-4">
               {t.hero_subtitulo}
               </p>
               <button
                 type="button"
                 onClick={() => {
-                  window.open("https://wa.me/5511999999999", "_blank");
+                  window.open(`https://api.whatsapp.com/send/?phone=${encodeURIComponent(+237691204393)}`, "_blank");
                 }}
                     
-                    className="bg-orange font-secondary text-sm text-white font-semibold px-4 py-2 rounded-md hover:opacity-90 transition"
+                    className="bg-orange font-secondary text-xs sm:text-sm text-white font-semibold px-4 py-2 rounded-md hover:opacity-90 transition"
                   >
                     {t.hero_cta_whatsapp}
                   </button>

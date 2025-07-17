@@ -132,7 +132,7 @@ function EtiquetaRemessa() {
             </div>
             <p>${t.endereco_centro_distribuicao}:</p>
             <p><strong>FRANCE – 11 CITÉ RIVERIN, PARIS</strong></p>
-            <p>WWW.SEU-SITE.COM</p>
+            <p>https://www.blackflightlogistics.com/</p>
           </div>
         </body>
       </html>

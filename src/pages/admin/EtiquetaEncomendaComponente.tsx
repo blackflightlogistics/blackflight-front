@@ -1,6 +1,9 @@
 import React from "react";
 import { Order, Package } from "../../services/encomendaService";
-import { apresentaDataFormatada } from "../../utils/utils";
+import {
+  adicionarDiasEntrega,
+  apresentaDataFormatada,
+} from "../../utils/utils";
 import { useLanguage } from "../../context/useLanguage";
 import { Country, State } from "country-state-city";
 
@@ -86,8 +89,21 @@ const EtiquetaEncomendaComponente: React.FC<EtiquetaProps> = ({
             <span className="font-bold">{t.peso}:</span> {pesoTotal} kg
             <br />
             <span className="font-bold">{t.encomenda_expressa}:</span>{" "}
-            {encomenda?.is_express ? "Sim" : "Não"}
+            {encomenda?.is_express ? t.sim : t.nao}
+            <div>
+              <div>
+                <span className="font-bold">
+                  {t.tracking_estimated_delivery}:
+                </span>{" "}
+                {adicionarDiasEntrega(dataGeracao, encomenda.is_express)}
+              </div>
+              <div className="flex">
+                <p className="font-bold">{t.form_telefone}: </p>
+                <p> {encomenda.to_account.phone_number}</p>
+              </div>
+            </div>
           </div>
+
           <div>
             <span className="font-bold">{t.data}:</span>{" "}
             {apresentaDataFormatada(dataGeracao)}
@@ -102,7 +118,7 @@ const EtiquetaEncomendaComponente: React.FC<EtiquetaProps> = ({
         </div>
 
         <p>{t.endereco_centro_distribuicao}:</p>
-        <p>WWW.SEU-SITE.COM</p>
+        <p>https://www.blackflightlogistics.com/</p>
         <p className="font-bold">FRANCE – 11 CITÉ RIVERIN, PARIS</p>
       </div>
     </div>

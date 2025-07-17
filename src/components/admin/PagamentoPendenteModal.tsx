@@ -24,7 +24,7 @@ const PagamentoPendenteModal = ({
 }: Props) => {
   const { translations: t } = useLanguage();
   const [valorRestante, setValorRestante] = useState(valorTotal - valorPago);
-  const [moeda, setMoeda] = useState<"dollar" | "caf">("dollar");
+  const [moeda, setMoeda] = useState<"euro" | "caf">("euro");
 
   if (!aberto) return null;
 
@@ -66,23 +66,23 @@ const PagamentoPendenteModal = ({
           <select
             className="p-2 border rounded w-full"
             value={moeda}
-            onChange={(e) => setMoeda(e.target.value as "dollar" | "caf")}
+            onChange={(e) => setMoeda(e.target.value as "euro" | "caf")}
           >
-            <option value="dollar">USD ($)</option>
+            <option value="euro">EUR (€)</option>
             <option value="caf">CAF</option>
           </select>
         </div>
 
         {moeda === "caf" && (
           <p className="text-sm text-blue-700 font-secondary">
-            Total em CAF (com {cambioTax}% de taxa):{" "}
+            Total in CAF ( {cambioTax}% tax):{" "}
             <strong>CAF {valorConvertidoCAF().toFixed(2)}</strong>
           </p>
         )}
 
         <button
           onClick={() =>
-            onConfirmar(moeda === "dollar" ? valorRestante : valorConvertidoCAF())
+            onConfirmar(moeda === "euro" ? valorRestante : valorConvertidoCAF())
           }
           className="w-full px-4 py-2 bg-orange text-white rounded-md hover:opacity-90 font-secondary text-sm"
         >

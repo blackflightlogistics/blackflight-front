@@ -4,6 +4,7 @@ import {
   FaLinkedinIn,
   FaYoutube,
   FaPaperPlane,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../../context/useLanguage";
@@ -24,7 +25,7 @@ const HomeFooter = ({
 
   return (
     <footer className="bg-black text-white pt-16 pb-8 px-6">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-5 gap-8 lg:gap-12">
         {/* Logo e redes sociais */}
         <div>
           <div className="mb-4">
@@ -109,7 +110,6 @@ const HomeFooter = ({
             >
               {t.footer_links_2}
             </li>
-
             <li
               onClick={() => scrollToSection("servicos")}
               className="cursor-pointer hover:underline"
@@ -117,6 +117,39 @@ const HomeFooter = ({
               {t.footer_links_3}
             </li>
           </ul>
+        </div>
+
+        {/* Nossos Escritórios */}
+        <div>
+          <h3 className="font-semibold font-primary text-white mb-4">
+            <span className="border-b-2 border-orange pb-1">
+              <FaMapMarkerAlt className="inline mr-2" />
+              Nos Bureaux
+            </span>
+          </h3>
+          <div className="space-y-4 text-xs font-normal font-secondary text-lightGrey">
+            {/* França */}
+            <div>
+              <p className="text-orange font-medium mb-1">🇫🇷 FRANCE</p>
+              <p className="mb-1">11 Cité Riverin, 75010 Paris</p>
+              <p className="text-xs opacity-80">(Lundi au Samedi 9:30 - 19:30)</p>
+            </div>
+            
+            {/* Camarões - Douala */}
+            <div>
+              <p className="text-orange font-medium mb-1">🇨🇲 CAMEROUN (Douala)</p>
+              <p className="mb-1">{t.endereco_duala}</p>
+              <p className="text-xs opacity-80">(Lundi au Samedi 10:00 - 16:30)</p>
+            </div>
+            
+            {/* Camarões - Yaoundé */}
+            <div>
+              <p className="text-orange font-medium mb-1">🇨🇲 CAMEROUN (Yaoundé)</p>
+              <p className="mb-1">{t.endereco_younde}</p>
+              <p className="text-xs opacity-80 mb-1">Tel: +237 69 12 04 393 (Christine)</p>
+              <p className="text-xs opacity-80">(Lundi au Samedi 10:00 - 16:30)</p>
+            </div>
+          </div>
         </div>
 
         {/* Rastreio rápido */}

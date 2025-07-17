@@ -67,7 +67,7 @@ const EtiquetaRemessaComponente: React.FC<EtiquetaRemessaProps> = ({
           </div>
 
         <p>{t.endereco_centro_distribuicao}:</p>
-        <p>WWW.SEU-SITE.COM</p>
+        <p>https://www.blackflightlogistics.com/</p>
         <p className="font-bold">FRANCE – 11 CITÉ RIVERIN, PARIS</p>
       </div>
     </div>

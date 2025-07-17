@@ -133,7 +133,7 @@ function EtiquetaEncomenda() {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 4px;
           }
           .linha {
             display: flex;
@@ -143,7 +143,7 @@ function EtiquetaEncomenda() {
             text-align: center;
           }
           .qr {
-            margin: 12px 0;
+            margin: 6px 0;
             text-align: center;
           }
           .bold {
@@ -153,7 +153,7 @@ function EtiquetaEncomenda() {
             margin: 12px 0;
           }
           .rodape {
-            margin-top: 10px;
+            margin-top: 5px;
             text-align: center;
             font-size: 13px;
           }
@@ -194,19 +194,23 @@ function EtiquetaEncomenda() {
 
           <div class="linha">
             <div>
+             <span class="bold">${t.form_telefone}: </span>
+                 ${encomenda.to_account.phone_number}<br/>
               <span class="bold">${t.peso}:</span> ${pesoTotal} kg<br/>
               <span class="bold">${t.encomenda_expressa}:</span> ${
-      encomenda.is_express ? `${t.express}` : `${t.standard}`
-    }
+                    encomenda.is_express ? `${t.express}` : `${t.standard}`
+                  }
             </div>
             <div>
               <span class="bold">${t.data}:</span> ${apresentaDataFormatada(
-      dataGeracao
-    )}<br/>
-     <span class="bold">${t.tracking_estimated_delivery}</span> ${adicionarDiasEntrega(
-      dataGeracao,encomenda.is_express
-    )}
-            </div>
+                dataGeracao
+              )}<br/>
+              <span class="bold">${
+                t.tracking_estimated_delivery
+              }</span> ${adicionarDiasEntrega(dataGeracao, encomenda.is_express)}
+                
+            </div>           
+            
           </div>
         </div>
 
@@ -220,7 +224,7 @@ function EtiquetaEncomenda() {
           </div>
           <p>${t.endereco_centro_distribuicao}:</p>
           <p><strong>FRANCE – 11 CITÉ RIVERIN, PARIS</strong></p>
-          <p>WWW.SEU-SITE.COM</p>
+          <p>https://www.blackflightlogistics.com/</p>
         </div>
       </body>
     </html>

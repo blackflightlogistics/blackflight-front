@@ -38,7 +38,7 @@ function NovaEncomenda() {
       declared_value: string;
     }[]
   >([]);
-
+const [editandoPacoteIndex, setEditandoPacoteIndex] = useState<number | null>(null);
   const [encomendaExpressa, setEncomendaExpressa] = useState(false);
   const [dataEnvioExpressa, setDataEnvioExpressa] = useState("");
   const [adicionalExpresso, setAdicionalExpresso] = useState<number>(0);
@@ -79,20 +79,59 @@ function NovaEncomenda() {
     carregarDados();
   }, []);
 
-  const adicionarPacote = () => {
-    if (!descricaoPacote || !pesoPacote) return;
+ const adicionarPacote = () => {
+  if (!descricaoPacote || !pesoPacote) return;
 
-    const novoPacote = {
-      description: descricaoPacote,
-      weight: pesoPacote,
-      status: statusPacote,
-      declared_value: valorDeclaradoPacote || "0",
-    };
-    setPacotes([...pacotes, novoPacote]);
-    setDescricaoPacote("");
-    setPesoPacote("");
-    setValorDeclaradoPacote("");
+  const novoPacote = {
+    description: descricaoPacote,
+    weight: pesoPacote,
+    status: statusPacote,
+    declared_value: valorDeclaradoPacote || "0",
   };
+
+  if (editandoPacoteIndex !== null) {
+    // Editando pacote existente
+    const pacotesAtualizados = [...pacotes];
+    pacotesAtualizados[editandoPacoteIndex] = novoPacote;
+    setPacotes(pacotesAtualizados);
+    setEditandoPacoteIndex(null);
+  } else {
+    // Adicionando novo pacote
+    setPacotes([...pacotes, novoPacote]);
+  }
+
+  setDescricaoPacote("");
+  setPesoPacote("");
+  setValorDeclaradoPacote("");
+  setStatusPacote("em_preparacao");
+};
+
+const excluirPacote = (index: number) => {
+  const pacotesAtualizados = pacotes.filter((_, i) => i !== index);
+  setPacotes(pacotesAtualizados);
+  
+  // Se estava editando o pacote que foi excluído, cancelar edição
+  if (editandoPacoteIndex === index) {
+    cancelarEdicao();
+  }
+};
+
+const editarPacote = (index: number) => {
+  const pacote = pacotes[index];
+  setDescricaoPacote(pacote.description);
+  setPesoPacote(pacote.weight);
+  setValorDeclaradoPacote(pacote.declared_value);
+  setStatusPacote(pacote.status as PacoteStatus);
+  setEditandoPacoteIndex(index);
+};
+
+const cancelarEdicao = () => {
+  setDescricaoPacote("");
+  setPesoPacote("");
+  setValorDeclaradoPacote("");
+  setStatusPacote("em_preparacao");
+  setEditandoPacoteIndex(null);
+};
 
   const salvarEncomenda = async (irParaPagamento = false) => {
     if (!remetenteId || !destinatarioId || pacotes.length === 0) return;
@@ -548,38 +587,12 @@ function NovaEncomenda() {
               placeholder={t.peso_kg}
               decimalPlaces={2}
             />
-            {/* <input
-              placeholder={t.peso_kg}
-              type="number"
-              step="0.1"
-              className="p-2 border rounded"
-              value={pesoPacote}
-              onChange={(e) => setPesoPacote(e.target.value)}
-              onBlur={() => {
-                const num = parseFloat(pesoPacote.replace(",", "."));
-                if (!isNaN(num)) {
-                  setPesoPacote(num.toFixed(1));
-                }
-              }}
-            /> */}
             <DecimalMoneyInput
               value={valorDeclaradoPacote}
               onChange={(val) => setValorDeclaradoPacote(val)}
               placeholder={t.valor_declarado}
               decimalPlaces={2}
             />
-            {/* <input
-              placeholder={t.valor_declarado}
-              type="number"
-              step="0.1"
-              className="p-2 border rounded"
-              value={valorDeclaradoPacote}
-              onChange={(e) => setValorDeclaradoPacote(e.target.value)}
-              onBlur={() => {
-                const num = parseFloat(valorDeclaradoPacote.replace(",", "."));
-                setValorDeclaradoPacote(!isNaN(num) ? num.toFixed(1) : "0.0");
-              }}
-            /> */}
 
             <select
               className="p-2 border rounded"
@@ -594,18 +607,52 @@ function NovaEncomenda() {
               <option value="entregue">{t.status_entregue}</option>
               <option value="cancelada">{t.status_cancelada}</option>
             </select>
-            <button
-              onClick={adicionarPacote}
-              className="px-4 py-2 bg-orange text-white rounded hover:opacity-90"
-            >
-              {t.adicionar}
-            </button>
+            
+            <div className="flex gap-2">
+              <button
+                onClick={adicionarPacote}
+                className="flex-1 px-4 py-2 bg-orange text-white rounded hover:opacity-90"
+              >
+                {editandoPacoteIndex !== null ? t.atualizar || "Atualizar" : t.adicionar}
+              </button>
+              {editandoPacoteIndex !== null && (
+                <button
+                  onClick={cancelarEdicao}
+                  className="px-3 py-2 bg-gray-500 text-white rounded hover:opacity-90"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
 
           <ul className="space-y-2">
-            {pacotes.map((p) => (
-              <li key={p.description} className="p-2 bg-white border rounded">
-                📦 {p.description} — {p.weight}kg
+            {pacotes.map((p, index) => (
+              <li key={`${p.description}-${index}`} className="p-3 bg-white border rounded flex items-center justify-between">
+                <div className="flex-1">
+                  <span className="font-medium">📦 {p.description}</span>
+                  <span className="text-gray-600 ml-2">— {p.weight}kg</span>
+                  {p.declared_value !== "0" && (
+                    <span className="text-green-600 ml-2">— R$ {p.declared_value}</span>
+                  )}
+                  <span className="text-blue-600 ml-2 text-sm">({p.status})</span>
+                </div>
+                <div className="flex gap-2 ml-4">
+                  <button
+                    onClick={() => editarPacote(index)}
+                    className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:opacity-90"
+                    title="Editar pacote"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    onClick={() => excluirPacote(index)}
+                    className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:opacity-90"
+                    title="Excluir pacote"
+                  >
+                    🗑️
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

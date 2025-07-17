@@ -211,7 +211,7 @@ export const translations = {
         pagamento_informar_faltante: "Is there a missing amount?",
         confirmar: "Confirm",
         taxa_cambio: "Exchange Rate",
-        dollar_value: "Dollar Value",
+        dollar_value: "Euro Value",
         caf_value: "CAF Value",
         moeda: "Payment Currency",
         erro_salvar_configuracao: "Error saving configuration",
@@ -251,7 +251,9 @@ export const translations = {
         aviso_clientes_remetente: "Sender Notification",
         aviso_clientes_destinatario: "Client Notification",
         sem_dados: "No data available",
-
+        endereco_duala: "Bessengue Red Light Opposite Mondial Pharmacy at NUMERIX Printing",
+        endereco_younde: "Avenue Kennedy au niveau du restaurant le Challenge",
+        atualizar: "Update",
     },
     ES: {
         login_title: "Acceso Administrativo",
@@ -465,7 +467,7 @@ export const translations = {
         pagamento_informar_faltante: "¿Falta algún valor?",
         confirmar: "Confirmar",
         taxa_cambio: "Taxa de Cambio",
-        dollar_value: "Dollar Value",
+        dollar_value: "Euro Value",
         caf_value: "CAF Value",
         moeda: "Moeda de Pagamento",
         erro_salvar_configuracao: "Error al guardar la configuración",
@@ -505,6 +507,9 @@ export const translations = {
         aviso_clientes_remetente: "Remitente",
         aviso_clientes_destinatario: "Destinatario",
         sem_dados: "No hay datos disponibles",
+        endereco_duala: "Luz roja de Bessengue frente a la farmacia Mondial en la imprenta NUMERIX",
+        endereco_younde: "Avenida Kennedy a la altura del restaurante Challenge",
+        atualizar:"Actualizar",
     },
     FR: {
         login_title: "Accès Administratif",
@@ -717,7 +722,7 @@ export const translations = {
         pagamento_informar_faltante: "Veuillez indiquer le montant restant à payer",
         confirmar: "Confirmer",
         taxa_cambio: "Taxe de change",
-        dollar_value: "Valeur du dollar",
+        dollar_value: "Valeur du Euro",
         caf_value: "Valeur CAF",
         moeda: "Devise de paiement",
         erro_salvar_configuracao: "Erreur lors de l'enregistrement de la configuration",
@@ -757,6 +762,9 @@ export const translations = {
         aviso_clientes_remetente: "Expéditeur",
         aviso_clientes_destinatario: "Destinataire",
         sem_dados: "Aucun résultat trouvé",
+        endereco_duala: "Feu Rouge Bessengue Face Pharmacie Mondial à Imprimerie NUMERIX",
+        endereco_younde: "Avenue Kennedy au niveau du restaurant le Challenge",
+        atualizar:"Mettre à jour",
     },
     PT: {
         login_title: "Acesso administrativo",
@@ -972,7 +980,7 @@ export const translations = {
         pagamento_informar_faltante: "Informe o valor restante",
         confirmar: "Confirmar",
         taxa_cambio: "Taxa de câmbio",
-        dollar_value: "Cotação do dólar",
+        dollar_value: "Cotação do Euro",
         caf_value: "Valor do CAF",
         moeda: "Moeda de pagamento",
         erro_salvar_configuracao: "Erro ao salvar configuração",
@@ -1011,9 +1019,11 @@ export const translations = {
         aviso_clientes_texto: "Escolha quem você deseja notificar sobre a alteração de status:",
         aviso_clientes_remetente: "Avisar Remetente",
         aviso_clientes_destinatario: "Avisar Destinatário",
-        sem_dados:"Sem dados disponíveis",
-
-
+        sem_dados: "Sem dados disponíveis",
+        endereco_duala: "Bessengue Red Light em frente à Farmácia Mondial na NUMERIX Printing",
+        endereco_younde: "Avenida Kennedy no nível do restaurante Challenge",
+        atualizar: "Atualizar",
+        
 
     }
 
