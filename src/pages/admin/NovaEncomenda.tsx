@@ -365,6 +365,7 @@ const cancelarEdicao = () => {
                   email: form.email,
                   phone_number: form.phone_number,
                   adresses: [endereco],
+                  removed_adresses: [],
                 });
                 const novaLista = await clienteService.listar();
                 setClientes(novaLista);
@@ -534,6 +535,7 @@ const cancelarEdicao = () => {
                   email: form.email,
                   phone_number: form.phone_number,
                   adresses: [endereco],
+                  removed_adresses: [],
                 });
                 const novaLista = await clienteService.listar();
                 setClientes(novaLista);
@@ -683,3 +685,4 @@ const cancelarEdicao = () => {
 }
 
 export default NovaEncomenda;
+

@@ -41,6 +41,7 @@ function Clientes() {
       phone_number: form.phone_number,
       email: form.email,
       adresses: [endereco],
+      removed_adresses:[],
     });
 
     setFormVisible(false);

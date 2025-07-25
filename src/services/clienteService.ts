@@ -18,6 +18,7 @@ export type Cliente = {
   phone_number: string;
   email: string;
   document?: string;
+  removed_adresses: string[];
   adresses: Address[];
 };
 
@@ -52,6 +53,7 @@ export const clienteService = {
       phone_number: item.phone_number,
       email: item.email,
       document: item.document,
+      removed_adresses: [],       
       adresses: item.adresses?.map((addr) => ({
         id: addr.id || "",
         street: addr.street || "",
@@ -94,6 +96,7 @@ console.log("payload", payload);
       phone_number: saved.phone_number,
       email: saved.email,
       document: saved.document,
+      removed_adresses: [],
       adresses: saved.adresses?.map((addr: RawAdress) => ({
         id: addr.id,
         street: addr.street,
@@ -117,6 +120,7 @@ console.log("payload", payload);
       document: item.document,
       phone_number: item.phone_number,
       email: item.email,
+      removed_adresses: [],
       adresses: item.adresses?.map((addr: RawAdress) => ({
         street: addr.street,
         id: addr.id,
@@ -139,6 +143,7 @@ console.log("payload", payload);
       email: dados.email,
       document: dados.document,
       phone_number: dados.phone_number,
+      removed_adresses: dados.removed_adresses,
       adresses: dados.adresses?.map((addr) => ({
         adress_id:(  addr.id == "" ? null : addr.id),
         street: addr.street,
@@ -160,6 +165,7 @@ console.log("payload", payload);
       phone_number: item.phone_number,
       email: item.email,
       document: item.document,
+      removed_adresses: item.removed_adresses || [],
       adresses: item.adresses?.map((addr: RawAdress) => ({
         id: addr.id,
         street: addr.street,

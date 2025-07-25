@@ -64,14 +64,17 @@ function ClienteEditar() {
     if (!cliente) return;
     const confirm = window.confirm(t.confirmar_remover_endereco);
     if (!confirm) return;
-
-    const novosEnderecos = cliente.adresses.filter((_, i) => i !== index);
-    const atualizado = await clienteService.atualizar(cliente.id, {
-      ...cliente,
-      adresses: novosEnderecos,
-    });
-
-    setCliente(atualizado);
+    const enderecoRemovido = cliente.adresses[index].id;
+    if (typeof enderecoRemovido === "string") {
+      setCliente((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          removed_adresses: [...prev.removed_adresses, enderecoRemovido],
+          adresses: prev.adresses.filter((_, i) => i !== index),
+        };
+      });
+    }
   };
 
   const handleEditarEndereco = (index: number) => {

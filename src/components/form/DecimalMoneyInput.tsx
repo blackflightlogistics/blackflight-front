@@ -24,13 +24,13 @@ export default function DecimalMoneyInput({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const onlyDigits = e.target.value.replace(/\D/g, "");
     const divisor = Math.pow(10, decimalPlaces);
-    const formatted = (parseInt(onlyDigits || "0", 10) / divisor).toFixed(decimalPlaces);
+    const formatted = (parseInt(onlyDigits || "0.0", 10) / divisor).toFixed(decimalPlaces);
     onChange(formatted);
   };
 
   const formatDisplay = (val: string) => {
     const num = parseFloat(val.replace(",", "."));
-    return isNaN(num) ? "" : num.toFixed(decimalPlaces);
+    return isNaN(num) ? "0.0" : num.toFixed(decimalPlaces);
   };
 
   return (

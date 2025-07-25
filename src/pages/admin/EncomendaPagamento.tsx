@@ -32,8 +32,8 @@ function EncomendaPagamento() {
   const [pacotesRemovidos, setPacotesRemovidos] = useState<string[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [descricaoPacote, setDescricaoPacote] = useState("");
-  const [pesoPacote, setPesoPacote] = useState("");
-  const [valorDeclaradoPacote, setValorDeclaradoPacote] = useState("");
+  const [pesoPacote, setPesoPacote] = useState("0.0");
+  const [valorDeclaradoPacote, setValorDeclaradoPacote] = useState("0.0");
   const [pacotesAdicionados, setPacotesAdicionados] = useState<
     {
       description: string;
