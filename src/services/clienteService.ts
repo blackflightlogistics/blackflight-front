@@ -3,18 +3,19 @@ import api from "../api/api";
 
 export type Address = {
   id?: string;
-  street: string;
-  number: string;
-  neighborhood: string;
-  city: string;
-  state: string;
-  cep: string;
+  street: string | null;
+  number: string | null;
+  neighborhood: string | null;
+  city: string | null;
+  state: string | null;
+  cep: string | null;
   country: string;
 };
 
 export type Cliente = {
   id: string;
   name: string;
+  last_name: string;
   phone_number: string;
   email: string;
   document?: string;
@@ -25,6 +26,7 @@ export type Cliente = {
 type RawAccount = {
   id: string;
   name: string;
+  last_name: string;
   email: string;
   document?: string;
   phone_number: string;
@@ -50,6 +52,7 @@ export const clienteService = {
     return data.map((item) => ({
       id: item.id,
       name: item.name,
+      last_name: item.last_name,
       phone_number: item.phone_number,
       email: item.email,
       document: item.document,
@@ -93,6 +96,7 @@ console.log("payload", payload);
     return {
       id: saved.id,
       name: saved.name,
+      last_name: saved.last_name,
       phone_number: saved.phone_number,
       email: saved.email,
       document: saved.document,
@@ -117,6 +121,7 @@ console.log("payload", payload);
     return {
       id: item.id,
       name: item.name,
+      last_name: item.last_name,
       document: item.document,
       phone_number: item.phone_number,
       email: item.email,
@@ -162,6 +167,7 @@ console.log("payload", payload);
     return {
       id: item.id,
       name: item.name,
+      last_name: item.last_name,
       phone_number: item.phone_number,
       email: item.email,
       document: item.document,

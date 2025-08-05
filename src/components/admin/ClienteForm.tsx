@@ -8,6 +8,7 @@ import "react-phone-input-2/lib/style.css";
 export type ClienteFormData = {
   id?: string;
   name: string;
+  last_name: string;
   phone_number: string;
   email: string;
   street: string;
@@ -30,6 +31,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
 
   const [form, setForm] = useState<ClienteFormData>({
     name: initialData?.name || "",
+    last_name: initialData?.last_name || "",
     phone_number: initialData?.phone_number || "",
     email: initialData?.email || "",
     street: initialData?.street || "",
@@ -64,13 +66,17 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
       const selectedCountry = countries.find((c) => c.name === form.country);
       const selectedState = states.find((s) => s.name === form.state);
       if (selectedCountry && selectedState) {
-        setCities(City.getCitiesOfState(selectedCountry.isoCode, selectedState.isoCode));
+        setCities(
+          City.getCitiesOfState(selectedCountry.isoCode, selectedState.isoCode)
+        );
         setForm((prev) => ({ ...prev, city: "" }));
       }
     }
   }, [form.state, form.country, countries, states]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -79,6 +85,7 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
     onSubmit(form);
     setForm({
       name: "",
+      last_name: "",
       phone_number: "",
       email: "",
       street: "",
@@ -92,7 +99,10 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-100 p-4 rounded space-y-4 mb-6">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-gray-100 p-4 rounded space-y-4 mb-6"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input
           name="name"
@@ -102,12 +112,22 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
           onChange={handleChange}
           className="p-2 border rounded"
         />
+        <input
+          name="last_name"
+          placeholder={t.form_sobrenome}
+          required
+          value={form.last_name}
+          onChange={handleChange}
+          className="p-2 border rounded"
+        />
 
         {/* TELEFONE COM PHONE INPUT */}
         <PhoneInput
           country={"br"}
           value={form.phone_number}
-          onChange={(value) => setForm((prev) => ({ ...prev, phone_number: value }))}
+          onChange={(value) =>
+            setForm((prev) => ({ ...prev, phone_number: value }))
+          }
           inputProps={{
             name: "phone_number",
             required: true,
@@ -128,7 +148,6 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         <input
           name="street"
           placeholder={t.form_rua}
-          required
           value={form.street}
           onChange={handleChange}
           className="p-2 border rounded"
@@ -136,7 +155,6 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         <input
           name="number"
           placeholder={t.form_numero}
-          required
           value={form.number}
           onChange={handleChange}
           className="p-2 border rounded"
@@ -144,7 +162,6 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         <input
           name="neighborhood"
           placeholder={t.form_bairro}
-          required
           value={form.neighborhood}
           onChange={handleChange}
           className="p-2 border rounded"
@@ -168,7 +185,6 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
           value={form.state}
           onChange={handleChange}
           className="p-2 border rounded"
-          required
         >
           <option value="">{t.form_estado}</option>
           {states.map((s) => (
@@ -182,7 +198,6 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
           value={form.city}
           onChange={handleChange}
           className="p-2 border rounded"
-          required
         >
           <option value="">{t.form_cidade}</option>
           {cities.map((c) => (
@@ -194,7 +209,6 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
         <input
           name="cep"
           placeholder={t.form_cep}
-          required
           value={form.cep}
           onChange={handleChange}
           className="p-2 border rounded"

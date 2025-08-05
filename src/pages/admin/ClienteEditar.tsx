@@ -137,6 +137,15 @@ function ClienteEditar() {
                   className="p-2 border rounded"
                 />
                 <input
+                  type="text"
+                  value={cliente.last_name}
+                  onChange={(e) =>
+                    setCliente({ ...cliente, name: e.target.value })
+                  }
+                  placeholder={t.form_sobrenome}
+                  className="p-2 border rounded"
+                />
+                <input
                   type="email"
                   value={cliente.email}
                   onChange={(e) =>
@@ -193,7 +202,7 @@ function ClienteEditar() {
                 <div className="border border-orange rounded p-4 bg-white mt-4">
                   <div className="grid md:grid-cols-3 gap-2">
                     <input
-                      value={enderecoTemp.street}
+                      value={enderecoTemp.street || ""}
                       onChange={(e) =>
                         setEnderecoTemp({
                           ...enderecoTemp,
@@ -204,7 +213,7 @@ function ClienteEditar() {
                       className="p-2 border rounded"
                     />
                     <input
-                      value={enderecoTemp.number}
+                      value={enderecoTemp.number || ""}
                       onChange={(e) =>
                         setEnderecoTemp({
                           ...enderecoTemp,
@@ -212,10 +221,10 @@ function ClienteEditar() {
                         })
                       }
                       placeholder={t.form_numero}
-                      className="p-2 border rounded"
+                      className="p-2 border rounded"                      
                     />
                     <input
-                      value={enderecoTemp.neighborhood}
+                      value={enderecoTemp.neighborhood || ""}
                       onChange={(e) =>
                         setEnderecoTemp({
                           ...enderecoTemp,
@@ -226,7 +235,7 @@ function ClienteEditar() {
                       className="p-2 border rounded"
                     />
                     <input
-                      value={enderecoTemp.city}
+                      value={enderecoTemp.city || ""}
                       onChange={(e) =>
                         setEnderecoTemp({
                           ...enderecoTemp,
@@ -237,7 +246,7 @@ function ClienteEditar() {
                       className="p-2 border rounded"
                     />
                     <input
-                      value={enderecoTemp.state}
+                      value={enderecoTemp.state || ""}
                       onChange={(e) =>
                         setEnderecoTemp({
                           ...enderecoTemp,
@@ -248,7 +257,7 @@ function ClienteEditar() {
                       className="p-2 border rounded"
                     />
                     <input
-                      value={enderecoTemp.cep}
+                      value={enderecoTemp.cep || ""}
                       onChange={(e) =>
                         setEnderecoTemp({
                           ...enderecoTemp,

@@ -38,6 +38,7 @@ function Clientes() {
 
     await clienteService.adicionar({
       name: form.name,
+      last_name: form.last_name,
       phone_number: form.phone_number,
       email: form.email,
       adresses: [endereco],
