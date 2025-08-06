@@ -18,9 +18,14 @@ const Dashboard = () => {
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [dados, setDados] = useState<DashboardData | null>(null);
   const { translations: t } = useLanguage();
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    dashboardService.obterDados().then(setDados);
+    setCarregando(true);
+    dashboardService
+      .obterDados()
+      .then(setDados)
+      .finally(() => setCarregando(false));
   }, []);
 
   return (
@@ -42,8 +47,14 @@ const Dashboard = () => {
         <h1 className="text-2xl font-primary font-bold mb-6">
           {t.sidebar_dashboard}
         </h1>
-
-        {dados && (
+      
+        {carregando ? (
+          <div className="flex justify-center items-center h-[300px]">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange border-t-transparent"></div>
+          </div>
+        ) : !dados ? (
+          <p className="text-gray-600">Nenhum dado disponível</p>
+        ) : (
           <>
             <DashboardCards
               totalOrders={dados.total_orders}
@@ -63,13 +74,17 @@ const Dashboard = () => {
             <StatusCards statusData={dados.count_orders_grouped_by_status} />
             <div className="flex flex-wrap gap-6 my-6">
               <div className="flex-1 min-w-[300px]">
-                <PaymentDonutChart  data={dados.count_orders_grouped_by_payment_type}/>
+                <PaymentDonutChart
+                  data={dados.count_orders_grouped_by_payment_type}
+                />
               </div>
               {/* <div className="flex-1 min-w-[300px]">
                 <RevenueBarChart />
               </div> */}
               <div className="flex-1 min-w-[300px]">
-                <CountryDonutChart  data={dados.count_orders_grouped_by_country}/>
+                <CountryDonutChart
+                  data={dados.count_orders_grouped_by_country}
+                />
               </div>
             </div>
           </>

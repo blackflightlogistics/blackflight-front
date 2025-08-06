@@ -18,9 +18,11 @@ const DashboardSampleInfo = () => {
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [dados, setDados] = useState<DashboardData | null>(null);
   const { translations: t } = useLanguage();
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    dashboardService.obterDados().then(setDados);
+    setCarregando(true);
+    dashboardService.obterDados().then(setDados).finally(() => setCarregando(false));
   }, []);
 
   return (
@@ -43,7 +45,11 @@ const DashboardSampleInfo = () => {
           {t.sidebar_dashboard}
         </h1>
 
-        {dados && (
+        {carregando ? (
+          <div className="flex justify-center items-center h-[300px]">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange border-t-transparent"></div>
+          </div>
+        ) : dados && (
           <>
             <DashboardCards
               totalOrders={dados.total_orders}

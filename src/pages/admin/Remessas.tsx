@@ -3,6 +3,7 @@ import Sidebar from "../../components/admin/Sidebar";
 import { remessaService, Shipment } from "../../services/remessaService";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../../context/useLanguage";
+import { pacoteStatusToString, remessaStatusToString } from "../../utils/utils";
 
 const Remessas = () => {
   const { translations: t } = useLanguage();
@@ -12,6 +13,7 @@ const Remessas = () => {
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [acoesAbertas, setAcoesAbertas] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(true);
+  const [imprimindo, setImprimindo] = useState(false);
 
   useEffect(() => {
     const carregar = async () => {
@@ -31,6 +33,173 @@ const Remessas = () => {
   const enviarRemessa = async (id: string) => {
     console.log("Remessa enviada:", id);
     fecharRemessa(id);
+  };
+
+  const imprimirListagem = async () => {
+    setImprimindo(true);
+    
+    try {
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) {
+        setImprimindo(false);
+        return;
+      }
+
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Listagem de Remessas - Black Flight Logistic</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              margin: 20px;
+              color: #333;
+            }
+            .header {
+              text-align: center;
+              margin-bottom: 30px;
+              border-bottom: 2px solid #ff6b35;
+              padding-bottom: 20px;
+            }
+            .header h1 {
+              color: #ff6b35;
+              margin: 0;
+            }
+            .remessa {
+              margin-bottom: 40px;
+              padding: 15px;
+              border: 1px solid #ddd;
+              border-radius: 8px;
+              break-inside: avoid;
+            }
+            .remessa-header {
+              background-color: #f5f5f5;
+              padding: 10px;
+              border-radius: 5px;
+              margin-bottom: 15px;
+              border-left: 4px solid #ff6b35;
+            }
+            .encomenda {
+              margin-bottom: 25px;
+              padding: 15px;
+              border: 1px solid #ddd;
+              border-radius: 8px;
+              break-inside: avoid;
+            }
+            .info-section h3 {
+              color: #ff6b35;
+              margin: 0 0 10px 0;
+              font-size: 14px;
+            }
+            .info-item {
+              margin-bottom: 5px;
+              font-size: 12px;
+            }
+            .info-item strong {
+              color: #333;
+            }
+            .pacotes {
+              margin-top: 15px;
+            }
+            .pacote {
+              background: #f8f9fa;
+              padding: 8px;
+              margin: 5px 0;
+              border-radius: 4px;
+              font-size: 12px;
+            }
+            .status {
+              background: #e3f2fd;
+              color: #1976d2;
+              padding: 2px 8px;
+              border-radius: 12px;
+              font-size: 10px;
+              display: inline-block;
+            }
+            @media print {
+              body { margin: 0; }
+              .remessa { break-inside: avoid; page-break-after: always; }
+              .encomenda { break-inside: avoid; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Black Flight Logistic</h1>
+            <h2>Listagem de Remessas</h2>
+            <p>Data: ${new Date().toLocaleDateString("pt-BR")}</p>
+            <p>Total de remessas: ${remessas.length}</p>
+          </div>
+          
+          ${remessas
+            .map(
+              (r) => `
+            <div class="remessa">
+              <div class="remessa-header">
+                <h2>${r.country}</h2>
+                <p><strong>Status:</strong> ${r.status || ""}</p>
+                <p><strong>Data de Criação:</strong> ${new Date(r.inserted_at).toLocaleDateString()}</p>
+                <p><strong>Peso Total:</strong> ${r.total_weight || "0"} kg</p>
+              </div>
+              
+              ${r.orders
+                .map(
+                  (e) => `
+                <div class="encomenda">
+                  <div class="info-section">
+                    <h3>Informações da Encomenda</h3>
+                    <div class="info-item"><strong>De:</strong> ${e.from_account?.name || ""}</div>
+                    <div class="info-item"><strong>Para:</strong> ${e.to_account?.name || ""}</div>
+                    <div class="info-item"><strong>Tracking Code:</strong> ${e.tracking_code || ""}</div>
+                    <div class="info-item"><strong>Status:</strong> <span class="status">${pacoteStatusToString(
+                      e?.status ?? "",
+                      t
+                    )}</span></div>
+                  </div>
+                  
+                  <div class="pacotes">
+                    <h3>Pacotes</h3>
+                    ${e.packages
+                      .map(
+                        (p) => `
+                      <div class="pacote">
+                        📦 ${p.description || ""} - ${Number(p.weight || 0)} kg 
+                        <span class="status">${pacoteStatusToString(
+                          p.status || "",
+                          t
+                        )}</span>
+                      </div>
+                    `
+                      )
+                      .join("")}
+                  </div>
+                </div>
+              `
+                )
+                .join("")}
+            </div>
+          `
+            )
+            .join("")}
+        </body>
+        </html>
+      `;
+
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      
+      // Aguardar um pouco para garantir que as imagens carregaram antes de imprimir
+      setTimeout(() => {
+        printWindow.print();
+        setImprimindo(false);
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Erro ao imprimir:', error);
+      alert('Erro ao preparar impressão. Tente novamente.');
+      setImprimindo(false);
+    }
   };
 
   const remessasFiltradas = remessas.filter((r) => {
@@ -74,6 +243,21 @@ const Remessas = () => {
           </h1>
 
           <div className="flex flex-wrap gap-4">
+            <button
+              onClick={imprimirListagem}
+              disabled={remessas.length === 0 || imprimindo}
+              className="px-4 py-2 bg-orange text-white font-semibold rounded hover:opacity-90 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {imprimindo ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  Preparando...
+                </>
+              ) : (
+                <>🖨️ {t.etiqueta_imprimir}</>
+              )}
+            </button>
+            
             <Link
               to="/admin/remessas/nova"
               className="px-4 py-2 bg-orange text-white font-semibold rounded hover:opacity-90 transition text-sm"
@@ -125,7 +309,7 @@ const Remessas = () => {
                         </p>
                       </div>
                       <p className="text-sm text-gray-600">
-                        Status: <strong>{r.status}</strong>
+                        Status: <strong>{remessaStatusToString(r.status ?? "aberta", t)}</strong>
                       </p>
                       <p className="text-sm text-gray-600">
                         {t.etiqueta_data_geracao}:{" "}

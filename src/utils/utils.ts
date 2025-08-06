@@ -24,6 +24,16 @@ export function isPacoteStatus(status: string): status is PacoteStatus {
 
   
 }
+export function remessaStatusToString(status: string, t: TranslationsType): string {
+  switch (status) {
+    case "em_preparacao":
+      return t.status_em_preparacao;
+    case "cancelada":
+      return t.status_cancelada;
+    default:
+      return "Status desconhecido";
+  }
+}
 
 export function pacoteStatusToString(status: string, t: TranslationsType): string {
   switch (status) {

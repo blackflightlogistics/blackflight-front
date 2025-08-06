@@ -8,6 +8,7 @@ type Options = {
 
 export function formatarLinkWhatsapp(
   numero: string,
+  isGreen?: boolean,
   options?: Options
 ): JSX.Element | null {
   if (!numero) return null;
@@ -32,7 +33,7 @@ export function formatarLinkWhatsapp(
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-green-600 inline-flex items-center gap-2"
+      className={`${isGreen ? "text-green-600" : "text-white"} inline-flex items-center gap-2`}
     >
       {options?.icon && <FaWhatsapp />}
       {numero}
