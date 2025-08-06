@@ -58,10 +58,10 @@ const OrdersTable = ({ pedidos }: OrdersTableProps) => {
                     </span>
                   </td>
                   <td className="p-2">
-                    {pedido.from_account.adresses[0]?.city.toLocaleLowerCase()} - {pedido.from_account.adresses[0]?.state.toLocaleLowerCase()}
+                    {pedido.from_account.adresses[0]?.city?.toLocaleLowerCase()} - {pedido.from_account.adresses[0]?.state?.toLocaleLowerCase()}
                   </td>
                   <td className="p-2">
-                    {pedido.to_account.adresses[0]?.city.toLocaleLowerCase()} - {pedido.to_account.adresses[0]?.state.toLocaleLowerCase()}
+                    {pedido.to_account.adresses[0]?.city?.toLocaleLowerCase()} - {pedido.to_account.adresses[0]?.state?.toLocaleLowerCase()}
                   </td>
                   <td className="p-2">
                     {new Date(pedido.inserted_at).toLocaleDateString()}

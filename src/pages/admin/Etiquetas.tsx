@@ -172,7 +172,7 @@ function EtiquetaEncomenda() {
               <span class="bold">${t.pais_origem}:</span><br/>
               ${getCountryAbbr(from.country)} - ${getStateAbbr(
       from.country,
-      from.city
+      from.city || ""
     )}
             </div>
             <div style="text-align: left;">
@@ -181,7 +181,7 @@ function EtiquetaEncomenda() {
               <span class="bold">${t.pais_destino}:</span><br/>
               ${getCountryAbbr(to.country)} - ${getStateAbbr(
       to.country,
-      to.city
+      to.city || ""
     )}
             </div>
           </div>

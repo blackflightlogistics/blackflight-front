@@ -147,11 +147,11 @@ const cancelarEdicao = () => {
         to_account_id: destinatarioId,
         is_express: encomendaExpressa,
         scheduled_date: encomendaExpressa ? dataEnvioExpressa : undefined,
-        city: endereco.city,
-        state: endereco.state,
-        country: endereco.country,
-        number: endereco.number,
-        cep: endereco.cep,
+        city: endereco.city || "",
+        state: endereco.state || "",
+        country: endereco.country || "",
+        number: endereco.number || "",
+        cep: endereco.cep || "",
         additional_info: "",
         paid_now: "",
         descount: "",
@@ -225,13 +225,13 @@ const cancelarEdicao = () => {
               const endereco = cliente?.adresses?.[0];
               if (endereco) {
                 const enderecoLower = {
-                  street: endereco.street.toLowerCase(),
-                  number: endereco.number.toLowerCase(),
-                  neighborhood: endereco.neighborhood.toLowerCase(),
-                  city: endereco.city.toLowerCase(),
-                  state: endereco.state.toLowerCase(),
-                  cep: endereco.cep.toLowerCase(),
-                  country: endereco.country.toLowerCase(),
+                  street: endereco.street?.toLowerCase() || "",
+                  number: endereco.number?.toLowerCase() || "",
+                  neighborhood: endereco.neighborhood?.toLowerCase() || "",
+                  city: endereco.city?.toLowerCase() || "",
+                  state: endereco.state?.toLowerCase() || "",
+                  cep: endereco.cep?.toLowerCase() || "",
+                  country: endereco.country?.toLowerCase() || "",
                 };
                 setEnderecoEditavelRemetente(enderecoLower);
                 setEnderecoOriginalRemetente(enderecoLower);
@@ -274,13 +274,13 @@ const cancelarEdicao = () => {
                     className="p-2 border rounded hover:bg-orange-100 cursor-pointer"
                     onClick={() => {
                       const enderecoLower = {
-                        street: addr.street.toLowerCase(),
-                        number: addr.number.toLowerCase(),
-                        neighborhood: addr.neighborhood.toLowerCase(),
-                        city: addr.city.toLowerCase(),
-                        state: addr.state.toLowerCase(),
-                        cep: addr.cep.toLowerCase(),
-                        country: addr.country.toLowerCase(),
+                        street: addr.street?.toLowerCase() || "",
+                        number: addr.number?.toLowerCase() || "",
+                        neighborhood: addr.neighborhood?.toLowerCase() || "",
+                        city: addr.city?.toLowerCase() || "",
+                        state: addr.state?.toLowerCase() || "",
+                        cep: addr.cep?.toLowerCase() || "",
+                        country: addr.country?.toLowerCase() || "",
                       };
                       setEnderecoEditavelRemetente(enderecoLower);
                       setEnderecoOriginalRemetente(enderecoLower);
@@ -362,6 +362,7 @@ const cancelarEdicao = () => {
                 };
                 const novo = await clienteService.adicionar({
                   name: form.name,
+                  last_name: form.last_name,
                   email: form.email,
                   phone_number: form.phone_number,
                   adresses: [endereco],
@@ -391,13 +392,13 @@ const cancelarEdicao = () => {
               const endereco = cliente?.adresses?.[0];
               if (endereco) {
                 const enderecoLower = {
-                  street: endereco.street.toLowerCase(),
-                  number: endereco.number.toLowerCase(),
-                  neighborhood: endereco.neighborhood.toLowerCase(),
-                  city: endereco.city.toLowerCase(),
-                  state: endereco.state.toLowerCase(),
-                  cep: endereco.cep.toLowerCase(),
-                  country: endereco.country.toLowerCase(),
+                  street: endereco.street?.toLowerCase() || "",
+                  number: endereco.number?.toLowerCase() || "",
+                  neighborhood: endereco.neighborhood?.toLowerCase() || "",
+                  city: endereco.city?.toLowerCase() || "",
+                  state: endereco.state?.toLowerCase() || "",
+                  cep: endereco.cep?.toLowerCase() || "",
+                  country: endereco.country?.toLowerCase() || "",
                 };
                 setEnderecoEditavel(enderecoLower);
                 setEnderecoOriginal(enderecoLower);
@@ -444,13 +445,13 @@ const cancelarEdicao = () => {
                     className="p-2 border rounded hover:bg-orange-100 cursor-pointer"
                     onClick={() => {
                       const enderecoLower = {
-                        street: addr.street.toLowerCase(),
-                        number: addr.number.toLowerCase(),
-                        neighborhood: addr.neighborhood.toLowerCase(),
-                        city: addr.city.toLowerCase(),
-                        state: addr.state.toLowerCase(),
-                        cep: addr.cep.toLowerCase(),
-                        country: addr.country.toLowerCase(),
+                          street: addr.street?.toLowerCase() || "",
+                        number: addr.number?.toLowerCase() || "",
+                        neighborhood: addr.neighborhood?.toLowerCase() || "",
+                        city: addr.city?.toLowerCase() || "",
+                        state: addr.state?.toLowerCase() || "",
+                        cep: addr.cep?.toLowerCase() || "",
+                        country: addr.country?.toLowerCase() || "",
                       };
                       setEnderecoEditavel(enderecoLower);
                       setEnderecoOriginal(enderecoLower);
@@ -532,6 +533,7 @@ const cancelarEdicao = () => {
                 };
                 const novo = await clienteService.adicionar({
                   name: form.name,
+                  last_name: form.last_name,
                   email: form.email,
                   phone_number: form.phone_number,
                   adresses: [endereco],
