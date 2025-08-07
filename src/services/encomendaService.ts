@@ -22,6 +22,15 @@ export type EncomendaPagamentoStatus =
   | "pendente"
   | "cancelado";
 
+export interface OrderFilters {
+  status?: EncomendaStatus;
+  payment_type?: FormaPagamento;
+  payment_status?: EncomendaPagamentoStatus;
+  tracking_code?: string;
+  initial_date?: string;
+  final_date?: string;
+}
+
 export interface Account {
   id: string;
   name: string;
@@ -130,9 +139,24 @@ export interface UpdateOrderPayload {
   removed_packages?: string[];
 }
 export const orderService = {
-  listar: async (forShipment?: boolean): Promise<Order[]> => {
-    const params = forShipment
-      ? { filter: JSON.stringify({ for_shipment: "true" }) }
+  listar: async (forShipment?: boolean, filters?: OrderFilters): Promise<Order[]> => {
+    const filterObj: Record<string, string> = {};
+    
+    if (forShipment) {
+      filterObj.for_shipment = "true";
+    }
+    
+    if (filters) {
+      if (filters.status) filterObj.status = filters.status;
+      if (filters.payment_type) filterObj.payment_type = filters.payment_type;
+      if (filters.payment_status) filterObj.payment_status = filters.payment_status;
+      if (filters.tracking_code) filterObj.tracking_code = filters.tracking_code;
+      if (filters.initial_date) filterObj.initial_date = filters.initial_date;
+      if (filters.final_date) filterObj.final_date = filters.final_date;
+    }
+
+    const params = Object.keys(filterObj).length > 0 
+      ? { filter: JSON.stringify(filterObj) } 
       : {};
 
     const response = await api.get<{ data: Order[] }>("/orders", { params });

@@ -1,8 +1,9 @@
-import { DashboardOrder } from "../../services/dashboardService";
+
 import { useLanguage } from "../../context/useLanguage";
+import { Order } from "../../services/encomendaService";
 
 interface OrdersTableProps {
-  pedidos: DashboardOrder[];
+  pedidos: Order[];
 }
 
 const statusColors: Record<string, string> = {
@@ -35,7 +36,7 @@ const OrdersTable = ({ pedidos }: OrdersTableProps) => {
           <tbody>
             {pedidos.map((pedido, index) => {
               const statusKey = `status_${pedido.status}` as keyof typeof t;
-              const statusLabel = t[statusKey] || pedido.status.replace(/_/g, " ");
+              const statusLabel = t[statusKey] || pedido.status?.replace(/_/g, " ");
 
               return (
                 <tr key={index} className="border-t">
@@ -51,7 +52,7 @@ const OrdersTable = ({ pedidos }: OrdersTableProps) => {
                   <td className="p-2">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        statusColors[pedido.status] || "bg-gray-200 text-gray-700"
+                        statusColors[pedido.status ?? ""] || "bg-gray-200 text-gray-700"
                       }`}
                     >
                       {statusLabel}

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
-import { Order, orderService } from "../../services/encomendaService";
+import OrderFiltersComponent from "../../components/admin/OrderFilters";
+import { Order, orderService, OrderFilters } from "../../services/encomendaService";
 import { pacoteStatusToString, paymentTypeToString } from "../../utils/utils";
 import { useLanguage } from "../../context/useLanguage";
 import { gerarQrBase64PNG } from "../../components/shared/QRCodeComLogo";
@@ -14,17 +15,42 @@ function Encomendas() {
   const [qrCodeCache, setQrCodeCache] = useState<Record<string, string>>({});
   const [gerandoQRCodes, setGerandoQRCodes] = useState(false);
   const [imprimindo, setImprimindo] = useState(false);
+  const [filtros, setFiltros] = useState<OrderFilters>({});
+
+  const carregar = async (filtrosAplicados?: OrderFilters) => {
+    setCarregando(true);
+    const [encomendasData] = await Promise.all([orderService.listar(false, filtrosAplicados)]);
+    setEncomendas(encomendasData);
+    setCarregando(false);
+  };
 
   useEffect(() => {
-    const carregar = async () => {
-      setCarregando(true);
-      const [encomendasData] = await Promise.all([orderService.listar()]);
-      setEncomendas(encomendasData);
-      setCarregando(false);
-    };
-
     carregar();
   }, []);
+
+  const aplicarFiltros = () => {
+    const filtrosFormatados: OrderFilters = { ...filtros };
+    
+    // Converter datas para formato ISO 8601 com timezone UTC
+    if (filtros.initial_date) {
+      const dataInicial = new Date(filtros.initial_date);
+      dataInicial.setUTCHours(0, 0, 0, 0); // Início do dia
+      filtrosFormatados.initial_date = dataInicial.toISOString();
+    }
+    
+    if (filtros.final_date) {
+      const dataFinal = new Date(filtros.final_date);
+      dataFinal.setUTCHours(23, 59, 59, 999); // Final do dia
+      filtrosFormatados.final_date = dataFinal.toISOString();
+    }
+    
+    carregar(filtrosFormatados);
+  };
+
+  const limparFiltros = () => {
+    setFiltros({});
+    carregar();
+  };
 
   useEffect(() => {
     const gerarQrCodes = async () => {
@@ -318,6 +344,14 @@ function Encomendas() {
             </Link>
           </div>
         </div>
+
+        {/* Filtros */}
+        <OrderFiltersComponent
+          filtros={filtros}
+          onFiltrosChange={setFiltros}
+          onAplicarFiltros={aplicarFiltros}
+          onLimparFiltros={limparFiltros}
+        />
 
         {(gerandoQRCodes || imprimindo) && (
           <div className="bg-blue-50 border border-blue-200 rounded-md p-3">

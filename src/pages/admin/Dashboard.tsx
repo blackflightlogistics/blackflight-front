@@ -13,12 +13,44 @@ import PaymentDonutChart from "./PaymentDonutChart";
 import CountryDonutChart from "./CountryDonutChart";
 import RoutesMap from "./RoutesMap";
 import OrdersCharts from "../../components/admin/OrdersChart copy";
+import OrderFiltersComponent from "../../components/admin/OrderFilters";
+import { Order, OrderFilters, orderService } from "../../services/encomendaService";
 
 const Dashboard = () => {
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [dados, setDados] = useState<DashboardData | null>(null);
   const { translations: t } = useLanguage();
   const [carregando, setCarregando] = useState(true);
+  const [filtros, setFiltros] = useState<OrderFilters>({});
+  const limparFiltros = () => {
+    setFiltros({});
+    carregar();
+  };
+  const carregar = async (filtrosAplicados?: OrderFilters) => {
+    setCarregando(true);
+    const [encomendasData] = await Promise.all([orderService.listar(false, filtrosAplicados)]);
+    setEncomendas(encomendasData);
+    setCarregando(false);
+  };
+  const [encomendas, setEncomendas] = useState<Order[]>([]);
+  const aplicarFiltros = () => {
+    const filtrosFormatados: OrderFilters = { ...filtros };
+    
+    // Converter datas para formato ISO 8601 com timezone UTC
+    if (filtros.initial_date) {
+      const dataInicial = new Date(filtros.initial_date);
+      dataInicial.setUTCHours(0, 0, 0, 0); // Início do dia
+      filtrosFormatados.initial_date = dataInicial.toISOString();
+    }
+    
+    if (filtros.final_date) {
+      const dataFinal = new Date(filtros.final_date);
+      dataFinal.setUTCHours(23, 59, 59, 999); // Final do dia
+      filtrosFormatados.final_date = dataFinal.toISOString();
+    }
+    
+    carregar(filtrosFormatados);
+  };
 
   useEffect(() => {
     setCarregando(true);
@@ -70,7 +102,13 @@ const Dashboard = () => {
                 <RoutesMap />
               </div>
             </div>
-            <OrdersTable pedidos={dados.last_orders} />
+            <OrderFiltersComponent
+              filtros={filtros}
+              onFiltrosChange={setFiltros}
+              onAplicarFiltros={aplicarFiltros}
+              onLimparFiltros={limparFiltros}
+            />
+            <OrdersTable pedidos={encomendas} />
             <StatusCards statusData={dados.count_orders_grouped_by_status} />
             <div className="flex flex-wrap gap-6 my-6">
               <div className="flex-1 min-w-[300px]">
