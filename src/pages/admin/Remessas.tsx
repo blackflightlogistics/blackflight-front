@@ -262,7 +262,7 @@ const Remessas = () => {
               to="/admin/remessas/nova"
               className="px-4 py-2 bg-orange text-white font-semibold rounded hover:opacity-90 transition text-sm"
             >
-              {t.gerar_etiquetas}
+              {t.remessa_manual_titulo}
             </Link>
 
             <select
