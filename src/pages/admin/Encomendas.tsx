@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import OrderFiltersComponent from "../../components/admin/OrderFilters";
-import { Order, orderService, OrderFilters } from "../../services/encomendaService";
+import {
+  Order,
+  orderService,
+  OrderFilters,
+} from "../../services/encomendaService";
 import { pacoteStatusToString, paymentTypeToString } from "../../utils/utils";
 import { useLanguage } from "../../context/useLanguage";
 import { gerarQrBase64PNG } from "../../components/shared/QRCodeComLogo";
+import { toast } from "react-toastify";
 
 function Encomendas() {
   const { translations: t } = useLanguage();
@@ -16,10 +21,13 @@ function Encomendas() {
   const [gerandoQRCodes, setGerandoQRCodes] = useState(false);
   const [imprimindo, setImprimindo] = useState(false);
   const [filtros, setFiltros] = useState<OrderFilters>({});
-
+  const [showModalCancelar, setShowModalCancelar] = useState(false);
+  const [encomendaId, setEncomendaId] = useState<string>("");
   const carregar = async (filtrosAplicados?: OrderFilters) => {
     setCarregando(true);
-    const [encomendasData] = await Promise.all([orderService.listar(false, filtrosAplicados)]);
+    const [encomendasData] = await Promise.all([
+      orderService.listar(false, filtrosAplicados),
+    ]);
     setEncomendas(encomendasData);
     setCarregando(false);
   };
@@ -30,23 +38,28 @@ function Encomendas() {
 
   const aplicarFiltros = () => {
     const filtrosFormatados: OrderFilters = { ...filtros };
-    
+
     // Converter datas para formato ISO 8601 com timezone UTC
     if (filtros.initial_date) {
       const dataInicial = new Date(filtros.initial_date);
       dataInicial.setUTCHours(0, 0, 0, 0); // Início do dia
       filtrosFormatados.initial_date = dataInicial.toISOString();
     }
-    
+
     if (filtros.final_date) {
       const dataFinal = new Date(filtros.final_date);
       dataFinal.setUTCHours(23, 59, 59, 999); // Final do dia
       filtrosFormatados.final_date = dataFinal.toISOString();
     }
-    
+
     carregar(filtrosFormatados);
   };
-
+  const cancelarEncomenda = async (id: string) => {
+    await orderService.cancelar(id);
+    setShowModalCancelar(false);
+    toast.success(t.encomenda_cancelada);
+    carregar();
+  };
   const limparFiltros = () => {
     setFiltros({});
     carregar();
@@ -55,26 +68,29 @@ function Encomendas() {
   useEffect(() => {
     const gerarQrCodes = async () => {
       if (encomendas.length === 0) return;
-      
+
       setGerandoQRCodes(true);
-      
+
       try {
         // Gerar QR codes um por vez para evitar sobrecarga
         const qrCache: Record<string, string> = {};
-        
+
         for (const e of encomendas) {
           try {
             const qrCode = await gerarQrBase64PNG(`E-${e.id}`);
             qrCache[e.id] = qrCode;
-            
+
             // Atualizar o cache incrementalmente para feedback visual
-            setQrCodeCache(prev => ({ ...prev, [e.id]: qrCode }));
+            setQrCodeCache((prev) => ({ ...prev, [e.id]: qrCode }));
           } catch (error) {
-            console.error(`Erro ao gerar QR code para encomenda ${e.id}:`, error);
+            console.error(
+              `Erro ao gerar QR code para encomenda ${e.id}:`,
+              error
+            );
           }
         }
       } catch (error) {
-        console.error('Erro geral ao gerar QR codes:', error);
+        console.error("Erro geral ao gerar QR codes:", error);
       } finally {
         setGerandoQRCodes(false);
       }
@@ -85,13 +101,16 @@ function Encomendas() {
 
   const imprimirListagem = async () => {
     setImprimindo(true);
-    
+
     try {
       // Garantir que todos os QR codes estejam gerados
       let qrCodesCompletos = qrCodeCache;
-      
+
       // Se ainda estão sendo gerados ou alguns estão faltando, gerar todos novamente
-      if (gerandoQRCodes || Object.keys(qrCodeCache).length < encomendas.length) {
+      if (
+        gerandoQRCodes ||
+        Object.keys(qrCodeCache).length < encomendas.length
+      ) {
         const qrPromises = encomendas.map(async (e) => {
           if (qrCodeCache[e.id]) {
             return { id: e.id, qrCode: qrCodeCache[e.id] };
@@ -102,11 +121,11 @@ function Encomendas() {
 
         const qrResults = await Promise.all(qrPromises);
         qrCodesCompletos = {};
-        
+
         qrResults.forEach(({ id, qrCode }) => {
           qrCodesCompletos[id] = qrCode;
         });
-        
+
         // Atualizar o cache principal também
         setQrCodeCache(qrCodesCompletos);
       }
@@ -230,15 +249,21 @@ function Encomendas() {
                 </div>
                 
                 <div class="qr-section">
-                  ${qrCodesCompletos[e.id] ? `
-                    <img src="${qrCodesCompletos[e.id]}" width="120" height="120" alt="QR Code" />
+                  ${
+                    qrCodesCompletos[e.id]
+                      ? `
+                    <img src="${
+                      qrCodesCompletos[e.id]
+                    }" width="120" height="120" alt="QR Code" />
                     <p>ID: E-${e.id.split("-")[0]}</p>
-                  ` : `
+                  `
+                      : `
                     <div style="width: 120px; height: 120px; background: #f0f0f0; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
                       <span style="font-size: 12px; color: #666;">QR Code</span>
                     </div>
                     <p>ID: E-${e.id.split("-")[0]}</p>
-                  `}
+                  `
+                  }
                 </div>
                 
                 <div class="info-section">
@@ -285,16 +310,15 @@ function Encomendas() {
 
       printWindow.document.write(printContent);
       printWindow.document.close();
-      
+
       // Aguardar um pouco para garantir que as imagens carregaram antes de imprimir
       setTimeout(() => {
         printWindow.print();
         setImprimindo(false);
       }, 1000);
-      
     } catch (error) {
-      console.error('Erro ao imprimir:', error);
-      alert('Erro ao preparar impressão. Tente novamente.');
+      console.error("Erro ao imprimir:", error);
+      alert("Erro ao preparar impressão. Tente novamente.");
       setImprimindo(false);
     }
   };
@@ -358,10 +382,11 @@ function Encomendas() {
             <div className="flex items-center gap-2">
               <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
               <span className="text-blue-700 text-sm">
-                {imprimindo 
-                  ? "Preparando impressão com QR codes..." 
-                  : `Gerando QR codes... (${Object.keys(qrCodeCache).length}/${encomendas.length})`
-                }
+                {imprimindo
+                  ? "Preparando impressão com QR codes..."
+                  : `Gerando QR codes... (${Object.keys(qrCodeCache).length}/${
+                      encomendas.length
+                    })`}
               </span>
             </div>
           </div>
@@ -393,9 +418,9 @@ function Encomendas() {
                           {e.to_account.name.toLocaleLowerCase()}
                         </p>
                         <p>
-                          <strong>{t.endereco}</strong> {e.number} -{" "}
-                          {e.street} - {e.neighborhood} - {e.city} - {e.state}{" "}
-                          - {e.country} - {e.cep}
+                          <strong>{t.endereco}</strong> {e.number} - {e.street}{" "}
+                          - {e.neighborhood} - {e.city} - {e.state} -{" "}
+                          {e.country} - {e.cep}
                         </p>
                       </div>
                       <div>
@@ -413,14 +438,20 @@ function Encomendas() {
                               {gerandoQRCodes ? (
                                 <div className="flex flex-col items-center gap-2">
                                   <div className="animate-spin rounded-full h-6 w-6 border-2 border-orange border-t-transparent"></div>
-                                  <span className="text-xs text-gray-500">Gerando...</span>
+                                  <span className="text-xs text-gray-500">
+                                    Gerando...
+                                  </span>
                                 </div>
                               ) : (
-                                <span className="text-xs text-gray-500">QR Code</span>
+                                <span className="text-xs text-gray-500">
+                                  QR Code
+                                </span>
                               )}
                             </div>
                           )}
-                          <p className="text-xs mt-1 font-medium">ID: E-{e?.id.split("-")[0]}</p>
+                          <p className="text-xs mt-1 font-medium">
+                            ID: E-{e?.id.split("-")[0]}
+                          </p>
                         </div>
                       </div>
 
@@ -473,18 +504,43 @@ function Encomendas() {
                           </div>
                         ))}
                       </div>
-                      <Link
-                        to={`/admin/encomendas/${e.id}/pagamento`}
-                        className="text-center mt-4 md:mt-0 md:absolute top-30 right-4 px-4 py-2 bg-orange text-white rounded-md font-secondary text-sm hover:opacity-90 transition"
-                      >
-                        {t.detalhes}
-                      </Link>
+
+                      <div>
+                        <button
+                          className=" px-4 py-2 mr-2 bg-orange text-white rounded-md font-secondary text-sm hover:opacity-90 transition"
+                          onClick={() => {
+                            setShowModalCancelar(true);
+                            setEncomendaId(e.id);
+                          }}
+                        >
+                          {t.cancelar}
+                        </button>
+                        <Link
+                          to={`/admin/encomendas/${e.id}/pagamento`}
+                          className="text-center mt-4 md:mt-0 px-4 py-2.5 bg-orange text-white rounded-md font-secondary text-sm hover:opacity-90 transition"
+                        >
+                          {t.detalhes}
+                        </Link>
+                      </div>
                     </div>
                   </li>
                 ))}
               </ul>
             )}
           </>
+        )}
+        {showModalCancelar && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-4 rounded-md">
+              <p className="mb-4">{t.confirmar_cancelamento_encomenda}</p>
+              <button className="bg-orange px-4 py-2 mr-2 text-white rounded-md" onClick={() => cancelarEncomenda(encomendaId)}>
+                {t.confirmar}
+              </button>
+              <button className="bg-orange px-4 py-2 text-white rounded-md" onClick={() => setShowModalCancelar(false)}> 
+                {t.cancelar}
+              </button>
+            </div>
+          </div>
         )}
       </main>
     </div>

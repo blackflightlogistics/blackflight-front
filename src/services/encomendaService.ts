@@ -176,4 +176,7 @@ export const orderService = {
     const response = await api.put<Order>(`/orders/${orderId}`, data);
     return response.data;
   },
+  cancelar: async (id: string): Promise<void> => {
+    await api.post(`/orders/${id}/cancel`);
+  },
 };

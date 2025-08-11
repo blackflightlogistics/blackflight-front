@@ -291,6 +291,8 @@ export const translations = {
         faq_question_15: "How can I contact you?",
         faq_answer_15: "📞 Phone: +33 6 28 25 84 14 📧 Email: Support@blackflightlogistics.com 📍 Address: 11 Cité Riverin, 75010 Paris 📱 WhatsApp / Social media: wa.me/33628258414",
         copied_to_clipboard: "Email copied to clipboard",
+        encomenda_cancelada: "Order canceled successfully!",
+        confirmar_cancelamento_encomenda: "Are you sure you want to cancel the order?",
     },
     ES: {
         login_title: "Acceso Administrativo",
@@ -583,7 +585,9 @@ export const translations = {
         faq_answer_14: "Actualmente, nuestro servicio está limitado a ciertos destinos. Pero planeamos ampliar nuestra cobertura muy pronto. ¡Estate atento!",
         faq_question_15: "¿Cómo puedo contactaros?",
         faq_answer_15: "📞 Teléfono: +33 6 28 25 84 14 📧 Email: Support@blackflightlogistics.com 📍 Dirección: 11 Cité Riverin, 75010 Paris 📱 WhatsApp / Redes sociales: wa.me/33628258414",
-        copied_to_clipboard: "Email copiado para a área de transferência",
+        copied_to_clipboard: "Copiado para el portapapeles",
+        encomenda_cancelada: "Encomenda cancelada con éxito!",
+        confirmar_cancelamento_encomenda: "¿Estás seguro de querer cancelar la encomenda?",
     },
     FR: {
         login_title: "Accès Administratif",
@@ -876,6 +880,8 @@ export const translations = {
         faq_question_15: "Comment puis-je vous contacter ?",
         faq_answer_15: "📞 Téléphone : +33 6 28 25 84 14 📧 Email : Support@blackflightlogistics.com 📍 Adresse : 11 Cité Riverin 75010 Paris 📱 WhatsApp / Réseaux sociaux : wa.me/33628258414",
         copied_to_clipboard: "Email copiado pour le presse-papiers",
+        encomenda_cancelada: "Encomenda annulée avec succès !",
+        confirmar_cancelamento_encomenda: "Êtes-vous sûr de vouloir annuler cette commande ?",
     },
     PT: {
         login_title: "Acesso administrativo",
@@ -1171,6 +1177,8 @@ export const translations = {
         faq_question_15: "Como posso contactá-los?",
         faq_answer_15: "📞 Telefone: +33 6 28 25 84 14 📧 Email: Support@blackflightlogistics.com 📍 Endereço: 11 Cité Riverin, 75010 Paris 📱 WhatsApp / Redes sociais: wa.me/33628258414",
         copied_to_clipboard: "Email copiado para a área de transferência",
+        encomenda_cancelada: "Encomenda cancelada com sucesso!",
+        confirmar_cancelamento_encomenda: "Tem certeza que deseja cancelar a encomenda?",
     }
 
 };
