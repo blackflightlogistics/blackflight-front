@@ -362,131 +362,285 @@ function EtiquetaEncomenda() {
     pdf.setFontSize(16);
     posY += 6;
 
-    pdf.text("Normas", margem, posY);
-
     posY += 10;
 
     pdf.text(
-      "*Conditions Générales de Transport – Black Flight Logistics**",
+      "Conditions Générales de Transport – Black Flight Logistics",
+      margem,
+      posY
+    );
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    posY += 14;
+    pdf.text("Article 1 – Douane et marchandises périssables\n", margem, posY);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+    posY += 5;
+    pdf.text(
+      "Black Flight Logistics ne peut être tenu responsable des colis saisis ou détruits par les autorités \n douanières à l’arrivée, ni des colis contenant des produits périssables.",
+      margem,
+      posY
+    );
+    posY += 20;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text("Article 2 – Délai de responsabilité et stockage\n", margem, posY);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    posY += 5;
+
+    pdf.text(
+      "5 jours Passé après l’acheminement des colis dans nos locaux respectifs , la responsabilité de\nBlack Flight Logistics ne saurait être engagée, sauf accord exceptionnel préalable.\nLes colis contenant des liquides et les marchandises mises en stockage sont pris en charge\nsans garantie. Un délai de 78 heures est accordé à partir de la notification de disponibilité.\nAu-delà, des frais de gardiennage à partir de 3 000 FCFA seront facturés.",
+      margem,
+      posY
+    );
+
+    posY += 30;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text("Article 3 – Vérification à la réception\n", margem, posY);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    posY += 5;
+    pdf.text(
+      "Le client est tenu de vérifier l’état et le contenu de son colis au moment de son retrait dans les\nlocaux de Black Flight Logistics. Une fois le colis récupéré, l’entreprise décline toute\nresponsabilité.",
+
+      margem,
+      posY
+    );
+    posY += 20;
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+    pdf.text(
+      "Article 4 – Indemnisation en cas de perte ou détérioration\n",
+      margem,
+      posY
+    );
+    posY += 5;
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+    pdf.text(
+      "En cas de perte ou de dommage, Black Flight Logistics indemnise à hauteur de 30 % de la\nvaleur déclarée, à condition que la facture d’achat originale soit fournie au moment du dépôt.\nUne évaluation de la vétusté sera également effectuée. Le montant d’indemnisation est\nplafonné à 300 euros.",
+      margem,
+      posY
+    );
+    posY += 25;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text("Article 5 – Déclaration des articles de valeur\n", margem, posY);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    posY += 5;
+    pdf.text(
+      "Tout objet de valeur doit être déclaré et justifié par le client lors de l’expédition. Le coût du\nservice sera ajusté selon le prix d’achat déclaré.",
+      margem,
+      posY
+    );
+    posY += 20;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text("Article 6 – Enlèvements et livraisons\n", margem, posY);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    posY += 5;
+
+    pdf.text(
+      "Les enlèvements et livraisons sont réalisés sur devis, en fonction de la localisation\n géographique du client.",
+      margem,
+      posY
+    );
+    posY += 20;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text("Article 7 – Tarifs et délais de livraison\n", margem, posY);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    posY += 5;
+
+    pdf.text(
+      "* Paris → Cameroun : 12 euros/kg pour les colis ordinaires\n* Cameroun → Paris : 10 euros/kg pour les colis ordinaires\nLes délais de livraison varient entre 1 a 3 jours à partir de la date de départ. Ces délais\npeuvent être prolongés pour des raisons indépendantes de notre volonté (procédures\ndouanières, retards aériens, etc.).",
+      margem,
+      posY
+    );
+    posY += 30;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text(
+      "Article 8 – Évolution des tarifs et réexpédition \n",
+      margem,
+      posY
+    );
+    posY += 5;
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    pdf.text(
+      "Les tarifs peuvent être révisés en fonction des conditions du marché. Le client sera informé \n par message ou affichage en agence. En cas de demande de réexpédition (vers d'autres régions d’Europe, de France ou à l’intérieur \n du Cameroun), les frais appliqués dépendront des tarifs du transporteur choisi. En cas de perte, de retard ou de dommage survenu chez ce dernier, le client devra engager lui-même les \n démarches. Black Flight Logistics ne saurait être tenu responsable.",
+      margem,
+      posY
+    );
+
+    pdf.addPage();
+    posY = 10;
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text(
+      "Article 9 – Responsabilité en cas de perte ou de dommage \n",
       margem,
       posY
     );
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(12);
 
-    posY += 14;
-    pdf.text(
-      "**Article 1 – Douane et marchandises périssables**\nBlack Flight Logistics ne peut être tenu responsable des colis saisis ou détruits par les autorités \n douanières à l’arrivée, ni des colis contenant des produits périssables.",
-      margem,
-      posY
-    );
-    posY += 20;
+    posY += 5;
 
     pdf.text(
-      "**Article 2 – Délai de responsabilité et stockage**\n5 jours Passé après l’acheminement des colis dans nos locaux respectifs , la responsabilité de\nBlack Flight Logistics ne saurait être engagée, sauf accord exceptionnel préalable.\nLes colis contenant des liquides et les marchandises mises en stockage sont pris en charge\nsans garantie. Un délai de 78 heures est accordé à partir de la notification de disponibilité.\nAu-delà, des frais de gardiennage à partir de 3 000 FCFA seront facturés.",
-      margem,
-      posY
-    );
-
-    posY += 34;
-
-    pdf.text(
-      "**Article 3 – Vérification à la réception**\nLe client est tenu de vérifier l’état et le contenu de son colis au moment de son retrait dans les\nlocaux de Black Flight Logistics. Une fois le colis récupéré, l’entreprise décline toute\nresponsabilité.",
-      margem,
-      posY
-    );
-    posY += 26;
-
-    pdf.text(
-      "**Article 4 – Indemnisation en cas de perte ou détérioration**\nEn cas de perte ou de dommage, Black Flight Logistics indemnise à hauteur de 30 % de la\nvaleur déclarée, à condition que la facture d’achat originale soit fournie au moment du dépôt.\nUne évaluation de la vétusté sera également effectuée. Le montant d’indemnisation est\nplafonné à 300 euros.",
-      margem,
-      posY
-    );
-    posY += 30;
-
-    pdf.text(
-      "**Article 5 – Déclaration des articles de valeur**\nTout objet de valeur doit être déclaré et justifié par le client lors de l’expédition. Le coût du\nservice sera ajusté selon le prix d’achat déclaré.",
-      margem,
-      posY
-    );
-    posY += 20;
-    pdf.text(
-      "**Article 6 – Enlèvements et livraisons**\nLes enlèvements et livraisons sont réalisés sur devis, en fonction de la localisation\n géographique du client.",
-      margem,
-      posY
-    );
-    posY += 20;
-
-    pdf.text(
-      "**Article 7 – Tarifs et délais de livraison**\n* Paris → Cameroun : 12 euros/kg pour les colis ordinaires\n* Cameroun → Paris : 10 euros/kg pour les colis ordinaires\nLes délais de livraison varient entre 1 a 3 jours à partir de la date de départ. Ces délais\npeuvent être prolongés pour des raisons indépendantes de notre volonté (procédures\ndouanières, retards aériens, etc.).",
-      margem,
-      posY
-    );
-    posY += 35;
-
-    pdf.text(
-      "**Article 8 – Évolution des tarifs et réexpédition** \n Les tarifs peuvent être révisés en fonction des conditions du marché. Le client sera informé \n par message ou affichage en agence. En cas de demande de réexpédition (vers d'autres régions d’Europe, de France ou à l’intérieur \n du Cameroun), les frais appliqués dépendront des tarifs du transporteur choisi. En cas de perte, de retard ou de dommage survenu chez ce dernier, le client devra engager lui-même les \n démarches. Black Flight Logistics ne saurait être tenu responsable.",
-      margem,
-      posY
-    );
-    posY += 30;
-
-    pdf.text(
-      "**Article 9 – Responsabilité en cas de perte ou de dommage** \n En cas de perte, de vol ou de détérioration du colis, la responsabilité de Black Flight Logistics ne pourra être engagée au-delà du montant des frais de transport acquittés par le client.",
+      "En cas de perte, de vol ou de détérioration du colis, la responsabilité de Black Flight Logistics \n ne pourra être engagée au-delà du montant des frais de transport acquittés par le client.",
       margem,
       posY
     );
     posY += 15;
 
-    pdf.text(
-      "**Article 10 – Litiges** \n En cas de litige, le client s'engage à contacter Black Flight Logistics dans un délai de 7 jours à compter de la date de livraison. Passé ce délai, aucune réclamation ne pourra être acceptée.",
-      margem,
-      posY
-    );
-    pdf.addPage();
-    posY = 10;
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text("Article 10 – Litiges \n", margem, posY);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    posY += 5;
 
     pdf.text(
-      "**Article 11 – Produits spécifiques : délais de livraison** \n Les délais de livraison pour les produits cosmétiques, objets d’art et articles de marque sont estimés entre trois (3) et quatre (4) semaines à compter de la date de départ prévue. Ces délais peuvent être rallongés en cas de circonstances exceptionnelles.",
-      margem,
-      posY
-    );
-    posY += 15;
-
-    pdf.text(
-      "**Article 12 – Tarifs d’expédition spécifiques** \n L’envoi de produits cosmétiques, objets d’art ou articles de marque depuis le Cameroun vers la France est facturé à 15 euros.",
+      "En cas de litige, le client s'engage à contacter Black Flight Logistics dans un délai de 7 jours à \n compter de la date de livraison. Passé ce délai, aucune réclamation ne pourra être acceptée.",
       margem,
       posY
     );
     posY += 15;
 
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
     pdf.text(
-      "**Article 13 – Paiement à l’arrivée** \n Les colis réglés à l’arrivée en France sont soumis à une majoration de 2 euros.",
+      "Article 11 – Produits spécifiques : délais de livraison \n",
       margem,
       posY
     );
-    posY += 15;
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    posY += 5;
 
     pdf.text(
-      "**Article 14 – Commandes en ligne** \n Black Flight Logistics décline toute responsabilité pour les colis achetés en ligne et livrés à\n une adresse différente de celle recommandée par nos services.",
+      "Les délais de livraison pour les produits cosmétiques, objets d’art et articles de marque sont estimés\n entre trois (3) et quatre (4) semaines à compter de la date de départ prévue. Ces délais peuvent être \n rallongés en cas de circonstances exceptionnelles.",
       margem,
       posY
     );
     posY += 20;
 
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text("Article 12 – Tarifs d’expédition spécifiques \n", margem, posY);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    posY += 5;
+
     pdf.text(
-      "**Article 15 – Preuve de livraison** \n Une preuve de livraison émise par un transporteur tiers ne constitue pas une preuve\n irréfutable de bonne réception du colis.",
+      "L’envoi de produits cosmétiques, objets d’art ou articles de marque depuis le Cameroun vers la France \n est facturé à 15 euros.",
       margem,
       posY
     );
-    posY += 20;
+    posY += 15;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text("Article 13 – Paiement à l’arrivée \n", margem, posY);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    posY += 5;
 
     pdf.text(
-      "**Article 16 – Colis non payés au départ** \n Tout colis expédié depuis le Cameroun vers l’Europe sans paiement préalable fera l’objet\nd’une majoration de 2 à 5 euros à l’arrivée.",
+      "Les colis réglés à l’arrivée en France sont soumis à une majoration de 2 euros.",
       margem,
       posY
     );
+    posY += 10;
 
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text("Article 14 – Commandes en ligne \n", margem, posY);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    posY += 5;
+
+    pdf.text(
+      "Black Flight Logistics décline toute responsabilité pour les colis achetés en ligne et livrés à\n une adresse différente de celle recommandée par nos services.",
+      margem,
+      posY
+    );
+    posY += 15;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text("Article 15 – Preuve de livraison \n", margem, posY);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    posY += 5;
+
+    pdf.text(
+      "Une preuve de livraison émise par un transporteur tiers ne constitue pas une preuve\n irréfutable de bonne réception du colis.",
+      margem,
+      posY
+    );
+    posY += 15;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+
+    pdf.text("Article 16 – Colis non payés au départ \n", margem, posY);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+
+    posY += 5;
+
+    pdf.text(
+      "Tout colis expédié depuis le Cameroun vers l’Europe sans paiement préalable fera l’objet\nd’une majoration de 2 à 5 euros à l’arrivée.",
+      margem,
+      posY
+    );
     posY += 20;
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(16);
@@ -517,11 +671,11 @@ function EtiquetaEncomenda() {
     pdf.setFont("helvetica", "normal");
     posY += 5;
     pdf.text(
-      "5 days after the arrival of parcels at our respective facilities, Black Flight Logistics shall no longer be held responsible, unless prior exceptional agreement has been made. Parcels containing liquids and goods placed in storage are handled without guarantee. A period of 78 hours is granted from the notification of availability. Beyond that, storage fees starting at 3,000 FCFA will be charged.",
+      "5 days after the arrival of parcels at our respective facilities, Black Flight Logistics shall \n no longer be held responsible, unless prior exceptional agreement has been made.\n Parcels containing liquids and goods placed in storage are handled without guarantee.\n A period of 78 hours is granted from the notification of availability. Beyond that, storage fees starting \n at 3,000 FCFA will be charged.",
       margem,
       posY
     );
-    posY += 15;
+    posY += 35;
 
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(16);
@@ -550,6 +704,9 @@ function EtiquetaEncomenda() {
       posY
     );
     posY += 20;
+    
+    pdf.addPage();
+    posY = 20;
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(16);
     pdf.text("Article 5 – Declaration of Valuable Items", margem, posY);
@@ -578,8 +735,6 @@ function EtiquetaEncomenda() {
     posY += 15;
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(16);
-    pdf.addPage();
-    posY = 20;
     pdf.text("Article 7 – Shipping Rates and Delivery Times", margem, posY);
     posY += 5;
     pdf.setFont("helvetica", "normal");
@@ -610,7 +765,7 @@ function EtiquetaEncomenda() {
       margem,
       posY
     );
-    posY += 40;
+    posY += 35;
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(16);
     pdf.text("Article 9 – Claims Conditions", margem, posY);
