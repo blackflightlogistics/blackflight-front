@@ -44,7 +44,7 @@ const ClienteSelect = ({
             ref={inputRef}
             className="w-full border border-gray-300 rounded p-2"
             displayValue={(id: string | "") =>
-              clientes.find((c) => c.id === id)?.name || ""
+              clientes.find((c) => c.id === id)?.name + " " + clientes.find((c) => c.id === id)?.last_name || ""
             }
             onChange={(event) => {
               setQuery(event.target.value);

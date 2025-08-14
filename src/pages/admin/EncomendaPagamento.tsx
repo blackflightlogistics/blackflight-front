@@ -401,7 +401,7 @@ function EncomendaPagamento() {
               <p className="text-lg font-semibold">
                 {t.valor_final}:{" "}
                 <span className="text-green-700">
-                  R$ {valorFinal.toFixed(2)}
+                  € {valorFinal.toFixed(2)}
                 </span>
               </p>
               <p className="text-sm text-gray-700">

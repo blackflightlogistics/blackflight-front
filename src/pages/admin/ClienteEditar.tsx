@@ -9,6 +9,8 @@ import {
 } from "../../services/clienteService";
 import { useLanguage } from "../../context/useLanguage";
 import PhoneInput from "react-phone-input-2";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 function ClienteEditar() {
   const { id } = useParams<{ id: string }>();
@@ -38,10 +40,21 @@ function ClienteEditar() {
 
   const atualizarCliente = async () => {
     if (!cliente) return;
-    setLoading(true);
-    await clienteService.atualizar(cliente.id, cliente);
-    navigate("/admin/clientes");
-    setLoading(false);
+    try {
+      setLoading(true);
+      await clienteService.atualizar(cliente.id, cliente);
+      navigate("/admin/clientes");
+    } catch (error) {
+      //{"params":{"last_name":["is required"]},"type":"eg:error:payload"}
+      //tratar este erro
+      if (error instanceof AxiosError) {
+        if (error.response?.data.params.last_name) {
+          toast.error("Erro ao salvar cliente adicione o sobrenome");
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSalvarEndereco = () => {
@@ -140,7 +153,7 @@ function ClienteEditar() {
                   type="text"
                   value={cliente.last_name}
                   onChange={(e) =>
-                    setCliente({ ...cliente, name: e.target.value })
+                    setCliente({ ...cliente, last_name: e.target.value })
                   }
                   placeholder={t.form_sobrenome}
                   className="p-2 border rounded"

@@ -74,6 +74,7 @@ export const clienteService = {
     cliente: Omit<Cliente, "id">
   ): Promise<Cliente> => {
     const payload = {
+      last_name: cliente.last_name,
       name: cliente.name,
       email: cliente.email,
       document: cliente.document,
@@ -144,6 +145,7 @@ console.log("payload", payload);
     dados: Partial<Cliente>
   ): Promise<Cliente> => {
     const payload = {
+      last_name: dados.last_name,
       name: dados.name,
       email: dados.email,
       document: dados.document,

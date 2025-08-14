@@ -558,7 +558,7 @@ const cancelarEdicao = () => {
               checked={encomendaExpressa}
               onChange={(e) => setEncomendaExpressa(e.target.checked)}
             />
-            {t.encomenda_expressa} ({t.adicional} R${" "}
+            {t.encomenda_expressa} ({t.adicional} €{" "}
             {adicionalExpresso.toFixed(2)})
           </label>
           {encomendaExpressa && (
@@ -637,7 +637,7 @@ const cancelarEdicao = () => {
                   <span className="font-medium">📦 {p.description}</span>
                   <span className="text-gray-600 ml-2">— {p.weight}kg</span>
                   {p.declared_value !== "0" && (
-                    <span className="text-green-600 ml-2">— R$ {p.declared_value}</span>
+                    <span className="text-green-600 ml-2">— € {p.declared_value}</span>
                   )}
                   <span className="text-blue-600 ml-2 text-sm">({p.status})</span>
                 </div>
