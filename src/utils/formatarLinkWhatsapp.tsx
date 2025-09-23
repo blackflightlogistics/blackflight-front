@@ -33,7 +33,9 @@ export function formatarLinkWhatsapp(
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className={`${isGreen ? "text-green-600" : "text-white"} inline-flex items-center gap-2`}
+      className={`${
+        isGreen ? "text-green-600" : "text-white"
+      } inline-flex items-center gap-2`}
     >
       {options?.icon && <FaWhatsapp />}
       {numero}
@@ -99,24 +101,24 @@ export function gerarMensagemWhatsappPorStatus(
   const mensagens: Record<string, { remetente: string; destinatario: string }> =
     {
       em_preparacao: {
-        remetente: `Votre commande avec le code de suivi ${trackingCode} est maintenant en préparation.`,
-        destinatario: `Votre commande avec le code de suivi ${trackingCode} est en cours de préparation.`,
+        remetente: `🟡 Commande en cours de préparation Bonjour, Nous vous informons que votre commande, identifiée par le code de suivi ${trackingCode}, est actuellement en cours de préparation et sera expédiée dans les plus brefs délais. 📦 Vous pouvez suivre son avancement à tout moment en visitant notre site : 👉 www.blackflightlogistics.com 📲 Pour ne rien manquer de nos départs, actualités, offres et nouveautés, enregistrez notre numéro dès maintenant en cliquant ici : 👉 https://wa.me/33628258414 Nous restons à votre disposition pour toute question ou information complémentaire. Cordialement, Black Flight Logistics`,
+        destinatario: `🟡 Commande en cours de préparation Bonjour, Nous vous informons que votre commande, identifiée par le code de suivi ${trackingCode}, est actuellement en cours de préparation et sera expédiée dans les plus brefs délais. 📦 Vous pouvez suivre son avancement à tout moment en visitant notre site : 👉 www.blackflightlogistics.com 📲 Pour ne rien manquer de nos départs, actualités, offres et nouveautés, enregistrez notre numéro dès maintenant en cliquant ici : 👉 https://wa.me/33628258414 Nous restons à votre disposition pour toute question ou information complémentaire. Cordialement, Black Flight Logistics`,
       },
       em_transito: {
-        remetente: `Votre commande avec le code de suivi ${trackingCode} a été expédiée.`,
-        destinatario: `Votre commande avec le code de suivi ${trackingCode} est en route.`,
+        remetente: `🚚 Commande en route Bonjour, Votre commande, identifiée par le code de suivi  ${trackingCode}, est en route. 🚚 📦 Vous pouvez suivre son avancement à tout moment en visitant notre site : 👉 www.blackflightlogistics.com 📲 Pour ne rien manquer de nos départs, actualités, offres et nouveautés, enregistrez notre numéro dès maintenant en cliquant ici : 👉 https://wa.me/33628258414 Nous restons à votre disposition pour toute question ou information complémentaire. Cordialement, Black Flight Logistics`,
+        destinatario: `🚚 Commande en route Bonjour, Votre commande, identifiée par le code de suivi  ${trackingCode}, est en route. 🚚 📦 Vous pouvez suivre son avancement à tout moment en visitant notre site : 👉 www.blackflightlogistics.com 📲 Pour ne rien manquer de nos départs, actualités, offres et nouveautés, enregistrez notre numéro dès maintenant en cliquant ici : 👉 https://wa.me/33628258414 Nous restons à votre disposition pour toute question ou information complémentaire. Cordialement, Black Flight Logistics`,
       },
       aguardando_retirada: {
-        remetente: `Votre commande avec le code de suivi ${trackingCode} est en attente de retrait à notre adresse.`,
-        destinatario: `Votre commande avec le code de suivi ${trackingCode} est prête à être retirée. Veuillez apporter une pièce d'identité et le code de sécurité ${securityCode}.`,
+        remetente: `📍 Commande prête à être retirée Bonjour, Votre commande, identifiée par le code de suivi ${trackingCode}, est prête à être retirée. ✅ Pour le retrait, merci de vous munir de : •	Une pièce d’identité en cours de validité •	Le code de sécurité : ${securityCode} 📍 Nos agences sont situées à : 🇫🇷 FRANCE – PARIS 11 Cité Riverin, 75010 Paris 🕒 Du lundi au samedi : 9h30 – 19h30 🇨🇲 CAMEROUN – DOUALA Feu Rouge Bessengue, en face de la Pharmacie Mondial, à l’Imprimerie NUMERIX 🕒 Du lundi au samedi : 10h00 – 16h30 🇨🇲 CAMEROUN – YAOUNDÉ Avenue Kennedy, au niveau du restaurant Le Challenge 📞 Une fois sur place, veuillez appeler Christine au +237 6 56 64 91 86 🕒 Du lundi au samedi : 10h00 – 16h30 📦 Vous pouvez suivre le statut de votre commande à tout moment en visitant notre site : 👉 www.blackflightlogistics.com 📲 Pour ne rien manquer de nos départs, actualités, offres et nouveautés, enregistrez notre numéro dès maintenant en cliquant ici : 👉 https://wa.me/33628258414 Nous restons à votre disposition pour toute question ou information complémentaire. Cordialement, Black Flight Logistics`,
+        destinatario: `📍 Commande prête à être retirée Bonjour, Votre commande, identifiée par le code de suivi ${trackingCode}, est prête à être retirée. ✅ Pour le retrait, merci de vous munir de : •	Une pièce d’identité en cours de validité •	Le code de sécurité : ${securityCode} 📍 Nos agences sont situées à : 🇫🇷 FRANCE – PARIS 11 Cité Riverin, 75010 Paris 🕒 Du lundi au samedi : 9h30 – 19h30 🇨🇲 CAMEROUN – DOUALA Feu Rouge Bessengue, en face de la Pharmacie Mondial, à l’Imprimerie NUMERIX 🕒 Du lundi au samedi : 10h00 – 16h30 🇨🇲 CAMEROUN – YAOUNDÉ Avenue Kennedy, au niveau du restaurant Le Challenge 📞 Une fois sur place, veuillez appeler Christine au +237 6 56 64 91 86 🕒 Du lundi au samedi : 10h00 – 16h30 📦 Vous pouvez suivre le statut de votre commande à tout moment en visitant notre site : 👉 www.blackflightlogistics.com 📲 Pour ne rien manquer de nos départs, actualités, offres et nouveautés, enregistrez notre numéro dès maintenant en cliquant ici : 👉 https://wa.me/33628258414 Nous restons à votre disposition pour toute question ou information complémentaire. Cordialement, Black Flight Logistics`,
       },
       cancelada: {
-        remetente: `Votre commande avec le code de suivi ${trackingCode} a été annulée.`,
-        destinatario: `Nous sommes désolés de vous informer que votre commande avec le code de suivi ${trackingCode} a été annulée.`,
+        remetente: `⏳ Commande en attente de retrait Bonjour, Votre commande, identifiée par le code de suivi ${trackingCode}, est en attente de retrait à notre adresse. 📦 Vous pouvez suivre son avancement à tout moment en visitant notre site : 👉 www.blackflightlogistics.com 📲 Pour ne rien manquer de nos départs, actualités, offres et nouveautés, enregistrez notre numéro dès maintenant en cliquant ici : 👉 https://wa.me/33628258414 Nous restons à votre disposition pour toute question ou information complémentaire. Cordialement, Black Flight Logistics`,
+        destinatario: `⏳ Commande en attente de retrait Bonjour, Votre commande, identifiée par le code de suivi ${trackingCode}, est en attente de retrait à notre adresse. 📦 Vous pouvez suivre son avancement à tout moment en visitant notre site : 👉 www.blackflightlogistics.com 📲 Pour ne rien manquer de nos départs, actualités, offres et nouveautés, enregistrez notre numéro dès maintenant en cliquant ici : 👉 https://wa.me/33628258414 Nous restons à votre disposition pour toute question ou information complémentaire. Cordialement, Black Flight Logistics`,
       },
       entregue: {
-        remetente: `Votre commande avec le code de suivi ${trackingCode} a été livrée avec succès.`,
-        destinatario: `Votre commande avec le code de suivi ${trackingCode} a été livrée. Merci pour votre confiance !`,
+        remetente: `✅ Commande livrée avec succès 🎉 Bonjour ! Votre commande, identifiée par le code de suivi O138970762, a été livrée avec succès. 📦✨ Un grand merci pour votre fidélité et la confiance que vous nous accordez 🙏💙 C’est toujours un plaisir de vous servir ! 📲 Pour ne rien manquer de nos départs, actualités, offres et nouveautés, enregistrez notre numéro dès maintenant en cliquant ici : 👉 https://wa.me/33628258414 À très bientôt, Black Flight Logistics ✈️🚀`,
+        destinatario: `✅ Commande livrée avec succès 🎉 Bonjour ! Votre commande, identifiée par le code de suivi O138970762, a été livrée avec succès. 📦✨ Un grand merci pour votre fidélité et la confiance que vous nous accordez 🙏💙 C’est toujours un plaisir de vous servir ! 📲 Pour ne rien manquer de nos départs, actualités, offres et nouveautés, enregistrez notre numéro dès maintenant en cliquant ici : 👉 https://wa.me/33628258414 À très bientôt, Black Flight Logistics ✈️🚀`,
       },
     };
 
