@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLanguage } from "../../context/useLanguage";
-import { Country, State, City } from "country-state-city";
-import { ICountry, IState, ICity } from "country-state-city";
+import {
+  CountrySelect,
+  StateSelect,
+  CitySelect,
+} from "react-country-state-city";
+import "react-country-state-city/dist/react-country-state-city.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
@@ -43,36 +47,10 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
     country: initialData?.country || "",
   });
 
-  const [countries, setCountries] = useState<ICountry[]>([]);
-  const [states, setStates] = useState<IState[]>([]);
-  const [cities, setCities] = useState<ICity[]>([]);
+  const [countryId, setCountryId] = useState<number>(0);
+  const [stateId, setStateId] = useState<number>(0);
 
-  useEffect(() => {
-    setCountries(Country.getAllCountries());
-  }, []);
-
-  useEffect(() => {
-    if (form.country) {
-      const selectedCountry = countries.find((c) => c.name === form.country);
-      if (selectedCountry) {
-        setStates(State.getStatesOfCountry(selectedCountry.isoCode));
-        setForm((prev) => ({ ...prev, state: "", city: "" }));
-      }
-    }
-  }, [form.country, countries]);
-
-  useEffect(() => {
-    if (form.country && form.state) {
-      const selectedCountry = countries.find((c) => c.name === form.country);
-      const selectedState = states.find((s) => s.name === form.state);
-      if (selectedCountry && selectedState) {
-        setCities(
-          City.getCitiesOfState(selectedCountry.isoCode, selectedState.isoCode)
-        );
-        setForm((prev) => ({ ...prev, city: "" }));
-      }
-    }
-  }, [form.state, form.country, countries, states]);
+  // Não precisamos mais dos useEffects da biblioteca anterior
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -133,7 +111,12 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
             required: true,
           }}
           enableSearch
-          inputClass="p-2 border rounded w-full"
+          containerClass="w-full !w-full h-12"
+          inputClass="p-2 border rounded w-full !w-full h-12"
+          buttonClass="border rounded-l !border-r-0 h-12"
+          containerStyle={{ width: '100%', height: '48px' }}
+          inputStyle={{ width: '100%', height: '48px' }}
+          buttonStyle={{ height: '48px' }}
         />
 
         <input
@@ -166,46 +149,45 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
           onChange={handleChange}
           className="p-2 border rounded"
         />
-        <select
-          name="country"
-          value={form.country}
-          onChange={handleChange}
+        <CountrySelect
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onChange={(e: any) => {
+            const countryId = e.target?.value || e.id || e;
+            const countryName = e.target?.options?.[e.target.selectedIndex]?.text || e.name || "";
+            setCountryId(countryId);
+            setForm({ ...form, country: countryName });
+            // Reset state and city when country changes
+            setStateId(0);
+            setForm(prev => ({ ...prev, state: "", city: "" }));
+          }}
+          placeHolder={t.form_pais}
           className="p-2 border rounded"
-          required
-        >
-          <option value="">{t.form_pais}</option>
-          {countries.map((c) => (
-            <option key={c.isoCode} value={c.name}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-        <select
-          name="state"
-          value={form.state}
-          onChange={handleChange}
+        />
+        <StateSelect
+          countryid={countryId}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onChange={(e: any) => {
+            const stateId = e.target?.value || e.id || e;
+            const stateName = e.target?.options?.[e.target.selectedIndex]?.text || e.name || "";
+            setStateId(stateId);
+            setForm({ ...form, state: stateName });
+            // Reset city when state changes
+            setForm(prev => ({ ...prev, city: "" }));
+          }}
+          placeHolder={t.form_estado}
           className="p-2 border rounded"
-        >
-          <option value="">{t.form_estado}</option>
-          {states.map((s) => (
-            <option key={s.isoCode} value={s.name}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-        <select
-          name="city"
-          value={form.city}
-          onChange={handleChange}
+        />
+        <CitySelect
+          countryid={countryId}
+          stateid={stateId}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onChange={(e: any) => {
+            const cityName = e.target?.options?.[e.target.selectedIndex]?.text || e.name || "";
+            setForm({ ...form, city: cityName });
+          }}
+          placeHolder={t.form_cidade}
           className="p-2 border rounded"
-        >
-          <option value="">{t.form_cidade}</option>
-          {cities.map((c) => (
-            <option key={c.name} value={c.name}>
-              {c.name}
-            </option>
-          ))}
-        </select>
+        />
         <input
           name="cep"
           placeholder={t.form_cep}
