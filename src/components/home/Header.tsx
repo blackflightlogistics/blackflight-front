@@ -20,11 +20,11 @@ const  Header = () => {
             className="w-[1rem] h-[1rem]"
           />
           <p className="hidden sm:block font-base text-base font-normal text-white" onClick={()=>{
-              navigator.clipboard.writeText("contato@blackflight.com.br")
+              navigator.clipboard.writeText("support@blackflightlogistics.com ")
             toast.success(translations.copied_to_clipboard)
 
           }}>
-            contato@blackflight.com.br
+           support@blackflightlogistics.com 
           </p>
         </div>
         <div className="flex gap-4 items-center">
