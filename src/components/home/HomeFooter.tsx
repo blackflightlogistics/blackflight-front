@@ -146,7 +146,7 @@ const HomeFooter = ({
             <div>
               <p className="text-orange font-medium mb-1">🇨🇲 CAMEROUN (Yaoundé)</p>
               <p className="mb-1">{t.endereco_younde}</p>
-              <p className="text-xs opacity-80 mb-1">Tel: +237 69 12 04 393 (Christine)</p>
+              <p className="text-xs opacity-80 mb-1">Tel: +237 6 56 64 91 86</p>
               <p className="text-xs opacity-80">(Lundi au Samedi 10:00 - 16:30)</p>
             </div>
           </div>

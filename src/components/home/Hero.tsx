@@ -26,7 +26,7 @@ const Hero = () => {
               <button
                 type="button"
                 onClick={() => {
-                  window.open(`https://api.whatsapp.com/send/?phone=${encodeURIComponent(+237656649186)}`, "_blank");
+                  window.open(`https://api.whatsapp.com/send/?phone=${encodeURIComponent(+33628258414)}`, "_blank");
                 }}
                     
                     className="bg-orange font-secondary text-xs sm:text-sm text-white font-semibold px-4 py-2 rounded-md hover:opacity-90 transition mb-10 sm:mb-0"

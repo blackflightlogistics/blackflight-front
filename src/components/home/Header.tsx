@@ -10,9 +10,9 @@ const  Header = () => {
     <>
       <div className="flex    items-center justify-between  bg-orange pl-[2rem]  pr-[2rem]">
         <div className="flex mt-1 mb-1  gap-2 items-center">
-          <FaWhatsapp className="text-white"  onClick={()=> window.open("https://wa.me/237656649186", "_blank")}/>
+          <FaWhatsapp className="text-white"  onClick={()=> window.open("https://wa.me/33628258414", "_blank")}/>
           <p className="hidden sm:block font-base text-base font-normal text-white" >
-           {formatarLinkWhatsapp("+237 69 12 043 93")}
+           {formatarLinkWhatsapp("+33628258414")}
           </p>
           <img
             src="/email.svg"
@@ -20,18 +20,19 @@ const  Header = () => {
             className="w-[1rem] h-[1rem]"
           />
           <p className="hidden sm:block font-base text-base font-normal text-white" onClick={()=>{
-              navigator.clipboard.writeText("contato@blackflight.com.br")
+              navigator.clipboard.writeText("support@blackflightlogistics.com ")
             toast.success(translations.copied_to_clipboard)
 
           }}>
-            contato@blackflight.com.br
+           support@blackflightlogistics.com 
           </p>
         </div>
         <div className="flex gap-4 items-center">
           <img
             src="/instagram.svg"
             alt="github"
-            className="w-[1rem] h-[1rem]"
+            className="w-[1rem] h-[1rem] cursor-pointer"
+            onClick={()=> window.open("https://www.instagram.com/blackflightlogistics?igsh=dXVkaThqZXNkdGNm&utm_source=qr", "_blank")}
           />
           <img
             src="/facebook.svg"
