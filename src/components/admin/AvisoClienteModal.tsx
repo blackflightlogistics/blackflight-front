@@ -19,6 +19,7 @@ const AvisoClienteModal = ({ aberto, onFechar, encomenda }: Props) => {
     encomenda.status || "",
     "remetente",
     encomenda.tracking_code || "",
+    encomenda.security_code || "",
   );
 
   const msgDestinatario = gerarMensagemWhatsappPorStatus(

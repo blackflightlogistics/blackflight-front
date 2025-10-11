@@ -54,7 +54,7 @@ function Leitor() {
   const [modalAvisoAberto, setModalAvisoAberto] = useState(false);
 
   const [buscando, setBuscando] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (!videoRef || !cameraAtiva) return;
 
@@ -188,6 +188,7 @@ function Leitor() {
     }
   };
   const atualizarStatus = async (status: string) => {
+    setLoading(true);
     if (modalTipo === "encomenda" && isEncomendaStatus(status)) {
       const id = modalCodigo.replace("E-", "");
       let encomenda;
@@ -204,11 +205,15 @@ function Leitor() {
       if (status === "entregue") {
         setEncomendaAtual(encomenda);
         setSecurityCodeModalAberto(true);
+        setLoading(false);
         return;
       }
 
       // Se houver pendência de pagamento, segura o fluxo antes de salvar
-      if (["pendente", "parcial"].includes(encomenda.payment_status || "") && status.toString() === "entregue") {
+      if (
+        ["pendente", "parcial"].includes(encomenda.payment_status || "") &&
+        status.toString() === "entregue"
+      ) {
         setEncomendaAtual({
           ...encomenda,
           status, // Salva o status temporariamente em memória
@@ -216,6 +221,8 @@ function Leitor() {
         setValorTotal(Number(encomenda.total_value || "0"));
         setValorPago(Number(encomenda.paid_now || "0"));
         setModalPagamentoAberto(true);
+        setLoading(false);
+
         return;
       }
 
@@ -246,6 +253,7 @@ function Leitor() {
         setModalAvisoAberto(true);
       } else {
         limparEstado();
+        setLoading(false);
       }
       return;
     }
@@ -275,11 +283,13 @@ function Leitor() {
         toast.error("Erro ao atualizar status da remessa.");
       } finally {
         limparEstado();
+        setLoading(false);
       }
       return;
     }
 
     limparEstado();
+    setLoading(false);
   };
 
   const confirmarPagamentoPendente = async (valorRestante: number) => {
@@ -319,6 +329,9 @@ function Leitor() {
     } catch (error) {
       console.error("Erro ao atualizar encomenda:", error);
       toast.error("Erro ao atualizar encomenda");
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -483,6 +496,11 @@ function Leitor() {
         }}
         onConfirmar={atualizarStatus}
       />
+      {loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
+          <div className="animate-spin mx-12 rounded-full h-6 w-6 border-4 border-orange border-t-transparent"></div>
+        </div>
+      )}
       <PagamentoPendenteModal
         aberto={modalPagamentoAberto}
         valorTotal={valorTotal}
