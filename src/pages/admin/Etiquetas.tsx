@@ -77,19 +77,19 @@ function EtiquetaEncomenda() {
 
   const getCountryAbbr = (countryName: string) => {
     const country = Country.getAllCountries().find(
-      (c) => c.name.toLowerCase() === countryName.toLowerCase()
+      (c) => c.name?.toLowerCase() === countryName?.toLowerCase()
     );
     return country?.isoCode || countryName;
   };
 
   const getStateAbbr = (countryName: string, stateName: string) => {
     const country = Country.getAllCountries().find(
-      (c) => c.name.toLowerCase() === countryName.toLowerCase()
+      (c) => c.name?.toLowerCase() === countryName?.toLowerCase()
     );
     if (!country) return stateName;
 
     const state = State.getStatesOfCountry(country.isoCode).find(
-      (s) => s.name.toLowerCase() === stateName.toLowerCase()
+      (s) => s.name?.toLowerCase() === stateName?.toLowerCase()
     );
     return state?.isoCode || stateName;
   };

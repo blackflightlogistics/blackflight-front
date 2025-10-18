@@ -23,12 +23,12 @@ const ClienteSelect = ({
 
   const filteredClientes = useMemo(() => {
     if (!query) return clientes;
-    const q = query.toLowerCase();
+    const q = query?.toLowerCase();
     return clientes.filter(
       (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.email.toLowerCase().includes(q) ||
-        c.phone_number.toLowerCase().includes(q)
+        c.name?.toLowerCase().includes(q) ||
+        c.email?.toLowerCase().includes(q) ||
+        c.phone_number?.toLowerCase().includes(q)
     );
   }, [query, clientes]);
   const [comboboxAberto, setComboboxAberto] = useState(true);
@@ -43,9 +43,10 @@ const ClienteSelect = ({
           <Combobox.Input
             ref={inputRef}
             className="w-full border border-gray-300 rounded p-2"
-            displayValue={(id: string | "") =>
-              clientes.find((c) => c.id === id)?.name + " " + clientes.find((c) => c.id === id)?.last_name || ""
-            }
+            displayValue={(id: string | "") => {
+              const cliente = clientes.find((c) => c.id === id);
+              return cliente ? `${cliente.name} ${cliente.last_name}` : "";
+            }}
             onChange={(event) => {
               setQuery(event.target.value);
               setComboboxAberto(true);
@@ -83,7 +84,7 @@ const ClienteSelect = ({
                         }`
                       }
                     >
-                      <div className="font-semibold">{cliente.name.toLocaleLowerCase()}</div>
+                      <div className="font-semibold">{cliente.name?.toLowerCase()}</div>
                       <div className="text-xs text-gray-500">
                         {cliente.email} | {cliente.phone_number}
                       </div>
