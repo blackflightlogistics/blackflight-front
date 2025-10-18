@@ -204,7 +204,7 @@ const Remessas = () => {
 
   const remessasFiltradas = remessas.filter((r) => {
     const statusOk = statusFiltro === "todos" || r.status === statusFiltro;
-    const paisOk = r.country.toLowerCase().includes(buscaPais.toLowerCase());
+    const paisOk = r.country?.toLowerCase().includes(buscaPais?.toLowerCase());
     return statusOk && paisOk;
   });
 

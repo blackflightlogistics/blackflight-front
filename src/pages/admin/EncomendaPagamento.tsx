@@ -184,7 +184,7 @@ function EncomendaPagamento() {
             <section className="space-y-1">
               <h2 className="text-lg font-semibold">{t.destinatario}</h2>
               <p>
-                {destinatario.name.toLowerCase()} - {destinatario.email} -{" "}
+                {destinatario.name?.toLowerCase()} - {destinatario.email} -{" "}
                 {whatsappDestinatarioLink(
                   destinatario.phone_number,
                   encomenda.tracking_code ?? "entre em contato",

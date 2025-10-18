@@ -111,11 +111,11 @@ const RemessaDetalhes = () => {
                             <p className="font-semibold">Encomenda #{e.id}</p>
                             <p className="text-sm">
                               <strong>De:</strong>{" "}
-                              {e.from_account.name.toLowerCase()}
+                              {e.from_account.name?.toLowerCase()}
                             </p>
                             <p className="text-sm">
                               <strong>Para:</strong>{" "}
-                              {e.to_account.name.toLowerCase()}
+                              {e.to_account.name?.toLowerCase()}
                             </p>
                             {/* <p className="text-sm"><strong>Endereço de entrega:</strong> {`${e.enderecoEntrega.rua}, ${e.enderecoEntrega.numero} - ${e.enderecoEntrega.bairro}, ${e.enderecoEntrega.cidade} - ${e.enderecoEntrega.estado}, ${e.enderecoEntrega.cep}`}</p> */}
                             <p className="text-sm">
