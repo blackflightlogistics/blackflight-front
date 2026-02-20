@@ -42,7 +42,6 @@ function Leitor() {
   const [encomendaAtual, setEncomendaAtual] = useState<Order | null>(null);
   const [dollarValue, setDollarValue] = useState(0);
   const [cafValue, setCafValue] = useState(0);
-  const [cambioTax, setCambioTax] = useState(0);
   const [securityCodeModalAberto, setSecurityCodeModalAberto] = useState(false);
   const [codigoDigitado, setCodigoDigitado] = useState("");
   const [resultadosBusca, setResultadosBusca] = useState<TrackingResponse[]>(
@@ -83,7 +82,6 @@ function Leitor() {
     const carregarConfiguracoes = async () => {
       const config = await configService.buscar();
       setDollarValue(Number(config.dollar_value));
-      setCambioTax(Number(config.cambio_tax));
       setCafValue(Number(config.caf_value));
     };
     carregarConfiguracoes();
@@ -506,7 +504,6 @@ function Leitor() {
         valorTotal={valorTotal}
         valorPago={valorPago}
         dollarValue={dollarValue}
-        cambioTax={cambioTax}
         cafValue={cafValue}
         onFechar={() => {
           setModalPagamentoAberto(false);

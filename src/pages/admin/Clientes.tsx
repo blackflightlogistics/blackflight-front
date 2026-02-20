@@ -66,8 +66,8 @@ function Clientes() {
         />
       </div>
 
-      <div className="flex-1 flex flex-col h-screen overflow-y-auto bg-[#fcf7f1] pt-16 p-6">
-        <div className="flex justify-between items-center mb-6">
+      <div className="flex-1 flex flex-col min-h-0 h-screen overflow-y-auto overflow-x-hidden bg-[#fcf7f1] pt-16 p-6">
+        <div className="flex justify-between items-center mb-6 shrink-0">
           <h1 className="text-2xl font-bold font-primary">{t.client_title}</h1>
           <button
             onClick={() => setFormVisible(!formVisible)}
@@ -91,52 +91,63 @@ function Clientes() {
         ) : clientes.length === 0 ? (
           <p className="text-gray-600">{t.nenhum_cliente}</p>
         ) : (
-          <ul className="space-y-4">
-            {clientes.map((cliente) => (
-              <li
-                key={cliente.id}
-                className="border border-orange bg-white p-4 rounded-md text-sm font-secondary"
-              >
-                <p>
-                  <span className="font-bold">{t.nome}:</span> {cliente.name}
-                  <span className="font-bold ml-4">{t.contato}: </span>
-                  {formatarLinkWhatsapp(cliente.phone_number, true, {
-                    icon: true,
-                  })}
-                </p>
-                <p className="mt-2">
-                  <span className="font-bold">E-mail:</span> {cliente.email}
-                </p>
-                <div className="mt-2 space-y-1">
-                  <span className="font-bold">{t.enderecos}:</span>
-                  {cliente.adresses.length === 0 ? (
-                    <p className="text-gray-600">{t.nenhum_endereco}</p>
-                  ) : (
-                    <ul className="ml-4 list-disc">
-                      {cliente.adresses.map((endereco, idx) => (
-                        <li key={idx}>
-                          {endereco.number} - {endereco.street} -{" "}
-                          {endereco.neighborhood} -{endereco.city} -{" "}
-                          {endereco.state} - {endereco.country} {endereco.cep}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-
-                <div className="mt-4">
-                  <button
-                    onClick={() =>
-                      navigate(`/admin/clientes/${cliente.id}/editar`)
-                    }
-                    className="bg-orange text-white px-4 py-2 rounded hover:opacity-90 font-secondary text-sm"
-                  >
-                    {t.editar}
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <div className="flex-1 min-h-0 flex flex-col bg-white rounded-md border border-orange overflow-hidden">
+            <div className="flex-1 min-h-0 overflow-auto">
+              <table className="w-full text-sm font-secondary min-w-[700px]">
+                <thead>
+                  <tr className="bg-orange text-white">
+                    <th className="text-left py-3 px-4 font-semibold">{t.nome}</th>
+                    <th className="text-left py-3 px-4 font-semibold">{t.contato}</th>
+                    <th className="text-left py-3 px-4 font-semibold">E-mail</th>
+                    <th className="text-left py-3 px-4 font-semibold">{t.enderecos}</th>
+                    <th className="text-right py-3 px-4 font-semibold w-24">{t.editar}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {clientes.map((cliente) => (
+                    <tr
+                      key={cliente.id}
+                      className="border-t border-gray-200 hover:bg-gray-50"
+                    >
+                      <td className="py-2.5 px-4">
+                        {cliente.name} {cliente.last_name}
+                      </td>
+                      <td className="py-2.5 px-4">
+                        {formatarLinkWhatsapp(cliente.phone_number, true, {
+                          icon: true,
+                        })}
+                      </td>
+                      <td className="py-2.5 px-4">{cliente.email}</td>
+                      <td className="py-2.5 px-4 max-w-[200px]">
+                        {cliente.adresses.length === 0 ? (
+                          <span className="text-gray-500">{t.nenhum_endereco}</span>
+                        ) : (
+                          <span className="line-clamp-2" title={cliente.adresses.map((e) => `${e.number} ${e.street}, ${e.neighborhood}, ${e.city} - ${e.state}`).join(" | ")}>
+                            {cliente.adresses.map((endereco, idx) => (
+                              <span key={idx}>
+                                {idx > 0 && " · "}
+                                {endereco.number} {endereco.street}, {endereco.city}
+                              </span>
+                            ))}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-2.5 px-4 text-right">
+                        <button
+                          onClick={() =>
+                            navigate(`/admin/clientes/${cliente.id}/editar`)
+                          }
+                          className="bg-orange text-white px-3 py-1.5 rounded hover:opacity-90 font-secondary text-xs whitespace-nowrap"
+                        >
+                          {t.editar}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         )}
       </div>
     </div>
