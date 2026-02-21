@@ -258,7 +258,8 @@ function Leitor() {
 
     if (modalTipo === "pacote" && isPacoteStatus(status)) {
       const pacoteId = modalCodigo.replace("P-", "");
-      const todas = await orderService.listar();
+      const resultado = await orderService.listar();
+      const todas = resultado.data;
       const encomenda = todas.find((e) =>
         e.packages.some((p) => p.id === pacoteId)
       );

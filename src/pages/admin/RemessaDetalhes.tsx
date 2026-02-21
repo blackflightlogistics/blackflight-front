@@ -17,7 +17,8 @@ const RemessaDetalhes = () => {
     const carregar = async () => {
       setCarregando(true);
       const r = await remessaService.buscarPorId(id ?? "aqui ta indo default");
-      const todasEncomendas = await orderService.listar();
+      const resEncomendas = await orderService.listar();
+      const todasEncomendas = resEncomendas.data;
       // const todasClientes = await clienteService.listar();
       if (r) {
         const relacionadas = todasEncomendas.filter((e) =>

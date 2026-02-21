@@ -1,6 +1,6 @@
-// src/services/encomendaService.ts
 import api from "../api/api";
 import { Address, Cliente } from "./clienteService";
+import { PaginatedResponse, CursorInfo } from "../types/pagination";
 
 export type FormaPagamento = "a_vista" | "parcelado" | "na_retirada";
 export type PacoteStatus =
@@ -139,13 +139,18 @@ export interface UpdateOrderPayload {
   removed_packages?: string[];
 }
 export const orderService = {
-  listar: async (forShipment?: boolean, filters?: OrderFilters): Promise<Order[]> => {
+  listar: async (
+    forShipment?: boolean,
+    filters?: OrderFilters,
+    cursor?: string,
+    limit: number = 10,
+  ): Promise<{ data: Order[]; cursor: CursorInfo }> => {
     const filterObj: Record<string, string> = {};
-    
+
     if (forShipment) {
       filterObj.for_shipment = "true";
     }
-    
+
     if (filters) {
       if (filters.status) filterObj.status = filters.status;
       if (filters.payment_type) filterObj.payment_type = filters.payment_type;
@@ -155,12 +160,20 @@ export const orderService = {
       if (filters.final_date) filterObj.final_date = filters.final_date;
     }
 
-    const params = Object.keys(filterObj).length > 0 
-      ? { filter: JSON.stringify(filterObj) } 
-      : {};
+    const params: Record<string, string> = {};
+    if (Object.keys(filterObj).length > 0) {
+      params.filter = JSON.stringify(filterObj);
+    }
+    params.limit = String(limit);
+    if (cursor) {
+      params.after = cursor;
+    }
 
-    const response = await api.get<{ data: Order[] }>("/orders", { params });
-    return response.data.data;
+    const response = await api.get<PaginatedResponse<Order>>("/orders", { params });
+    return {
+      cursor: response.data.cursor,
+      data: response.data.data,
+    };
   },
 
   buscarPorId: async (id: string): Promise<Order> => {

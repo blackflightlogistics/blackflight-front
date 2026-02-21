@@ -28,8 +28,8 @@ const Dashboard = () => {
   };
   const carregar = async (filtrosAplicados?: OrderFilters) => {
     setCarregando(true);
-    const [encomendasData] = await Promise.all([orderService.listar(false, filtrosAplicados)]);
-    setEncomendas(encomendasData);
+    const [resultado] = await Promise.all([orderService.listar(false, filtrosAplicados)]);
+    setEncomendas(resultado.data);
     setCarregando(false);
   };
   const [encomendas, setEncomendas] = useState<Order[]>([]);

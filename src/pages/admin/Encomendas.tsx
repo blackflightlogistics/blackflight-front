@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import OrderFiltersComponent from "../../components/admin/OrderFilters";
+import CursorPagination from "../../components/admin/CursorPagination";
 import {
   Order,
   orderService,
   OrderFilters,
 } from "../../services/encomendaService";
+import { CursorInfo } from "../../types/pagination";
 import { pacoteStatusToString, paymentTypeToString } from "../../utils/utils";
 import { useLanguage } from "../../context/useLanguage";
 import { gerarQrBase64PNG } from "../../components/shared/QRCodeComLogo";
@@ -23,12 +25,15 @@ function Encomendas() {
   const [filtros, setFiltros] = useState<OrderFilters>({});
   const [showModalCancelar, setShowModalCancelar] = useState(false);
   const [encomendaId, setEncomendaId] = useState<string>("");
-  const carregar = async (filtrosAplicados?: OrderFilters) => {
+  const [cursorInfo, setCursorInfo] = useState<CursorInfo | null>(null);
+  const [cursorHistory, setCursorHistory] = useState<string[]>([]);
+  const [filtrosAtivos, setFiltrosAtivos] = useState<OrderFilters>({});
+
+  const carregar = async (filtrosAplicados?: OrderFilters, afterCursor?: string) => {
     setCarregando(true);
-    const [encomendasData] = await Promise.all([
-      orderService.listar(false, filtrosAplicados),
-    ]);
-    setEncomendas(encomendasData);
+    const resultado = await orderService.listar(false, filtrosAplicados, afterCursor);
+    setEncomendas(resultado.data);
+    setCursorInfo(resultado.cursor);
     setCarregando(false);
   };
 
@@ -52,17 +57,36 @@ function Encomendas() {
       filtrosFormatados.final_date = dataFinal.toISOString();
     }
 
+    setFiltrosAtivos(filtrosFormatados);
+    setCursorHistory([]);
     carregar(filtrosFormatados);
   };
   const cancelarEncomenda = async (id: string) => {
     await orderService.cancelar(id);
     setShowModalCancelar(false);
     toast.success(t.encomenda_cancelada);
-    carregar();
+    carregar(filtrosAtivos);
   };
   const limparFiltros = () => {
     setFiltros({});
+    setFiltrosAtivos({});
+    setCursorHistory([]);
     carregar();
+  };
+
+  const handleNextPage = () => {
+    if (!cursorInfo?.after) return;
+    setCursorHistory((prev) => [...prev, cursorInfo.after!]);
+    carregar(filtrosAtivos, cursorInfo.after);
+  };
+
+  const handlePrevPage = () => {
+    if (cursorHistory.length === 0) return;
+    const newHistory = [...cursorHistory];
+    newHistory.pop();
+    const prevCursor = newHistory.length > 0 ? newHistory[newHistory.length - 1] : undefined;
+    setCursorHistory(newHistory);
+    carregar(filtrosAtivos, prevCursor);
   };
 
   useEffect(() => {
@@ -529,6 +553,13 @@ function Encomendas() {
             )}
           </>
         )}
+        <CursorPagination
+          hasNext={!!cursorInfo?.after}
+          hasPrev={cursorHistory.length > 0}
+          onNext={handleNextPage}
+          onPrev={handlePrevPage}
+          loading={carregando}
+        />
         {showModalCancelar && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-4 rounded-md">
