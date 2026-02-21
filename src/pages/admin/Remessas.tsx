@@ -37,7 +37,7 @@ const Remessas = () => {
 
   const imprimirListagem = async () => {
     setImprimindo(true);
-    
+
     try {
       const printWindow = window.open("", "_blank");
       if (!printWindow) {
@@ -154,7 +154,7 @@ const Remessas = () => {
                     <div class="info-item"><strong>Tracking Code:</strong> ${e.tracking_code || ""}</div>
                     <div class="info-item"><strong>Status:</strong> <span class="status">${pacoteStatusToString(
                       e?.status ?? "",
-                      t
+                      t,
                     )}</span></div>
                   </div>
                   
@@ -167,19 +167,19 @@ const Remessas = () => {
                         📦 ${p.description || ""} - ${Number(p.weight || 0)} kg 
                         <span class="status">${pacoteStatusToString(
                           p.status || "",
-                          t
+                          t,
                         )}</span>
                       </div>
-                    `
+                    `,
                       )
                       .join("")}
                   </div>
                 </div>
-              `
+              `,
                 )
                 .join("")}
             </div>
-          `
+          `,
             )
             .join("")}
         </body>
@@ -188,16 +188,15 @@ const Remessas = () => {
 
       printWindow.document.write(printContent);
       printWindow.document.close();
-      
+
       // Aguardar um pouco para garantir que as imagens carregaram antes de imprimir
       setTimeout(() => {
         printWindow.print();
         setImprimindo(false);
       }, 1000);
-      
     } catch (error) {
-      console.error('Erro ao imprimir:', error);
-      alert('Erro ao preparar impressão. Tente novamente.');
+      console.error("Erro ao imprimir:", error);
+      alert("Erro ao preparar impressão. Tente novamente.");
       setImprimindo(false);
     }
   };
@@ -257,7 +256,7 @@ const Remessas = () => {
                 <>🖨️ {t.etiqueta_imprimir}</>
               )}
             </button>
-            
+
             <Link
               to="/admin/remessas/nova"
               className="px-4 py-2 bg-orange text-white font-semibold rounded hover:opacity-90 transition text-sm"
@@ -309,7 +308,10 @@ const Remessas = () => {
                         </p>
                       </div>
                       <p className="text-sm text-gray-600">
-                        Status: <strong>{remessaStatusToString(r.status ?? "aberta", t)}</strong>
+                        Status:{" "}
+                        <strong>
+                          {remessaStatusToString(r.status ?? "aberta", t)}
+                        </strong>
                       </p>
                       <p className="text-sm text-gray-600">
                         {t.etiqueta_data_geracao}:{" "}
@@ -329,7 +331,7 @@ const Remessas = () => {
                         >
                           {r.pesoTotal.toFixed(2)} kg
                         </p> */}
-                       {r.total_weight}
+                        {r.total_weight}
                       </div>
 
                       <Link
@@ -352,32 +354,25 @@ const Remessas = () => {
                           >
                             <div>
                               <p className="text-sm text-gray-600">
-                                {t.pais}: <strong>{r.country}</strong>
-                              </p>
-                              <p className="text-sm text-gray-600">
+                                {t.pais}: <strong>{r.country}</strong> |{" "}
                                 {t.remetente}:{" "}
                                 <strong>
                                   {e?.from_account?.name?.toLocaleLowerCase()}
-                                </strong>
-                              </p>
-                              <p className="text-sm text-gray-600">
-                                {t.destinatario}:{" "}
+                                </strong> | {t.destinatario}:{" "}
                                 <strong>
-                                  {e.to_account.name?.toLocaleLowerCase()}
+                                  {e?.to_account?.name?.toLocaleLowerCase()}
                                 </strong>
                               </p>
                               <p className="text-sm text-gray-600">
                                 {t.tracking_code}:{" "}
-                                <strong>{e.tracking_code}</strong>
-                              </p>
-                              <p className="flex">
-                                <span className="font-bold">#</span> –{" "}
+                                <strong>{e.tracking_code}</strong> | <span className="font-bold">#</span> –{" "}
                                 {e.packages.length} {t.pacotes}(s) –{" "}
                                 {e.packages
                                   .reduce((s, p) => s + Number(p.weight), 0)
                                   .toFixed(2)}{" "}
                                 kg
                               </p>
+                             
                             </div>
                           </div>
                         </div>
