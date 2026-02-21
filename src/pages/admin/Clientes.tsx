@@ -7,12 +7,16 @@ import ClienteForm, {
 } from "../../components/admin/ClienteForm";
 import { formatarLinkWhatsapp } from "../../utils/formatarLinkWhatsapp";
 import { useLanguage } from "../../context/useLanguage";
+import CursorPagination from "../../components/admin/CursorPagination";
+import { CursorInfo } from "../../types/pagination";
 
 function Clientes() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [formVisible, setFormVisible] = useState(false);
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [carregando, setCarregando] = useState(true);
+  const [cursorInfo, setCursorInfo] = useState<CursorInfo | null>(null);
+  const [cursorHistory, setCursorHistory] = useState<string[]>([]);
   const navigate = useNavigate();
   const { translations: t } = useLanguage();
 
@@ -20,11 +24,29 @@ function Clientes() {
     carregarClientes();
   }, []);
 
-  const carregarClientes = async () => {
+  const carregarClientes = async (afterCursor?: string) => {
     setCarregando(true);
-    const dados = await clienteService.listar();
-    setClientes(dados);
+    const resultado = await clienteService.listar(afterCursor);
+    setClientes(resultado.data);
+    setCursorInfo(resultado.cursor);
     setCarregando(false);
+  };
+
+  const handleProximaPagina = () => {
+    if (cursorInfo?.after) {
+      setCursorHistory((prev) => [...prev, cursorInfo.after!]);
+      carregarClientes(cursorInfo.after);
+    }
+  };
+
+  const handlePaginaAnterior = () => {
+    const novoHistorico = [...cursorHistory];
+    novoHistorico.pop();
+    const cursorAnterior = novoHistorico.length > 0
+      ? novoHistorico[novoHistorico.length - 1]
+      : undefined;
+    setCursorHistory(novoHistorico);
+    carregarClientes(cursorAnterior);
   };
 
   const handleSalvarCliente = async (form: ClienteFormData) => {
@@ -147,6 +169,13 @@ function Clientes() {
                 </tbody>
               </table>
             </div>
+            <CursorPagination
+              onNext={handleProximaPagina}
+              onPrev={handlePaginaAnterior}
+              hasNext={!!cursorInfo?.after}
+              hasPrev={cursorHistory.length > 0}
+              loading={carregando}
+            />
           </div>
         )}
       </div>

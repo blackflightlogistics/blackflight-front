@@ -70,7 +70,7 @@ const [editandoPacoteIndex, setEditandoPacoteIndex] = useState<number | null>(nu
   useEffect(() => {
     async function carregarDados() {
       setLoadingTela(true);
-      await clienteService.listar().then(setClientes);
+      await clienteService.listar().then((res) => setClientes(res.data));
       await configService.buscar().then((conf) => {
         setAdicionalExpresso(Number(conf.expressAmount) || 0);
       });
@@ -335,7 +335,7 @@ const cancelarEdicao = () => {
                       ],
                     });
                     const novaLista = await clienteService.listar();
-                    setClientes(novaLista);
+                    setClientes(novaLista.data);
                     setEnderecoOriginalRemetente({
                       ...enderecoEditavelRemetente,
                     });
@@ -369,7 +369,7 @@ const cancelarEdicao = () => {
                   removed_adresses: [],
                 });
                 const novaLista = await clienteService.listar();
-                setClientes(novaLista);
+                setClientes(novaLista.data);
                 setRemetenteId(novo.id);
                 setShowRemetenteForm(false);
               }}
@@ -507,7 +507,7 @@ const cancelarEdicao = () => {
                       adresses: [...cliente.adresses, enderecoEditavel],
                     });
                     const novaLista = await clienteService.listar();
-                    setClientes(novaLista);
+                    setClientes(novaLista.data);
                     setEnderecoOriginal({ ...enderecoEditavel });
                     setEnderecoSelecionado({ ...enderecoEditavel });
                     setShowDestinatarioEndereco(false);
@@ -540,7 +540,7 @@ const cancelarEdicao = () => {
                   removed_adresses: [],
                 });
                 const novaLista = await clienteService.listar();
-                setClientes(novaLista);
+                setClientes(novaLista.data);
                 setDestinatarioId(novo.id);
                 setShowDestinatarioForm(false);
                 setEnderecoSelecionado(endereco);

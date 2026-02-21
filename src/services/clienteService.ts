@@ -1,5 +1,5 @@
-// src/services/clienteService.ts
 import api from "../api/api";
+import { PaginatedResponse, CursorInfo } from "../types/pagination";
 
 export type Address = {
   id?: string;
@@ -45,29 +45,37 @@ type RawAdress = {
 };
 
 export const clienteService = {
-  listar: async (): Promise<Cliente[]> => {
-    const response = await api.get<{ data: RawAccount[] }>("/accounts");
-    const data = response.data.data;
+  listar: async (cursor?: string, limit: number = 10): Promise<{ data: Cliente[]; cursor: CursorInfo }> => {
+    let url = `/accounts?limit=${limit}`;
+    if (cursor) {
+      url += `&after=${encodeURIComponent(cursor)}`;
+    }
 
-    return data.map((item) => ({
-      id: item.id,
-      name: item.name,
-      last_name: item.last_name,
-      phone_number: item.phone_number,
-      email: item.email,
-      document: item.document,
-      removed_adresses: [],       
-      adresses: item.adresses?.map((addr) => ({
-        id: addr.id || "",
-        street: addr.street || "",
-        number: addr.number || "",
-        neighborhood: addr.neighborhood || "",
-        city: addr.city || "",
-        state: addr.state || "",
-        cep: addr.cep || "",
-        country: addr.country || "",
-      })) || [],
-    }));
+    const response = await api.get<PaginatedResponse<RawAccount>>(url);
+    const { data, cursor: cursorInfo } = response.data;
+
+    return {
+      cursor: cursorInfo,
+      data: data.map((item) => ({
+        id: item.id,
+        name: item.name,
+        last_name: item.last_name,
+        phone_number: item.phone_number,
+        email: item.email,
+        document: item.document,
+        removed_adresses: [],
+        adresses: item.adresses?.map((addr) => ({
+          id: addr.id || "",
+          street: addr.street || "",
+          number: addr.number || "",
+          neighborhood: addr.neighborhood || "",
+          city: addr.city || "",
+          state: addr.state || "",
+          cep: addr.cep || "",
+          country: addr.country || "",
+        })) || [],
+      })),
+    };
   },
 
   adicionar: async (
