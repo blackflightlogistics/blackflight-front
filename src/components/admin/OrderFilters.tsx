@@ -17,7 +17,7 @@ const OrderFiltersComponent: React.FC<OrderFiltersProps> = ({
 }) => {
   const { translations: t } = useLanguage();
 
-  const handleFiltroChange = (key: keyof OrderFilters, value: string | EncomendaStatus | FormaPagamento | EncomendaPagamentoStatus) => {
+  const handleFiltroChange = (key: keyof OrderFilters, value: string | EncomendaStatus | FormaPagamento | EncomendaPagamentoStatus | undefined) => {
     onFiltrosChange({
       ...filtros,
       [key]: value || undefined,
@@ -26,7 +26,7 @@ const OrderFiltersComponent: React.FC<OrderFiltersProps> = ({
 
   return (
     <div className="bg-white p-6 rounded-md border border-gray-200 shadow-sm">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-4 items-end">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
         {/* Status da Encomenda */}
         <div className="flex flex-col space-y-2">
           <label className="text-sm font-medium text-gray-700 leading-snug">
@@ -120,28 +120,29 @@ const OrderFiltersComponent: React.FC<OrderFiltersProps> = ({
             className="h-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent"
           />
         </div>
+      </div>
 
-        {/* Botão Aplicar */}
-        <div className="flex flex-col space-y-2">
-          <div className="h-5"></div>
-          <button
-            onClick={onAplicarFiltros}
-            className="h-10 px-4 py-2 bg-orange text-white rounded-md text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            {t.aplicar_filtros}
-          </button>
-        </div>
-
-        {/* Botão Limpar */}
-        <div className="flex flex-col space-y-2">
-          <div className="h-5"></div>
-          <button
-            onClick={onLimparFiltros}
-            className="h-10 px-4 py-2 bg-gray-500 text-white rounded-md text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            {t.limpar_filtros}
-          </button>
-        </div>
+      {/* Segunda linha: busca + botões */}
+      <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-gray-200">
+        <input
+          type="text"
+          value={filtros.search || ""}
+          onChange={(e) => handleFiltroChange("search", e.target.value)}
+          placeholder={t.buscar}
+          className="h-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent min-w-[200px] sm:min-w-[280px]"
+        />
+        <button
+          onClick={onAplicarFiltros}
+          className="h-10 px-4 py-2 bg-orange text-white rounded-md text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          {t.aplicar_filtros}
+        </button>
+        <button
+          onClick={onLimparFiltros}
+          className="h-10 px-4 py-2 bg-gray-500 text-white rounded-md text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          {t.limpar_filtros}
+        </button>
       </div>
     </div>
   );

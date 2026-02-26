@@ -27,6 +27,7 @@ export interface OrderFilters {
   payment_type?: FormaPagamento;
   payment_status?: EncomendaPagamentoStatus;
   tracking_code?: string;
+  search?: string;
   initial_date?: string;
   final_date?: string;
 }
@@ -156,6 +157,7 @@ export const orderService = {
       if (filters.payment_type) filterObj.payment_type = filters.payment_type;
       if (filters.payment_status) filterObj.payment_status = filters.payment_status;
       if (filters.tracking_code) filterObj.tracking_code = filters.tracking_code;
+      if (filters.search?.trim()) filterObj.search = filters.search.trim();
       if (filters.initial_date) filterObj.initial_date = filters.initial_date;
       if (filters.final_date) filterObj.final_date = filters.final_date;
     }
