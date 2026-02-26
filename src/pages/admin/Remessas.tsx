@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Sidebar from "../../components/admin/Sidebar";
 import { remessaService, Shipment } from "../../services/remessaService";
 import { Link } from "react-router-dom";
@@ -8,23 +8,37 @@ import { pacoteStatusToString, remessaStatusToString } from "../../utils/utils";
 const Remessas = () => {
   const { translations: t } = useLanguage();
   const [remessas, setRemessas] = useState<Shipment[]>([]);
-  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
-  const [buscaPais, setBuscaPais] = useState<string>("");
+  // const [statusFiltro, setStatusFiltro] = useState<string>("todos");
+  const [busca, setBusca] = useState<string>("");
+  const buscaInitialMount = useRef(true);
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [acoesAbertas, setAcoesAbertas] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [imprimindo, setImprimindo] = useState(false);
 
-  useEffect(() => {
-    const carregar = async () => {
-      setCarregando(true);
-      const remessasData = await remessaService.listar();
-      setRemessas(remessasData);
-      setCarregando(false);
-    };
+  const carregar = async (search?: string, status?: string) => {
+    setCarregando(true);
+    const remessasData = await remessaService.listar(search, status);
+    setRemessas(remessasData);
+    setCarregando(false);
+  };
 
-    carregar();
-  }, []);
+  // useEffect(() => {
+  //   carregar(busca, statusFiltro);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps -- run only when status filter changes; busca is read from closure
+  // }, [statusFiltro]);
+
+  useEffect(() => {
+    if (buscaInitialMount.current) {
+      buscaInitialMount.current = false;
+      return;
+    }
+    const timer = setTimeout(() => {
+      carregar(busca, undefined);
+    }, 1000);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- debounced search only; statusFiltro read from closure
+  }, [busca]);
 
   const fecharRemessa = async (id: string) => {
     console.log("Remessa fechada:", id);
@@ -201,11 +215,7 @@ const Remessas = () => {
     }
   };
 
-  const remessasFiltradas = remessas.filter((r) => {
-    const statusOk = statusFiltro === "todos" || r.status === statusFiltro;
-    const paisOk = r.country?.toLowerCase().includes(buscaPais?.toLowerCase());
-    return statusOk && paisOk;
-  });
+  const remessasFiltradas = remessas;
 
   const renderStatusIcone = (status: string) => {
     switch (status) {
@@ -264,7 +274,7 @@ const Remessas = () => {
               {t.remessa_manual_titulo}
             </Link>
 
-            <select
+            {/* <select
               className="border border-gray-300 bg-white p-2 rounded text-sm"
               value={statusFiltro}
               onChange={(e) => setStatusFiltro(e.target.value)}
@@ -273,14 +283,14 @@ const Remessas = () => {
               <option value="aberta">{t.status_em_preparacao}</option>
               <option value="fechada">{t.status_aguardando_retirada}</option>
               <option value="enviada">{t.status_entregue}</option>
-            </select>
+            </select> */}
 
             <input
               type="text"
-              placeholder={t.pais}
-              className="border border-gray-300 bg-white p-2 rounded text-sm"
-              value={buscaPais}
-              onChange={(e) => setBuscaPais(e.target.value)}
+              placeholder={t.buscar}
+              className="h-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent min-w-[200px] sm:min-w-[280px]"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
             />
           </div>
         </div>
