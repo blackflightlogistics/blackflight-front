@@ -13,6 +13,7 @@ import { pacoteStatusToString, paymentTypeToString } from "../../utils/utils";
 import { useLanguage } from "../../context/useLanguage";
 import { gerarQrBase64PNG } from "../../components/shared/QRCodeComLogo";
 import { toast } from "react-toastify";
+import SearchIcon from '@mui/icons-material/Search';
 
 function Encomendas() {
   const { translations: t } = useLanguage();
@@ -28,6 +29,7 @@ function Encomendas() {
   const [cursorInfo, setCursorInfo] = useState<CursorInfo | null>(null);
   const [cursorHistory, setCursorHistory] = useState<string[]>([]);
   const [filtrosAtivos, setFiltrosAtivos] = useState<OrderFilters>({});
+  const [filtrosExpandidos, setFiltrosExpandidos] = useState(true);
 
   const carregar = async (filtrosAplicados?: OrderFilters, afterCursor?: string) => {
     setCarregando(true);
@@ -368,7 +370,7 @@ function Encomendas() {
         <div className="flex flex-col md:flex-row justify-between md:items-center items-start gap-4">
           <h1 className="text-2xl font-bold font-primary">{t.encomendas}</h1>
 
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-row flex-wrap gap-2">
             <button
               onClick={imprimirListagem}
               disabled={encomendas.length === 0 || imprimindo}
@@ -390,16 +392,34 @@ function Encomendas() {
             >
               {t.nova_encomenda}
             </Link>
+
+            <button
+              type="button"
+              onClick={() => setFiltrosExpandidos((v) => !v)}
+              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              aria-expanded={filtrosExpandidos}
+            >
+              <SearchIcon className="w-5 h-5" />
+              {filtrosExpandidos ? t.ocultar_filtros : t.filtros}
+            </button>
           </div>
         </div>
 
-        {/* Filtros */}
-        <OrderFiltersComponent
-          filtros={filtros}
-          onFiltrosChange={setFiltros}
-          onAplicarFiltros={aplicarFiltros}
-          onLimparFiltros={limparFiltros}
-        />
+        {/* Painel de filtros (expandível no mobile) */}
+        <div className="mb-4">
+          <div
+            className={
+              filtrosExpandidos ? "block mt-2" : "hidden"
+            }
+          >
+            <OrderFiltersComponent
+              filtros={filtros}
+              onFiltrosChange={setFiltros}
+              onAplicarFiltros={aplicarFiltros}
+              onLimparFiltros={limparFiltros}
+            />
+          </div>
+        </div>
 
         {(gerandoQRCodes || imprimindo) && (
           <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
