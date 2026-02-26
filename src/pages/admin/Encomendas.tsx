@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import OrderFiltersComponent from "../../components/admin/OrderFilters";
+import CursorPagination from "../../components/admin/CursorPagination";
 import {
   Order,
   orderService,
   OrderFilters,
 } from "../../services/encomendaService";
+import { CursorInfo } from "../../types/pagination";
 import { pacoteStatusToString, paymentTypeToString } from "../../utils/utils";
 import { useLanguage } from "../../context/useLanguage";
 import { gerarQrBase64PNG } from "../../components/shared/QRCodeComLogo";
 import { toast } from "react-toastify";
+import SearchIcon from '@mui/icons-material/Search';
 
 function Encomendas() {
   const { translations: t } = useLanguage();
@@ -23,12 +26,16 @@ function Encomendas() {
   const [filtros, setFiltros] = useState<OrderFilters>({});
   const [showModalCancelar, setShowModalCancelar] = useState(false);
   const [encomendaId, setEncomendaId] = useState<string>("");
-  const carregar = async (filtrosAplicados?: OrderFilters) => {
+  const [cursorInfo, setCursorInfo] = useState<CursorInfo | null>(null);
+  const [cursorHistory, setCursorHistory] = useState<string[]>([]);
+  const [filtrosAtivos, setFiltrosAtivos] = useState<OrderFilters>({});
+  const [filtrosExpandidos, setFiltrosExpandidos] = useState(true);
+
+  const carregar = async (filtrosAplicados?: OrderFilters, afterCursor?: string) => {
     setCarregando(true);
-    const [encomendasData] = await Promise.all([
-      orderService.listar(false, filtrosAplicados),
-    ]);
-    setEncomendas(encomendasData);
+    const resultado = await orderService.listar(false, filtrosAplicados, afterCursor);
+    setEncomendas(resultado.data);
+    setCursorInfo(resultado.cursor);
     setCarregando(false);
   };
 
@@ -52,17 +59,36 @@ function Encomendas() {
       filtrosFormatados.final_date = dataFinal.toISOString();
     }
 
+    setFiltrosAtivos(filtrosFormatados);
+    setCursorHistory([]);
     carregar(filtrosFormatados);
   };
   const cancelarEncomenda = async (id: string) => {
     await orderService.cancelar(id);
     setShowModalCancelar(false);
     toast.success(t.encomenda_cancelada);
-    carregar();
+    carregar(filtrosAtivos);
   };
   const limparFiltros = () => {
     setFiltros({});
+    setFiltrosAtivos({});
+    setCursorHistory([]);
     carregar();
+  };
+
+  const handleNextPage = () => {
+    if (!cursorInfo?.after) return;
+    setCursorHistory((prev) => [...prev, cursorInfo.after!]);
+    carregar(filtrosAtivos, cursorInfo.after);
+  };
+
+  const handlePrevPage = () => {
+    if (cursorHistory.length === 0) return;
+    const newHistory = [...cursorHistory];
+    newHistory.pop();
+    const prevCursor = newHistory.length > 0 ? newHistory[newHistory.length - 1] : undefined;
+    setCursorHistory(newHistory);
+    carregar(filtrosAtivos, prevCursor);
   };
 
   useEffect(() => {
@@ -344,7 +370,7 @@ function Encomendas() {
         <div className="flex flex-col md:flex-row justify-between md:items-center items-start gap-4">
           <h1 className="text-2xl font-bold font-primary">{t.encomendas}</h1>
 
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-row flex-wrap gap-2">
             <button
               onClick={imprimirListagem}
               disabled={encomendas.length === 0 || imprimindo}
@@ -366,16 +392,34 @@ function Encomendas() {
             >
               {t.nova_encomenda}
             </Link>
+
+            <button
+              type="button"
+              onClick={() => setFiltrosExpandidos((v) => !v)}
+              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              aria-expanded={filtrosExpandidos}
+            >
+              <SearchIcon className="w-5 h-5" />
+              {filtrosExpandidos ? t.ocultar_filtros : t.filtros}
+            </button>
           </div>
         </div>
 
-        {/* Filtros */}
-        <OrderFiltersComponent
-          filtros={filtros}
-          onFiltrosChange={setFiltros}
-          onAplicarFiltros={aplicarFiltros}
-          onLimparFiltros={limparFiltros}
-        />
+        {/* Painel de filtros (expandível no mobile) */}
+        <div className="mb-4">
+          <div
+            className={
+              filtrosExpandidos ? "block mt-2" : "hidden"
+            }
+          >
+            <OrderFiltersComponent
+              filtros={filtros}
+              onFiltrosChange={setFiltros}
+              onAplicarFiltros={aplicarFiltros}
+              onLimparFiltros={limparFiltros}
+            />
+          </div>
+        </div>
 
         {(gerandoQRCodes || imprimindo) && (
           <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
@@ -529,6 +573,13 @@ function Encomendas() {
             )}
           </>
         )}
+        <CursorPagination
+          hasNext={!!cursorInfo?.after}
+          hasPrev={cursorHistory.length > 0}
+          onNext={handleNextPage}
+          onPrev={handlePrevPage}
+          loading={carregando}
+        />
         {showModalCancelar && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-4 rounded-md">

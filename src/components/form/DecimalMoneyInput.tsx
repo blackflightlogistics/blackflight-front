@@ -21,17 +21,25 @@ export default function DecimalMoneyInput({
 }: DecimalMoneyInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const formatDisplay = (val: string) => {
+    const trimmed = (val ?? "").trim();
+    if (trimmed === "") return "";
+    const num = parseFloat(trimmed.replace(",", "."));
+    return isNaN(num) ? "" : num.toFixed(decimalPlaces);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const onlyDigits = e.target.value.replace(/\D/g, "");
+    if (onlyDigits === "") {
+      onChange("");
+      return;
+    }
     const divisor = Math.pow(10, decimalPlaces);
-    const formatted = (parseInt(onlyDigits || "0.0", 10) / divisor).toFixed(decimalPlaces);
+    const formatted = (parseInt(onlyDigits, 10) / divisor).toFixed(decimalPlaces);
     onChange(formatted);
   };
 
-  const formatDisplay = (val: string) => {
-    const num = parseFloat(val.replace(",", "."));
-    return isNaN(num) ? "0.0" : num.toFixed(decimalPlaces);
-  };
+  const displayValue = formatDisplay(value);
 
   return (
     <div className="w-full">
@@ -49,7 +57,7 @@ export default function DecimalMoneyInput({
         type="text"
         inputMode="decimal"
         pattern="[0-9]*"
-        value={formatDisplay(value)}
+        value={displayValue}
         onChange={handleChange}
         className={`p-2 border rounded w-full ${className}`}
         placeholder={placeholder}

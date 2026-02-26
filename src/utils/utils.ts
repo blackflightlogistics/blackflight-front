@@ -66,6 +66,21 @@ export function paymentTypeToString(paymentType: string, t: TranslationsType): s
   }
 }
 
+export function paymentStatusToString(status: string, t: TranslationsType): string {
+  switch (status) {
+    case "pago":
+      return t.pagamento_pago;
+    case "parcial":
+      return t.pagamento_parcial;
+    case "pendente":
+      return t.status_pendente;
+    case "cancelado":
+      return t.pagamento_cancelado;
+    default:
+      return t.em_aberto;
+  }
+}
+
 export function paymentStringToEnum(paymentType: string): string {
   switch (paymentType) {
     case "À Vista":

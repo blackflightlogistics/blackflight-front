@@ -16,7 +16,7 @@ const RemessaNova = () => {
   const { translations: t } = useLanguage();
 
   useEffect(() => {
-    orderService.listar(true).then(setEncomendas);
+    orderService.listar(true).then((res) => setEncomendas(res.data));
   }, []);
 
   const toggleEncomenda = (id: string) => {

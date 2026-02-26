@@ -9,7 +9,6 @@ interface Props {
   onFechar: () => void;
   onConfirmar: (valorRestante: number) => void;
   dollarValue: number;
-  cambioTax: number;
   cafValue: number;
 }
 
@@ -19,8 +18,7 @@ const PagamentoPendenteModal = ({
   valorPago,
   onFechar,
   onConfirmar,
-  cambioTax,
-    cafValue,
+  cafValue,
 }: Props) => {
   const { translations: t } = useLanguage();
   const [valorRestante, setValorRestante] = useState(valorTotal - valorPago);
@@ -28,11 +26,7 @@ const PagamentoPendenteModal = ({
 
   if (!aberto) return null;
 
-  const valorConvertidoCAF = () => {
-    const emCaf = valorRestante * cafValue;
-    const comTaxa = emCaf + (emCaf * cambioTax) / 100;
-    return comTaxa;
-  };
+  const valorConvertidoCAF = () => valorRestante * cafValue;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
@@ -42,11 +36,11 @@ const PagamentoPendenteModal = ({
         </h2>
 
         <p className="text-sm text-gray-700 font-secondary">
-          {t.pagamento_valor_total}: <strong>US$ {valorTotal.toFixed(2)}</strong>
+          {t.pagamento_valor_total}: <strong>€ {valorTotal.toFixed(2)}</strong>
         </p>
 
         <p className="text-sm text-gray-700 font-secondary">
-          {t.pagamento_valor_pago}: <strong>US$ {valorPago.toFixed(2)}</strong>
+          {t.pagamento_valor_pago}: <strong>€ {valorPago.toFixed(2)}</strong>
         </p>
 
         <div className="space-y-1">
@@ -75,7 +69,7 @@ const PagamentoPendenteModal = ({
 
         {moeda === "caf" && (
           <p className="text-sm text-blue-700 font-secondary">
-            Total in CAF ( {cambioTax}% tax):{" "}
+            {t.pagamento_total_em_caf} (1 € = {cafValue} CAF):{" "}
             <strong>CAF {valorConvertidoCAF().toFixed(2)}</strong>
           </p>
         )}

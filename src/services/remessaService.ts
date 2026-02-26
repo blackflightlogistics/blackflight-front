@@ -65,8 +65,17 @@ export interface NovaRemessaPayload {
 }
 
 export const remessaService = {
-  listar: async (): Promise<Shipment[]> => {
-    const response = await api.get<{ data: Shipment[] }>("/shipments");
+  listar: async (search?: string, status?: string): Promise<Shipment[]> => {
+    const filterObj: Record<string, string> = {};
+    if (search?.trim()) filterObj.search = search.trim();
+    if (status && status !== "todos") filterObj.status = status;
+    const params: Record<string, string> = {};
+    if (Object.keys(filterObj).length > 0) {
+      params.filter = JSON.stringify(filterObj);
+    }
+    const response = await api.get<{ data: Shipment[] }>("/shipments", {
+      params,
+    });
     return response.data.data;
   },
 

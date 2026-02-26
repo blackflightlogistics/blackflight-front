@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Sidebar from "../../components/admin/Sidebar";
 import { remessaService, Shipment } from "../../services/remessaService";
 import { Link } from "react-router-dom";
@@ -8,23 +8,37 @@ import { pacoteStatusToString, remessaStatusToString } from "../../utils/utils";
 const Remessas = () => {
   const { translations: t } = useLanguage();
   const [remessas, setRemessas] = useState<Shipment[]>([]);
-  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
-  const [buscaPais, setBuscaPais] = useState<string>("");
+  // const [statusFiltro, setStatusFiltro] = useState<string>("todos");
+  const [busca, setBusca] = useState<string>("");
+  const buscaInitialMount = useRef(true);
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [acoesAbertas, setAcoesAbertas] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [imprimindo, setImprimindo] = useState(false);
 
-  useEffect(() => {
-    const carregar = async () => {
-      setCarregando(true);
-      const remessasData = await remessaService.listar();
-      setRemessas(remessasData);
-      setCarregando(false);
-    };
+  const carregar = async (search?: string, status?: string) => {
+    setCarregando(true);
+    const remessasData = await remessaService.listar(search, status);
+    setRemessas(remessasData);
+    setCarregando(false);
+  };
 
-    carregar();
-  }, []);
+  // useEffect(() => {
+  //   carregar(busca, statusFiltro);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps -- run only when status filter changes; busca is read from closure
+  // }, [statusFiltro]);
+
+  useEffect(() => {
+    if (buscaInitialMount.current) {
+      buscaInitialMount.current = false;
+      return;
+    }
+    const timer = setTimeout(() => {
+      carregar(busca, undefined);
+    }, 1000);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- debounced search only; statusFiltro read from closure
+  }, [busca]);
 
   const fecharRemessa = async (id: string) => {
     console.log("Remessa fechada:", id);
@@ -37,7 +51,7 @@ const Remessas = () => {
 
   const imprimirListagem = async () => {
     setImprimindo(true);
-    
+
     try {
       const printWindow = window.open("", "_blank");
       if (!printWindow) {
@@ -154,7 +168,7 @@ const Remessas = () => {
                     <div class="info-item"><strong>Tracking Code:</strong> ${e.tracking_code || ""}</div>
                     <div class="info-item"><strong>Status:</strong> <span class="status">${pacoteStatusToString(
                       e?.status ?? "",
-                      t
+                      t,
                     )}</span></div>
                   </div>
                   
@@ -167,19 +181,19 @@ const Remessas = () => {
                         📦 ${p.description || ""} - ${Number(p.weight || 0)} kg 
                         <span class="status">${pacoteStatusToString(
                           p.status || "",
-                          t
+                          t,
                         )}</span>
                       </div>
-                    `
+                    `,
                       )
                       .join("")}
                   </div>
                 </div>
-              `
+              `,
                 )
                 .join("")}
             </div>
-          `
+          `,
             )
             .join("")}
         </body>
@@ -188,25 +202,20 @@ const Remessas = () => {
 
       printWindow.document.write(printContent);
       printWindow.document.close();
-      
+
       // Aguardar um pouco para garantir que as imagens carregaram antes de imprimir
       setTimeout(() => {
         printWindow.print();
         setImprimindo(false);
       }, 1000);
-      
     } catch (error) {
-      console.error('Erro ao imprimir:', error);
-      alert('Erro ao preparar impressão. Tente novamente.');
+      console.error("Erro ao imprimir:", error);
+      alert("Erro ao preparar impressão. Tente novamente.");
       setImprimindo(false);
     }
   };
 
-  const remessasFiltradas = remessas.filter((r) => {
-    const statusOk = statusFiltro === "todos" || r.status === statusFiltro;
-    const paisOk = r.country?.toLowerCase().includes(buscaPais?.toLowerCase());
-    return statusOk && paisOk;
-  });
+  const remessasFiltradas = remessas;
 
   const renderStatusIcone = (status: string) => {
     switch (status) {
@@ -257,7 +266,7 @@ const Remessas = () => {
                 <>🖨️ {t.etiqueta_imprimir}</>
               )}
             </button>
-            
+
             <Link
               to="/admin/remessas/nova"
               className="px-4 py-2 bg-orange text-white font-semibold rounded hover:opacity-90 transition text-sm"
@@ -265,7 +274,7 @@ const Remessas = () => {
               {t.remessa_manual_titulo}
             </Link>
 
-            <select
+            {/* <select
               className="border border-gray-300 bg-white p-2 rounded text-sm"
               value={statusFiltro}
               onChange={(e) => setStatusFiltro(e.target.value)}
@@ -274,14 +283,14 @@ const Remessas = () => {
               <option value="aberta">{t.status_em_preparacao}</option>
               <option value="fechada">{t.status_aguardando_retirada}</option>
               <option value="enviada">{t.status_entregue}</option>
-            </select>
+            </select> */}
 
             <input
               type="text"
-              placeholder={t.pais}
-              className="border border-gray-300 bg-white p-2 rounded text-sm"
-              value={buscaPais}
-              onChange={(e) => setBuscaPais(e.target.value)}
+              placeholder={t.buscar}
+              className="h-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent min-w-[200px] sm:min-w-[280px]"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
             />
           </div>
         </div>
@@ -309,7 +318,10 @@ const Remessas = () => {
                         </p>
                       </div>
                       <p className="text-sm text-gray-600">
-                        Status: <strong>{remessaStatusToString(r.status ?? "aberta", t)}</strong>
+                        Status:{" "}
+                        <strong>
+                          {remessaStatusToString(r.status ?? "aberta", t)}
+                        </strong>
                       </p>
                       <p className="text-sm text-gray-600">
                         {t.etiqueta_data_geracao}:{" "}
@@ -329,7 +341,7 @@ const Remessas = () => {
                         >
                           {r.pesoTotal.toFixed(2)} kg
                         </p> */}
-                       {r.total_weight}
+                        {r.total_weight}
                       </div>
 
                       <Link
@@ -352,32 +364,25 @@ const Remessas = () => {
                           >
                             <div>
                               <p className="text-sm text-gray-600">
-                                {t.pais}: <strong>{r.country}</strong>
-                              </p>
-                              <p className="text-sm text-gray-600">
+                                {t.pais}: <strong>{r.country}</strong> |{" "}
                                 {t.remetente}:{" "}
                                 <strong>
                                   {e?.from_account?.name?.toLocaleLowerCase()}
-                                </strong>
-                              </p>
-                              <p className="text-sm text-gray-600">
-                                {t.destinatario}:{" "}
+                                </strong> | {t.destinatario}:{" "}
                                 <strong>
-                                  {e.to_account.name?.toLocaleLowerCase()}
+                                  {e?.to_account?.name?.toLocaleLowerCase()}
                                 </strong>
                               </p>
                               <p className="text-sm text-gray-600">
                                 {t.tracking_code}:{" "}
-                                <strong>{e.tracking_code}</strong>
-                              </p>
-                              <p className="flex">
-                                <span className="font-bold">#</span> –{" "}
+                                <strong>{e.tracking_code}</strong> | <span className="font-bold">#</span> –{" "}
                                 {e.packages.length} {t.pacotes}(s) –{" "}
                                 {e.packages
                                   .reduce((s, p) => s + Number(p.weight), 0)
                                   .toFixed(2)}{" "}
                                 kg
                               </p>
+                             
                             </div>
                           </div>
                         </div>

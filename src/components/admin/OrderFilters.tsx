@@ -17,7 +17,7 @@ const OrderFiltersComponent: React.FC<OrderFiltersProps> = ({
 }) => {
   const { translations: t } = useLanguage();
 
-  const handleFiltroChange = (key: keyof OrderFilters, value: string | EncomendaStatus | FormaPagamento | EncomendaPagamentoStatus) => {
+  const handleFiltroChange = (key: keyof OrderFilters, value: string | EncomendaStatus | FormaPagamento | EncomendaPagamentoStatus | undefined) => {
     onFiltrosChange({
       ...filtros,
       [key]: value || undefined,
@@ -26,18 +26,18 @@ const OrderFiltersComponent: React.FC<OrderFiltersProps> = ({
 
   return (
     <div className="bg-white p-6 rounded-md border border-gray-200 shadow-sm">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-4 items-end">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
         {/* Status da Encomenda */}
         <div className="flex flex-col space-y-2">
-          <label className="text-sm font-medium text-gray-700 h-5 flex items-center">
-            Status da Encomenda
+          <label className="text-sm font-medium text-gray-700 leading-snug">
+            {t.status_encomenda}
           </label>
           <select
             value={filtros.status || ""}
             onChange={(e) => handleFiltroChange("status", e.target.value as EncomendaStatus)}
             className="h-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent bg-white"
           >
-            <option value="">Todos</option>
+            <option value="">{t.filtros_todos}</option>
             <option value="em_preparacao">{t.status_em_preparacao}</option>
             <option value="em_transito">{t.status_em_transito}</option>
             <option value="aguardando_retirada">{t.status_aguardando_retirada}</option>
@@ -48,15 +48,15 @@ const OrderFiltersComponent: React.FC<OrderFiltersProps> = ({
 
         {/* Forma de Pagamento */}
         <div className="flex flex-col space-y-2">
-          <label className="text-sm font-medium text-gray-700 h-5 flex items-center">
-            Forma de Pagamento
+          <label className="text-sm font-medium text-gray-700 leading-snug">
+            {t.forma_pagamento_label}
           </label>
           <select
             value={filtros.payment_type || ""}
             onChange={(e) => handleFiltroChange("payment_type", e.target.value as FormaPagamento)}
             className="h-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent bg-white"
           >
-            <option value="">Todos</option>
+            <option value="">{t.filtros_todos}</option>
             <option value="a_vista">{t.forma_pagamento_a_vista}</option>
             <option value="parcelado">{t.forma_pagamento_parcelado}</option>
             <option value="na_retirada">{t.forma_pagamento_na_retirada}</option>
@@ -65,8 +65,8 @@ const OrderFiltersComponent: React.FC<OrderFiltersProps> = ({
 
         {/* Data Inicial */}
         <div className="flex flex-col space-y-2">
-          <label className="text-sm font-medium text-gray-700 h-5 flex items-center">
-            Data Inicial
+          <label className="text-sm font-medium text-gray-700 leading-snug">
+            {t.filtro_data_inicial}
           </label>
           <input
             type="date"
@@ -78,8 +78,8 @@ const OrderFiltersComponent: React.FC<OrderFiltersProps> = ({
 
         {/* Data Final */}
         <div className="flex flex-col space-y-2">
-          <label className="text-sm font-medium text-gray-700 h-5 flex items-center">
-            Data Final
+          <label className="text-sm font-medium text-gray-700 leading-snug">
+            {t.filtro_data_final}
           </label>
           <input
             type="date"
@@ -91,57 +91,58 @@ const OrderFiltersComponent: React.FC<OrderFiltersProps> = ({
 
         {/* Status de Pagamento */}
         <div className="flex flex-col space-y-2">
-          <label className="text-sm font-medium text-gray-700 h-5 flex items-center">
-            Status de Pagamento
+          <label className="text-sm font-medium text-gray-700 leading-snug">
+            {t.status_do_pagamento}
           </label>
           <select
             value={filtros.payment_status || ""}
             onChange={(e) => handleFiltroChange("payment_status", e.target.value as EncomendaPagamentoStatus)}
             className="h-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent bg-white"
           >
-            <option value="">Todos</option>
-            <option value="pago">Pago</option>
-            <option value="parcial">Parcial</option>
-            <option value="pendente">Pendente</option>
-            <option value="cancelado">Cancelado</option>
+            <option value="">{t.filtros_todos}</option>
+            <option value="pago">{t.pagamento_pago}</option>
+            <option value="parcial">{t.pagamento_parcial}</option>
+            <option value="pendente">{t.status_pendente}</option>
+            <option value="cancelado">{t.pagamento_cancelado}</option>
           </select>
         </div>
 
         {/* Tracking Code */}
         <div className="flex flex-col space-y-2">
-          <label className="text-sm font-medium text-gray-700 h-5 flex items-center">
-            Código de Rastreio
+          <label className="text-sm font-medium text-gray-700 leading-snug">
+            {t.codigo_rastreio}
           </label>
           <input
             type="text"
-            placeholder="Digite o código..."
+            placeholder={t.tracking_placeholder}
             value={filtros.tracking_code || ""}
             onChange={(e) => handleFiltroChange("tracking_code", e.target.value)}
             className="h-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent"
           />
         </div>
+      </div>
 
-        {/* Botão Aplicar */}
-        <div className="flex flex-col space-y-2">
-          <div className="h-5"></div>
-          <button
-            onClick={onAplicarFiltros}
-            className="h-10 px-4 py-2 bg-orange text-white rounded-md text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            Aplicar Filtros
-          </button>
-        </div>
-
-        {/* Botão Limpar */}
-        <div className="flex flex-col space-y-2">
-          <div className="h-5"></div>
-          <button
-            onClick={onLimparFiltros}
-            className="h-10 px-4 py-2 bg-gray-500 text-white rounded-md text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            Limpar Filtros
-          </button>
-        </div>
+      {/* Segunda linha: busca + botões */}
+      <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-gray-200">
+        <input
+          type="text"
+          value={filtros.search || ""}
+          onChange={(e) => handleFiltroChange("search", e.target.value)}
+          placeholder={t.buscar}
+          className="h-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent min-w-[200px] sm:min-w-[280px]"
+        />
+        <button
+          onClick={onAplicarFiltros}
+          className="h-10 px-4 py-2 bg-orange text-white rounded-md text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          {t.aplicar_filtros}
+        </button>
+        <button
+          onClick={onLimparFiltros}
+          className="h-10 px-4 py-2 bg-gray-500 text-white rounded-md text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          {t.limpar_filtros}
+        </button>
       </div>
     </div>
   );
