@@ -3,6 +3,7 @@ import { Order, Package } from "../../services/encomendaService";
 import {
   adicionarDiasEntrega,
   apresentaDataFormatada,
+  paymentStatusToString,
 } from "../../utils/utils";
 import { useLanguage } from "../../context/useLanguage";
 import { Country, State } from "country-state-city";
@@ -93,7 +94,7 @@ const EtiquetaEncomendaComponente: React.FC<EtiquetaProps> = ({
             <div>
               <div>
                 <span className="font-bold">
-                  {t.tracking_estimated_delivery}:
+                  {t.tracking_estimated_delivery}
                 </span>{" "}
                 {adicionarDiasEntrega(dataGeracao, encomenda.is_express)}
               </div>
@@ -107,6 +108,7 @@ const EtiquetaEncomendaComponente: React.FC<EtiquetaProps> = ({
           <div>
             <span className="font-bold">{t.data}:</span>{" "}
             {apresentaDataFormatada(dataGeracao)}
+            
           </div>
         </div>
       </div>
@@ -120,6 +122,8 @@ const EtiquetaEncomendaComponente: React.FC<EtiquetaProps> = ({
         <p>{t.endereco_centro_distribuicao}:</p>
         <p>https://www.blackflightlogistics.com/</p>
         <p className="font-bold">FRANCE – 11 CITÉ RIVERIN, PARIS</p>
+            <span className="font-bold">{t.status_pagamento}</span>{" "}
+            {paymentStatusToString(encomenda?.payment_status ?? "", t)}
       </div>
     </div>
   );
