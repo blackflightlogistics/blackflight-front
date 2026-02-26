@@ -45,13 +45,19 @@ type RawAdress = {
 };
 
 export const clienteService = {
-  listar: async (cursor?: string, limit: number = 10): Promise<{ data: Cliente[]; cursor: CursorInfo }> => {
-    let url = `/accounts?limit=${limit}`;
-    if (cursor) {
-      url += `&after=${encodeURIComponent(cursor)}`;
+  listar: async (
+    cursor?: string,
+    limit: number = 10,
+    filter?: { search?: string },
+  ): Promise<{ data: Cliente[]; cursor: CursorInfo }> => {
+    const params: Record<string, string> = { limit: String(limit) };
+    if (cursor) params.after = cursor;
+    if (filter?.search?.trim()) {
+      params.filter = JSON.stringify({ search: filter.search.trim() });
     }
-
-    const response = await api.get<PaginatedResponse<RawAccount>>(url);
+    const response = await api.get<PaginatedResponse<RawAccount>>("/accounts", {
+      params,
+    });
     const { data, cursor: cursorInfo } = response.data;
 
     return {

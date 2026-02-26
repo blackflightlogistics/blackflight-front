@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import { clienteService, Cliente } from "../../services/clienteService";
@@ -17,36 +17,50 @@ function Clientes() {
   const [carregando, setCarregando] = useState(true);
   const [cursorInfo, setCursorInfo] = useState<CursorInfo | null>(null);
   const [cursorHistory, setCursorHistory] = useState<string[]>([]);
+  const [busca, setBusca] = useState("");
+  const buscaInitialMount = useRef(true);
   const navigate = useNavigate();
   const { translations: t } = useLanguage();
 
-  useEffect(() => {
-    carregarClientes();
-  }, []);
-
-  const carregarClientes = async (afterCursor?: string) => {
+  const carregarClientes = async (afterCursor?: string, search?: string) => {
     setCarregando(true);
-    const resultado = await clienteService.listar(afterCursor);
+    const filter = search?.trim() ? { search: search.trim() } : undefined;
+    const resultado = await clienteService.listar(afterCursor, 10, filter);
     setClientes(resultado.data);
     setCursorInfo(resultado.cursor);
     setCarregando(false);
   };
 
+  useEffect(() => {
+    carregarClientes();
+  }, []);
+
+  useEffect(() => {
+    if (buscaInitialMount.current) {
+      buscaInitialMount.current = false;
+      return;
+    }
+    const timer = setTimeout(() => {
+      setCursorHistory([]);
+      carregarClientes(undefined, busca);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [busca]);
+
   const handleProximaPagina = () => {
     if (cursorInfo?.after) {
       setCursorHistory((prev) => [...prev, cursorInfo.after!]);
-      carregarClientes(cursorInfo.after);
+      carregarClientes(cursorInfo.after, busca);
     }
   };
 
   const handlePaginaAnterior = () => {
     const novoHistorico = [...cursorHistory];
     novoHistorico.pop();
-    const cursorAnterior = novoHistorico.length > 0
-      ? novoHistorico[novoHistorico.length - 1]
-      : undefined;
+    const cursorAnterior =
+      novoHistorico.length > 0 ? novoHistorico[novoHistorico.length - 1] : undefined;
     setCursorHistory(novoHistorico);
-    carregarClientes(cursorAnterior);
+    carregarClientes(cursorAnterior, busca);
   };
 
   const handleSalvarCliente = async (form: ClienteFormData) => {
@@ -70,7 +84,7 @@ function Clientes() {
     });
 
     setFormVisible(false);
-    carregarClientes();
+    carregarClientes(undefined, busca);
   };
 
   return (
@@ -89,14 +103,23 @@ function Clientes() {
       </div>
 
       <div className="flex-1 flex flex-col min-h-0 h-screen overflow-y-auto overflow-x-hidden bg-[#fcf7f1] pt-16 p-6">
-        <div className="flex justify-between items-center mb-6 shrink-0">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 shrink-0">
           <h1 className="text-2xl font-bold font-primary">{t.client_title}</h1>
-          <button
-            onClick={() => setFormVisible(!formVisible)}
-            className="bg-orange text-white px-4 py-2 rounded hover:opacity-90 font-secondary text-sm"
-          >
-            {formVisible ? t.cancelar : t.novo_cliente}
-          </button>
+          <div className="flex items-center gap-1">
+            <input
+              type="text"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder={t.buscar}
+              className="h-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent min-w-[200px] sm:min-w-[280px]"
+            />
+            <button
+              onClick={() => setFormVisible(!formVisible)}
+              className="h-10 px-4 py-2 rounded-md bg-orange text-white hover:opacity-90 font-secondary text-sm whitespace-nowrap"
+            >
+              {formVisible ? t.cancelar : t.novo_cliente}
+            </button>
+          </div>
         </div>
 
         {formVisible && (
