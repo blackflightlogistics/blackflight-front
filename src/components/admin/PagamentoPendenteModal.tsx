@@ -7,7 +7,7 @@ interface Props {
   valorTotal: number;
   valorPago: number;
   onFechar: () => void;
-  onConfirmar: (valorRestante: number) => void;
+  onConfirmar: (valorRestante: number) => void | Promise<void>;
   dollarValue: number;
   cafValue: number;
 }
@@ -23,10 +23,24 @@ const PagamentoPendenteModal = ({
   const { translations: t } = useLanguage();
   const [valorRestante, setValorRestante] = useState(valorTotal - valorPago);
   const [moeda, setMoeda] = useState<"euro" | "caf">("euro");
+  const [confirmando, setConfirmando] = useState(false);
 
   if (!aberto) return null;
 
+  const valorASerPago = valorTotal - valorPago;
+  const valorCorreto = Math.round(valorRestante * 100) === Math.round(valorASerPago * 100);
   const valorConvertidoCAF = () => valorRestante * cafValue;
+
+  const handleConfirmar = async () => {
+    setConfirmando(true);
+    try {
+      await Promise.resolve(
+        onConfirmar(moeda === "euro" ? valorRestante : valorConvertidoCAF())
+      );
+    } finally {
+      setConfirmando(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
@@ -41,6 +55,11 @@ const PagamentoPendenteModal = ({
 
         <p className="text-sm text-gray-700 font-secondary">
           {t.pagamento_valor_pago}: <strong>€ {valorPago.toFixed(2)}</strong>
+        </p>
+
+        <p className="text-sm text-gray-700 font-secondary">
+          {t.pagamento_valor_a_ser_pago}:{" "}
+          <strong>€ {(valorTotal - valorPago).toFixed(2)}</strong>
         </p>
 
         <div className="space-y-1">
@@ -75,12 +94,24 @@ const PagamentoPendenteModal = ({
         )}
 
         <button
-          onClick={() =>
-            onConfirmar(moeda === "euro" ? valorRestante : valorConvertidoCAF())
-          }
-          className="w-full px-4 py-2 bg-orange text-white rounded-md hover:opacity-90 font-secondary text-sm"
+          onClick={handleConfirmar}
+          disabled={!valorCorreto || confirmando}
+          className={`w-full px-4 py-2 rounded-md font-secondary text-sm flex items-center justify-center gap-2 ${
+            valorCorreto && !confirmando
+              ? "bg-orange text-white hover:opacity-90"
+              : confirmando
+                ? "bg-orange text-white opacity-80 cursor-wait"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-50"
+          }`}
         >
-          {t.confirmar}
+          {confirmando ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent" />
+              {t.confirmando}
+            </>
+          ) : (
+            t.confirmar
+          )}
         </button>
 
         <button
