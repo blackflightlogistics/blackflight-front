@@ -31,13 +31,13 @@ const Remessas = () => {
   useEffect(() => {
     if (buscaInitialMount.current) {
       buscaInitialMount.current = false;
+      carregar(busca, undefined);
       return;
     }
     const timer = setTimeout(() => {
       carregar(busca, undefined);
     }, 1000);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- debounced search only; statusFiltro read from closure
   }, [busca]);
 
   const fecharRemessa = async (id: string) => {
