@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/useLanguage"; // ⬅️ importação do hook de tradução
 import Sidebar from "../../components/admin/Sidebar";
@@ -17,7 +17,8 @@ import DecimalMoneyInput from "../../components/form/DecimalMoneyInput";
 function NovaEncomenda() {
   const { translations: t } = useLanguage(); // ⬅️ hook com os textos traduzidos
   const navigate = useNavigate();
-  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [selectedRemetente, setSelectedRemetente] = useState<Cliente | null>(null);
+  const [selectedDestinatario, setSelectedDestinatario] = useState<Cliente | null>(null);
   const [sidebarAberta, setSidebarAberta] = useState(false);
 
   const [loadingTela, setLoadingTela] = useState(true);
@@ -67,10 +68,15 @@ const [editandoPacoteIndex, setEditandoPacoteIndex] = useState<number | null>(nu
   ] = useState(false);
   const [exibindoListaEnderecosRemetente, setExibindoListaEnderecosRemetente] =
     useState(false);
+  const loadClientes = useCallback((search: string) => {
+    return clienteService
+      .listar(undefined, 10, search.trim() ? { search: search.trim() } : undefined)
+      .then((r) => r.data);
+  }, []);
+
   useEffect(() => {
     async function carregarDados() {
       setLoadingTela(true);
-      await clienteService.listar().then((res) => setClientes(res.data));
       await configService.buscar().then((conf) => {
         setAdicionalExpresso(Number(conf.expressAmount) || 0);
       });
@@ -216,12 +222,13 @@ const cancelarEdicao = () => {
         <div className="space-y-2">
           <ClienteSelect
             label={t.remetente}
-            clientes={clientes}
+            loadClientes={loadClientes}
             selectedId={remetenteId}
-            onSelect={(id) => {
+            selectedCliente={selectedRemetente}
+            onSelect={(id, cliente) => {
               setRemetenteId(id);
+              setSelectedRemetente(cliente);
               setShowRemetenteEndereco(false);
-              const cliente = clientes.find((c) => c.id === id);
               const endereco = cliente?.adresses?.[0];
               if (endereco) {
                 const enderecoLower = {
@@ -266,9 +273,7 @@ const cancelarEdicao = () => {
           )}
           {exibindoListaEnderecosRemetente && (
             <div className="space-y-2 bg-white p-4 border border-orange rounded">
-              {clientes
-                .find((c) => c.id === remetenteId)
-                ?.adresses.map((addr, idx) => (
+              {selectedRemetente?.adresses?.map((addr, idx) => (
                   <div
                     key={idx}
                     className="p-2 border rounded hover:bg-orange-100 cursor-pointer"
@@ -324,18 +329,16 @@ const cancelarEdicao = () => {
                 <button
                   className="mt-2 px-4 py-2 bg-green-600 text-white rounded col-span-full"
                   onClick={async () => {
-                    if (!remetenteId || !enderecoEditavelRemetente) return;
-                    const cliente = clientes.find((c) => c.id === remetenteId);
-                    if (!cliente) return;
+                    if (!remetenteId || !enderecoEditavelRemetente || !selectedRemetente) return;
                     await clienteService.atualizar(remetenteId, {
-                      ...cliente,
+                      ...selectedRemetente,
                       adresses: [
-                        ...cliente.adresses,
+                        ...selectedRemetente.adresses,
                         enderecoEditavelRemetente,
                       ],
                     });
-                    const novaLista = await clienteService.listar();
-                    setClientes(novaLista.data);
+                    const atualizado = await clienteService.buscarPorId(remetenteId);
+                    setSelectedRemetente(atualizado);
                     setEnderecoOriginalRemetente({
                       ...enderecoEditavelRemetente,
                     });
@@ -368,8 +371,7 @@ const cancelarEdicao = () => {
                   adresses: [endereco],
                   removed_adresses: [],
                 });
-                const novaLista = await clienteService.listar();
-                setClientes(novaLista.data);
+                setSelectedRemetente(novo);
                 setRemetenteId(novo.id);
                 setShowRemetenteForm(false);
               }}
@@ -382,13 +384,14 @@ const cancelarEdicao = () => {
         <div className="space-y-2">
           <ClienteSelect
             label={t.destinatario}
-            clientes={clientes}
+            loadClientes={loadClientes}
             selectedId={destinatarioId}
-            onSelect={(id) => {
+            selectedCliente={selectedDestinatario}
+            onSelect={(id, cliente) => {
               setDestinatarioId(id);
+              setSelectedDestinatario(cliente);
               setShowDestinatarioEndereco(false);
               setExibindoListaEnderecosDestinatario(false);
-              const cliente = clientes.find((c) => c.id === id);
               const endereco = cliente?.adresses?.[0];
               if (endereco) {
                 const enderecoLower = {
@@ -404,8 +407,7 @@ const cancelarEdicao = () => {
                 setEnderecoOriginal(enderecoLower);
                 setEnderecoSelecionado(enderecoLower);
               }
-              setShowDestinatarioEndereco((prev) => !prev);
-              setExibindoListaEnderecosDestinatario(false);
+              setShowDestinatarioEndereco(true);
             }}
             onCadastrarNovo={() => setShowDestinatarioForm(true)}
           />
@@ -437,9 +439,7 @@ const cancelarEdicao = () => {
 
           {exibindoListaEnderecosDestinatario && (
             <div className="space-y-2 bg-white p-4 border border-orange rounded">
-              {clientes
-                .find((c) => c.id === destinatarioId)
-                ?.adresses.map((addr, idx) => (
+              {selectedDestinatario?.adresses?.map((addr, idx) => (
                   <div
                     key={idx}
                     className="p-2 border rounded hover:bg-orange-100 cursor-pointer"
@@ -497,17 +497,13 @@ const cancelarEdicao = () => {
                 <button
                   className="mt-2 px-4 py-2 bg-green-600 text-white rounded col-span-full"
                   onClick={async () => {
-                    if (!destinatarioId || !enderecoEditavel) return;
-                    const cliente = clientes.find(
-                      (c) => c.id === destinatarioId
-                    );
-                    if (!cliente) return;
+                    if (!destinatarioId || !enderecoEditavel || !selectedDestinatario) return;
                     await clienteService.atualizar(destinatarioId, {
-                      ...cliente,
-                      adresses: [...cliente.adresses, enderecoEditavel],
+                      ...selectedDestinatario,
+                      adresses: [...selectedDestinatario.adresses, enderecoEditavel],
                     });
-                    const novaLista = await clienteService.listar();
-                    setClientes(novaLista.data);
+                    const atualizado = await clienteService.buscarPorId(destinatarioId);
+                    setSelectedDestinatario(atualizado);
                     setEnderecoOriginal({ ...enderecoEditavel });
                     setEnderecoSelecionado({ ...enderecoEditavel });
                     setShowDestinatarioEndereco(false);
@@ -539,8 +535,7 @@ const cancelarEdicao = () => {
                   adresses: [endereco],
                   removed_adresses: [],
                 });
-                const novaLista = await clienteService.listar();
-                setClientes(novaLista.data);
+                setSelectedDestinatario(novo);
                 setDestinatarioId(novo.id);
                 setShowDestinatarioForm(false);
                 setEnderecoSelecionado(endereco);
