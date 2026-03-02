@@ -1,41 +1,59 @@
 // src/components/admin/ClienteSelect.tsx
-import { useRef, Fragment, useMemo, useState } from "react";
+import { useRef, Fragment, useState, useEffect } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { Cliente } from "../../services/clienteService";
 
+const DEBOUNCE_MS = 350;
+
 type Props = {
   label: string;
-  clientes: Cliente[];
+  loadClientes: (search: string) => Promise<Cliente[]>;
   selectedId: string | undefined;
-  onSelect: (clienteId: string) => void;
+  selectedCliente?: Cliente | null;
+  onSelect: (clienteId: string, cliente: Cliente) => void;
   onCadastrarNovo: () => void;
 };
 
 const ClienteSelect = ({
   label,
-  clientes,
+  loadClientes,
   selectedId,
+  selectedCliente,
   onSelect,
   onCadastrarNovo,
 }: Props) => {
   const [query, setQuery] = useState("");
+  const [options, setOptions] = useState<Cliente[]>([]);
+  const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const filteredClientes = useMemo(() => {
-    if (!query) return clientes;
-    const q = query?.toLowerCase();
-    return clientes.filter(
-      (c) =>
-        c.name?.toLowerCase().includes(q) ||
-        c.email?.toLowerCase().includes(q) ||
-        c.phone_number?.toLowerCase().includes(q)
-    );
-  }, [query, clientes]);
   const [comboboxAberto, setComboboxAberto] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(true);
+      loadClientes(query)
+        .then((data) => setOptions(data))
+        .finally(() => setLoading(false));
+    }, DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [query, loadClientes]);
+
+  const displayLabel = (id: string | "") => {
+    if (selectedCliente && selectedCliente.id === id) {
+      return `${selectedCliente.name} ${selectedCliente.last_name}`;
+    }
+    const cliente = options.find((c) => c.id === id);
+    return cliente ? `${cliente.name} ${cliente.last_name}` : "";
+  };
+
+  const handleChange = (id: string) => {
+    const cliente = options.find((c) => c.id === id);
+    if (cliente) onSelect(id, cliente);
+  };
 
   return (
     <div>
-      <Combobox value={selectedId} onChange={onSelect}>
+      <Combobox value={selectedId} onChange={handleChange}>
         <Combobox.Label className="block mb-1 text-sm font-medium">
           {label}
         </Combobox.Label>
@@ -43,15 +61,12 @@ const ClienteSelect = ({
           <Combobox.Input
             ref={inputRef}
             className="w-full border border-gray-300 rounded p-2"
-            displayValue={(id: string | "") => {
-              const cliente = clientes.find((c) => c.id === id);
-              return cliente ? `${cliente.name} ${cliente.last_name}` : "";
-            }}
+            displayValue={(id: string | "") => displayLabel(id)}
             onChange={(event) => {
               setQuery(event.target.value);
               setComboboxAberto(true);
             }}
-            placeholder={`Buscar por nome, e-mail ou telefone`}
+            placeholder="Buscar por nome, e-mail ou telefone"
           />
           {comboboxAberto && (
             <Transition
@@ -62,7 +77,11 @@ const ClienteSelect = ({
               afterLeave={() => setQuery("")}
             >
               <Combobox.Options className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded shadow-md max-h-60 overflow-auto">
-                {filteredClientes.length === 0 ? (
+                {loading ? (
+                  <div className="px-4 py-3 text-sm text-gray-500">
+                    Carregando...
+                  </div>
+                ) : options.length === 0 ? (
                   <div
                     onClick={() => {
                       onCadastrarNovo();
@@ -74,7 +93,7 @@ const ClienteSelect = ({
                     Cadastrar novo cliente
                   </div>
                 ) : (
-                  filteredClientes.map((cliente) => (
+                  options.map((cliente) => (
                     <Combobox.Option
                       key={cliente.id}
                       value={cliente.id}
