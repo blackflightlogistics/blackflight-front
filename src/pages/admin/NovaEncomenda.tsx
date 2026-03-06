@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import { orderService, PacoteStatus } from "../../services/encomendaService";
 import ClienteForm from "../../components/admin/ClienteForm";
 import DecimalMoneyInput from "../../components/form/DecimalMoneyInput";
+import { pacoteStatusToString } from "../../utils/utils";
 
 function NovaEncomenda() {
   const { translations: t } = useLanguage(); // ⬅️ hook com os textos traduzidos
@@ -634,7 +635,7 @@ const cancelarEdicao = () => {
                   {p.declared_value !== "0" && (
                     <span className="text-green-600 ml-2">— € {p.declared_value}</span>
                   )}
-                  <span className="text-blue-600 ml-2 text-sm">({p.status})</span>
+                  <span className="text-blue-600 ml-2 text-sm">({pacoteStatusToString(p.status, t)})</span>
                 </div>
                 <div className="flex gap-2 ml-4">
                   <button

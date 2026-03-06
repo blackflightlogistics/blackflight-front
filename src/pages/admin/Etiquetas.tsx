@@ -169,7 +169,7 @@ function EtiquetaEncomenda() {
           <div class="linha">
             <div>
               <span class="bold">${t.remetente}:</span><br/>
-              ${encomenda.from_account.name}<br/>
+              ${encomenda.from_account.name} ${encomenda.from_account.last_name}<br/>
               <span class="bold">${t.pais_origem}:</span><br/>
               ${getCountryAbbr(from.country)} - ${getStateAbbr(
       from.country,
@@ -178,7 +178,7 @@ function EtiquetaEncomenda() {
             </div>
             <div style="text-align: left;">
               <span class="bold">${t.destinatario}:</span><br/>
-              ${encomenda.to_account.name}<br/>
+              ${encomenda.to_account.name} ${encomenda.to_account.last_name}<br/>
               <span class="bold">${t.pais_destino}:</span><br/>
               ${getCountryAbbr(to.country)} - ${getStateAbbr(
       to.country,
