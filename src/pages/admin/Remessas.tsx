@@ -63,7 +63,7 @@ const Remessas = () => {
         <!DOCTYPE html>
         <html>
         <head>
-          <title>Listagem de Remessas - Black Flight Logistic</title>
+          <title>${t.listagem_remessas_titulo} - Black Flight Logistic</title>
           <style>
             body {
               font-family: Arial, sans-serif;
@@ -140,10 +140,10 @@ const Remessas = () => {
         </head>
         <body>
           <div class="header">
-            <h1>Black Flight Logistic</h1>
-            <h2>Listagem de Remessas</h2>
-            <p>Data: ${new Date().toLocaleDateString("pt-BR")}</p>
-            <p>Total de remessas: ${remessas.length}</p>
+            <h1>Black Flight Logistics</h1>
+            <h2>${t.listagem_remessas_titulo}</h2>
+            <p>${t.data}: ${new Date().toLocaleDateString("pt-BR")}</p>
+            <p>${t.total_remessas}: ${remessas.length}</p>
           </div>
           
           ${remessas
@@ -152,9 +152,9 @@ const Remessas = () => {
             <div class="remessa">
               <div class="remessa-header">
                 <h2>${r.country}</h2>
-                <p><strong>Status:</strong> ${r.status || ""}</p>
-                <p><strong>Data de Criação:</strong> ${new Date(r.inserted_at).toLocaleDateString()}</p>
-                <p><strong>Peso Total:</strong> ${r.total_weight || "0"} kg</p>
+                <p><strong>${t.status}:</strong> ${remessaStatusToString(r.status || "", t)}</p>
+                <p><strong>${t.data_criacao}:</strong> ${new Date(r.inserted_at).toLocaleDateString()}</p>
+                <p><strong>${t.peso_total}:</strong> ${r.total_weight || "0"} kg</p>
               </div>
               
               ${r.orders
@@ -162,18 +162,18 @@ const Remessas = () => {
                   (e) => `
                 <div class="encomenda">
                   <div class="info-section">
-                    <h3>Informações da Encomenda</h3>
-                    <div class="info-item"><strong>De:</strong> ${e.from_account?.name || ""}</div>
-                    <div class="info-item"><strong>Para:</strong> ${e.to_account?.name || ""}</div>
-                    <div class="info-item"><strong>Tracking Code:</strong> ${e.tracking_code || ""}</div>
-                    <div class="info-item"><strong>Status:</strong> <span class="status">${pacoteStatusToString(
+                    <h3>${t.informacoes_encomenda}</h3>
+                    <div class="info-item"><strong>${t.de}</strong> ${e.from_account?.name || ""}</div>
+                    <div class="info-item"><strong>${t.para}</strong> ${e.to_account?.name || ""}</div>
+                    <div class="info-item"><strong>${t.tracking_code_label}</strong> ${e.tracking_code || ""}</div>
+                    <div class="info-item"><strong>${t.status}:</strong> <span class="status">${pacoteStatusToString(
                       e?.status ?? "",
                       t,
                     )}</span></div>
                   </div>
                   
                   <div class="pacotes">
-                    <h3>Pacotes</h3>
+                    <h3>${t.pacotes}</h3>
                     ${e.packages
                       .map(
                         (p) => `
