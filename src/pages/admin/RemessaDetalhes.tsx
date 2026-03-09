@@ -4,6 +4,8 @@ import Sidebar from "../../components/admin/Sidebar";
 import { remessaService, Shipment } from "../../services/remessaService";
 import { orderService, Order } from "../../services/encomendaService";
 // import { clienteService, Cliente } from "../../services/clienteService";
+import { useLanguage } from "../../context/useLanguage";
+
 
 const RemessaDetalhes = () => {
   const { id } = useParams<{ id: string }>();
@@ -12,7 +14,7 @@ const RemessaDetalhes = () => {
   // const [clientes, setClientes] = useState<Cliente[]>([]);
   const [sidebarAberta, setSidebarAberta] = useState(false);
   const [carregando, setCarregando] = useState(true); // ⬅️ novo estado de loading
-
+  const { translations: t } = useLanguage();
   useEffect(() => {
     const carregar = async () => {
       setCarregando(true);
@@ -74,7 +76,7 @@ const RemessaDetalhes = () => {
                   to={`/admin/remessas/${id}/etiquetas`}
                   className="block px-2 py-1 bg-orange text-white text-center font-semibold rounded hover:opacity-90 transition text-sm m-1"
                 >
-                  Gerar etiquetas
+                  {t.gerar_etiquetas}
                 </Link>
               </div>
               <p>

@@ -137,8 +137,8 @@ const TrackingField = ({
                       <p className="text-gray-600">
                         {h.status === "em_preparacao" ||
                         h.status === "em_transito"
-                          ? `${info.from_account.adresses[0].city} - ${info.from_account.adresses[0].state} - ${info.from_account.adresses[0].country}`
-                          : `${info.to_account.adresses[0].city} - ${info.to_account.adresses[0].state} - ${info.to_account.adresses[0].country}`}
+                          ? `${info.from_account.adresses[0]?.city} - ${info.from_account.adresses[0]?.state} - ${info.from_account.adresses[0]?.country}`
+                          : `${info.to_account.adresses[0]?.city} - ${info.to_account.adresses[0]?.state} - ${info.to_account.adresses[0]?.country}`}
                       </p>
                     </div>
                   </div>

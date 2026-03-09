@@ -58,10 +58,10 @@ const EtiquetaEncomendaComponente: React.FC<EtiquetaProps> = ({
             <br />
             <span className="font-bold">{t.pais_origem}</span>
             <br />
-            {getCountryAbbr(encomenda?.from_account.adresses[0].country)}-
+            {getCountryAbbr(encomenda?.from_account.adresses[0]?.country)}-
             {getStateAbbr(
-              encomenda?.from_account.adresses[0].country,
-              encomenda?.from_account.adresses[0].city || ""
+              encomenda?.from_account.adresses[0]?.country,
+              encomenda?.from_account.adresses[0]?.city || ""
             )}
           </div>
           <div className="text-left">
@@ -71,9 +71,9 @@ const EtiquetaEncomendaComponente: React.FC<EtiquetaProps> = ({
             <br />
             <span className="font-bold">{t.pais_destino}</span>
             <br />
-            {getCountryAbbr(encomenda?.to_account.adresses[0].country)}-
+            {getCountryAbbr(encomenda?.to_account.adresses[0]?.country)}-
             {getStateAbbr(
-              encomenda?.to_account.adresses[0].country,
+              encomenda?.to_account.adresses[0]?.country,
               encomenda?.to_account.adresses[0].state || ""
             )}
           </div>
