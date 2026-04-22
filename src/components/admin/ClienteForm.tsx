@@ -1,11 +1,5 @@
 import { useState } from "react";
 import { useLanguage } from "../../context/useLanguage";
-import {
-  CountrySelect,
-  StateSelect,
-  CitySelect,
-} from "react-country-state-city";
-import "react-country-state-city/dist/react-country-state-city.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
@@ -46,11 +40,6 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
     cep: initialData?.cep || "",
     country: initialData?.country || "",
   });
-
-  const [countryId, setCountryId] = useState<number>(0);
-  const [stateId, setStateId] = useState<number>(0);
-
-  // Não precisamos mais dos useEffects da biblioteca anterior
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -149,43 +138,25 @@ const ClienteForm = ({ onSubmit, onCancel, initialData }: Props) => {
           onChange={handleChange}
           className="p-2 border rounded"
         />
-        <CountrySelect
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onChange={(e: any) => {
-            const countryId = e.target?.value || e.id || e;
-            const countryName = e.target?.options?.[e.target.selectedIndex]?.text || e.name || "";
-            setCountryId(countryId);
-            setForm({ ...form, country: countryName });
-            // Reset state and city when country changes
-            setStateId(0);
-            setForm(prev => ({ ...prev, state: "", city: "" }));
-          }}
-          placeHolder={t.form_pais}
+        <input
+          name="country"
+          placeholder={t.form_pais}
+          value={form.country}
+          onChange={handleChange}
           className="p-2 border rounded"
         />
-        <StateSelect
-          countryid={countryId}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onChange={(e: any) => {
-            const stateId = e.target?.value || e.id || e;
-            const stateName = e.target?.options?.[e.target.selectedIndex]?.text || e.name || "";
-            setStateId(stateId);
-            setForm({ ...form, state: stateName });
-            // Reset city when state changes
-            setForm(prev => ({ ...prev, city: "" }));
-          }}
-          placeHolder={t.form_estado}
+        <input
+          name="state"
+          placeholder={t.form_estado}
+          value={form.state}
+          onChange={handleChange}
           className="p-2 border rounded"
         />
-        <CitySelect
-          countryid={countryId}
-          stateid={stateId}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onChange={(e: any) => {
-            const cityName = e.target?.options?.[e.target.selectedIndex]?.text || e.name || "";
-            setForm({ ...form, city: cityName });
-          }}
-          placeHolder={t.form_cidade}
+        <input
+          name="city"
+          placeholder={t.form_cidade}
+          value={form.city}
+          onChange={handleChange}
           className="p-2 border rounded"
         />
         <input

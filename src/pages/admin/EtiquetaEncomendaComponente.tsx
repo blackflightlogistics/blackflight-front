@@ -74,7 +74,7 @@ const EtiquetaEncomendaComponente: React.FC<EtiquetaProps> = ({
             {getCountryAbbr(encomenda?.to_account.adresses[0]?.country)}-
             {getStateAbbr(
               encomenda?.to_account.adresses[0]?.country,
-              encomenda?.to_account.adresses[0].state || ""
+              encomenda?.to_account.adresses[0].city || ""
             )}
           </div>
         </div>
